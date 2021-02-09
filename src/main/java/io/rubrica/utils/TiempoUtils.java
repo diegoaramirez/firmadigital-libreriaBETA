@@ -62,9 +62,9 @@ public class TiempoUtils {
     }
 
     public static String getFechaHoraServidor(String apiUrl) throws IOException {
-        String fecha_hora_url = apiUrl != null ? PropertiesUtils.getConfig().getProperty("fecha_hora_url") : apiUrl;
+        String fecha_hora_url = apiUrl == null ? PropertiesUtils.getConfig().getProperty("fecha_hora_url") : apiUrl;
         System.out.println("fecha_hora_url: " + fecha_hora_url);
-        if (fecha_hora_url.isEmpty()) {
+        if (fecha_hora_url == null) {
             // La fecha actual en formato ISO-8601 (2017-08-27T17:54:43.562-05:00)
             return ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         } else {
