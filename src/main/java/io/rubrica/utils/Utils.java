@@ -36,7 +36,7 @@ import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.certificate.to.Documento;
 import io.rubrica.sign.cms.VerificadorCMS;
 import io.rubrica.sign.odf.ODFSigner;
-import io.rubrica.sign.pdf.PDFSigner;
+import io.rubrica.sign.pdf.PDFSignerItext;
 import io.rubrica.sign.xades.XAdESSigner;
 
 import java.io.BufferedInputStream;
@@ -390,7 +390,7 @@ public class Utils {
             SignatureUtil signatureUtil = new SignatureUtil(pdfDocument);
             List<Certificado> certificados = new ArrayList<>();
             documento = new Documento(true, false, certificados, null);
-            Signer signer = new PDFSigner();
+            Signer signer = new PDFSignerItext();
             java.util.List<SignInfo> signInfos;
             signInfos = signer.getSigners(FileUtils.fileConvertToByteArray(pdf));
             if (signInfos == null || signInfos.isEmpty()) {
@@ -668,7 +668,7 @@ public class Utils {
         String extDocumento = FileUtils.getFileExtension(documento);
         switch (extDocumento.toLowerCase()) {
             case "pdf":
-                return new PDFSigner();
+                return new PDFSignerItext();
 //            case "docx":
 //            case "xlsx":
 //            case "pptx":

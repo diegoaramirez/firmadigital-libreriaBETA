@@ -98,31 +98,21 @@
             <artifactId>javase</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <!-- add all iText 7 modules -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext7-core</artifactId>
-            <version>7.1.13</version>
+            <version>7.1.14</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.3.10</version> <!--no subir de 1.3.10 (original 1.0.5)-->
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.68</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-<!--            <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.68</version>-->
-            <artifactId>bcprov-jdk15on</artifactId><!--bcprov-jdk15on-->
-            <version>1.62</version> <!--no subir de 1.62 (original 1.47)-->
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-<!--            <artifactId>bcpkix-jdk15to18</artifactId>
-            <version>1.68</version>-->
-            <artifactId>bcpkix-jdk15on</artifactId><!--no cambiar bcpkix-jdk15on-->
-            <version>1.62</version> <!--no subir de 1.62 (original 1.47)-->
+            <artifactId>bcpkix-jdk15to18</artifactId>
+            <version>1.68</version>
         </dependency>
         <dependency>
             <groupId>es.uji.crypto.xades</groupId>

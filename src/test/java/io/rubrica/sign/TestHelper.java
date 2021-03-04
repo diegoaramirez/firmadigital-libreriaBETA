@@ -40,10 +40,10 @@ import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+//import com.lowagie.text.Document;
+//import com.lowagie.text.Element;
+//import com.lowagie.text.Paragraph;
+//import com.lowagie.text.pdf.PdfWriter;
 
 public class TestHelper {
 
@@ -67,14 +67,14 @@ public class TestHelper {
     public static byte[] crearPdf() throws Exception {
         File tempFile = File.createTempFile("temp-", ".pdf");
 
-        Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(tempFile));
-        document.open();
-
-        Paragraph paragraph = new Paragraph("Esto es una prueba");
-        paragraph.setAlignment(Element.ALIGN_RIGHT);
-        document.add(paragraph);
-        document.close();
+//        Document document = new Document();
+//        PdfWriter.getInstance(document, new FileOutputStream(tempFile));
+//        document.open();
+//
+//        Paragraph paragraph = new Paragraph("Esto es una prueba");
+//        paragraph.setAlignment(Element.ALIGN_RIGHT);
+//        document.add(paragraph);
+//        document.close();
 
         return Files.readAllBytes(tempFile.toPath());
     }

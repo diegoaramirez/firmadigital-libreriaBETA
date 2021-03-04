@@ -8,7 +8,7 @@ Revisar LICENSE para detalles.
 
 == Dependencias
 
-* OpenPDF: https://github.com/LibrePDF/OpenPDF
+* iText7: https://github.com/itext/itext7
 * BouncyCastle: https://www.bouncycastle.org
 
 

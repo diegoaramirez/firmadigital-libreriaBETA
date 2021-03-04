@@ -40,6 +40,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.DLTaggedObject;
 
 /**
  * Utilidades para trabajar con Certificados.
@@ -80,7 +81,22 @@ public class CertUtils {
                                 decoded = decoded.substring(3);
                                 break;
                             }
-                        } else if (object != null && object instanceof DERTaggedObject) {
+                        }
+                        if (object != null && object instanceof DLTaggedObject) {
+                            DLTaggedObject dlTaggedObject = (DLTaggedObject) object;
+                            Object obj = dlTaggedObject.getObject();
+                            if (obj != null && obj instanceof ASN1Sequence) {
+                                otherNameSeq = (ASN1Sequence) obj;
+                                // Check the object identifier
+                                ASN1ObjectIdentifier objectId = (ASN1ObjectIdentifier) otherNameSeq.getObjectAt(0);
+                                if (objectId.toString().equals(oid)) {
+                                    DLTaggedObject objectDetail = ((DLTaggedObject) otherNameSeq.getObjectAt(1));
+                                    decoded = objectDetail.getObject().toASN1Primitive().toString();
+                                    break;
+                                }
+                            }
+                        }
+                        if (object != null && object instanceof DERTaggedObject) {
                             DERTaggedObject derTaggedObject = (DERTaggedObject) object;
                             Object obj = derTaggedObject.getObject();
                             if (obj != null && obj instanceof ASN1Sequence) {

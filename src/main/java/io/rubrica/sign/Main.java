@@ -35,7 +35,7 @@ import io.rubrica.keystore.FileKeyStoreProvider;
 import io.rubrica.keystore.KeyStoreProvider;
 import io.rubrica.keystore.KeyStoreProviderFactory;
 import io.rubrica.sign.pdf.PDFSignerItext;
-import io.rubrica.sign.pdf.PdfUtil;
+import io.rubrica.sign.pdf.RectanguloUtil;
 import io.rubrica.utils.FileUtils;
 import io.rubrica.utils.TiempoUtils;
 import io.rubrica.utils.Utils;
@@ -93,8 +93,8 @@ public class Main {
 //    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 22 - PDF Firmado - Una firma - revocado.pdf";
 //    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 23 - PDF Firmado - Una firma - caducado y modificado.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/Editados/Paz y salvo - rige el 2020 Diego Saud DF-signed-signed.pdf";
-    private static final String FILE = "/home/mfernandez/Test/3/documento_blanco.pdf";
-//    private static final String FILE = "/home/mfernandez/documento_blanco.pdf";
+//    private static final String FILE = "/home/mfernandez/Test/CasosDePrueba/Caso 09 - PDF Firmado - Tres firmas - CJ - CJ - CJ.pdf";
+    private static final String FILE = "/home/mfernandez/documento_blanco.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/1.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/firmadoEditado.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
@@ -155,8 +155,8 @@ public class Main {
         //params.setProperty(PDFSigner.TYPE_SIG, "information2");
         //params.setProperty(PDFSigner.FONT_SIZE, "4.5");
         // Posicion firma
-        params.setProperty(PdfUtil.POSITION_ON_PAGE_LOWER_LEFT_X, llx);
-        params.setProperty(PdfUtil.POSITION_ON_PAGE_LOWER_LEFT_Y, lly);
+        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_X, llx);
+        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_Y, lly);
         //params.setProperty(PdfUtil.POSITION_ON_PAGE_UPPER_RIGHT_X, urx);
         //params.setProperty(PdfUtil.POSITION_ON_PAGE_UPPER_RIGHT_Y, ury);
         return params;

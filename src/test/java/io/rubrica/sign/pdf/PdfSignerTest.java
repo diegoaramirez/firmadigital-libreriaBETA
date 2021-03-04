@@ -54,7 +54,7 @@ public class PdfSignerTest {
         byte[] result;
 
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            Signer signer = new PDFSigner();
+            Signer signer = new PDFSignerItext();
             result = signer.sign(pdf, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain, params);
 
             assertNotNull(result);
@@ -67,7 +67,7 @@ public class PdfSignerTest {
         }
 
         try (FileOutputStream fos = new FileOutputStream(tempFile2)) {
-            Signer signer = new PDFSigner();
+            Signer signer = new PDFSignerItext();
             byte[] result2 = signer.sign(result, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain,
                     params);
 

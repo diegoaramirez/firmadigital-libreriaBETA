@@ -24,6 +24,7 @@ import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.StampingProperties;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -43,6 +44,7 @@ import com.itextpdf.signatures.PdfPKCS7;
 import com.itextpdf.signatures.PdfSignatureAppearance;
 import com.itextpdf.signatures.PdfSigner;
 import com.itextpdf.signatures.PrivateKeySignature;
+import com.itextpdf.signatures.SignatureUtil;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -56,6 +58,9 @@ import io.rubrica.certificate.CertEcUtils;
 
 import io.rubrica.exceptions.RubricaException;
 import io.rubrica.certificate.to.DatosUsuario;
+import io.rubrica.exceptions.InvalidFormatException;
+import io.rubrica.sign.SignInfo;
+import io.rubrica.sign.Signer;
 
 import io.rubrica.utils.BouncyCastleUtils;
 import io.rubrica.utils.FileUtils;
@@ -64,8 +69,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PDFSignerItext {
+public class PDFSignerItext implements Signer {
 
     private static final Logger logger = Logger.getLogger(PDFSignerItext.class.getName());
 
@@ -93,27 +100,30 @@ public class PDFSignerItext {
      * @param xParams
      * @return
      * @throws java.io.IOException
-     * @throws java.security.GeneralSecurityException
      * @throws io.rubrica.exceptions.RubricaException
      */
 //    BadPasswordException,
-    public byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties xParams) throws IOException, GeneralSecurityException, RubricaException {
+    @Override
+    public byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties xParams) throws IOException, RubricaException {
+        byte[] documentoFirmado = null;
         File file = new File(xParams.getProperty(PATH));
         file.mkdirs();
 
-        String rutaDocumentoTemporal = FileUtils.crearNombreTemporal(file, ".rubrica.firmadigital");
+        String rutaDocumentoTemporal = FileUtils.crearNombreTemporal(file, ".tmp");
         String rutaDocumentoFirmado = FileUtils.crearNombreFirmado(file, ".pdf");
 
         try {
             String fieldName = emptySignature(file.getPath(), rutaDocumentoTemporal, certChain, xParams);
-            createSignature(rutaDocumentoTemporal, rutaDocumentoFirmado, fieldName, key, certChain, algorithm);
+            documentoFirmado = createSignature(rutaDocumentoTemporal, rutaDocumentoFirmado, fieldName, key, certChain, algorithm);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             File fileTmp = new File(rutaDocumentoTemporal);
             fileTmp.delete();
+            //eliminar temporales
+            FileUtils.eliminarPorConstante(System.getProperty("java.io.tmpdir"), "firmaec.rubrica.firmadigital.temp");
         }
-        return null;
+        return documentoFirmado;
     }
 
     public String emptySignature(String src, String dest, Certificate[] certChain, Properties xParams)
@@ -180,16 +190,13 @@ public class PDFSignerItext {
 //            logger.severe("Documento encriptado");
 //            throw new RubricaException("Documento encriptado");
 //        }
-
         Rectangle signaturePositionOnPage = getSignaturePositionOnPage(extraParams);
-
         PdfSigner pdfSigner = new PdfSigner(pdfReader, new FileOutputStream(dest), new StampingProperties());
-        PdfSignatureAppearance signatureAppearance = pdfSigner.getSignatureAppearance();
-        signatureAppearance.setPageRect(signaturePositionOnPage).setPageNumber(page);
-
         if (page == 0 || page < 0 || page > pdfSigner.getDocument().getNumberOfPages()) {
             page = pdfSigner.getDocument().getNumberOfPages();
         }
+        PdfSignatureAppearance signatureAppearance = pdfSigner.getSignatureAppearance();
+        signatureAppearance.setPageRect(signaturePositionOnPage).setPageNumber(page);
 
         if (signaturePositionOnPage != null) {
             String informacionCertificado = x509Certificate.getSubjectDN().getName();
@@ -331,7 +338,7 @@ public class PDFSignerItext {
         }
 
         // Localización en donde se produce la firma
-        if (location != null) {
+        if (location != null) { //no puede ser null
             signatureAppearance.setLocation(location);
         }
 
@@ -345,8 +352,8 @@ public class PDFSignerItext {
 
         try {
             /* ExternalBlankSignatureContainer constructor will create the PdfDictionary for the signature
-                * information and will insert the /Filter and /SubFilter values into this dictionary.
-                * It will leave just a blank placeholder for the signature that is to be inserted later.
+            * information and will insert the /Filter and /SubFilter values into this dictionary.
+            * It will leave just a blank placeholder for the signature that is to be inserted later.
              */
             IExternalSignatureContainer external = new ExternalBlankSignatureContainer(PdfName.Adobe_PPKLite,
                     PdfName.Adbe_pkcs7_detached);
@@ -366,7 +373,7 @@ public class PDFSignerItext {
         return pdfSigner.getFieldName();
     }
 
-    public void createSignature(String src, String dest, String fieldName, PrivateKey pk, Certificate[] chain, String algorithm)
+    public byte[] createSignature(String src, String dest, String fieldName, PrivateKey pk, Certificate[] chain, String algorithm)
             throws IOException, GeneralSecurityException {
         PdfReader reader = new PdfReader(src);
         try (FileOutputStream os = new FileOutputStream(dest)) {
@@ -374,7 +381,79 @@ public class PDFSignerItext {
             IExternalSignatureContainer external = new PDFSignerItext.MyExternalSignatureContainer(pk, chain, algorithm);
             // Signs a PDF where space was already reserved. The field must cover the whole document.
             signer.signDeferred(signer.getDocument(), fieldName, os, external);
+            return FileUtils.fileConvertToByteArray(new File(dest));
         }
+    }
+
+    @Override
+    public List<SignInfo> getSigners(byte[] sign) throws InvalidFormatException, IOException {
+//        if (!isPdfFile(sign)) {
+//            throw new InvalidFormatException("El archivo no es un PDF");
+//        }
+        PdfReader pdfReader;
+        try {
+            pdfReader = new PdfReader(FileUtils.byteArrayConvertToFile(sign));
+        } catch (Exception e) {
+            logger.severe("No se ha podido leer el PDF: " + e);
+            throw new InvalidFormatException("No se ha podido leer el PDF", e);
+        }
+        SignatureUtil signatureUtil;
+        try {
+            PdfDocument pdfDocument = new PdfDocument(pdfReader);
+            signatureUtil = new com.itextpdf.signatures.SignatureUtil(pdfDocument);
+        } catch (Exception e) {
+            logger.severe(
+                    "No se ha podido obtener la informacion de los firmantes del PDF, se devolvera un arbol vacio: "
+                    + e);
+            throw new InvalidFormatException("No se ha podido obtener la informacion de los firmantes del PDF", e);
+        }
+        @SuppressWarnings("unchecked")
+        List<String> names = signatureUtil.getSignatureNames();
+        List<SignInfo> signInfos = new ArrayList<>();
+        for (String signatureName : names) {
+            com.itextpdf.signatures.PdfPKCS7 pdfPKCS7;
+            try {
+                pdfPKCS7 = signatureUtil.readSignatureData(signatureName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.severe("El PDF contiene una firma corrupta o con un formato desconocido (" + signatureName
+                        + "), se continua con las siguientes si las hubiese: " + e);
+                continue;
+            }
+            Certificate[] signCertificateChain = pdfPKCS7.getSignCertificateChain();
+            X509Certificate[] certChain = new X509Certificate[signCertificateChain.length];
+            for (int i = 0; i < certChain.length; i++) {
+                certChain[i] = (X509Certificate) signCertificateChain[i];
+            }
+            SignInfo signInfo = new SignInfo(certChain, pdfPKCS7.getSignDate().getTime());
+            signInfos.add(signInfo);
+        }
+        return signInfos;
+    }
+
+//    private static final String PDF_FILE_HEADER = "%PDF-";
+//    private boolean isPdfFile(final byte[] data) {
+//        byte[] buffer = new byte[PDF_FILE_HEADER.length()];
+//        try {
+//            new ByteArrayInputStream(data).read(buffer);
+//        } catch (Exception e) {
+//            buffer = null;
+//        }
+//        // Comprobamos que cuente con una cabecera PDF
+//        if (buffer != null && !PDF_FILE_HEADER.equals(new String(buffer))) {
+//            return false;
+//        }
+//        try {
+//            // Si lanza una excepcion al crear la instancia, no es un fichero
+//            // PDF
+//            new PdfReader(data);
+//        } catch (final Exception e) {
+//            return false;
+//        }
+//        return true;
+//    }
+    private static Rectangle getSignaturePositionOnPage(Properties extraParams) {
+        return RectanguloUtil.getPositionOnPage(extraParams);
     }
 
     class MyExternalSignatureContainer implements IExternalSignatureContainer {
@@ -411,9 +490,5 @@ public class PDFSignerItext {
         @Override
         public void modifySigningDictionary(PdfDictionary signDic) {
         }
-    }
-
-    private static Rectangle getSignaturePositionOnPage(Properties extraParams) {
-        return RectangulofUtil.getPositionOnPage(extraParams);
     }
 }

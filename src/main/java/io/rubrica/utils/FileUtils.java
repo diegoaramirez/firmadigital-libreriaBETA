@@ -65,7 +65,7 @@ public class FileUtils {
      */
     public static File byteArrayConvertToFile(byte[] data) throws IOException {
         // Genera el archivo temporal a partir del InputStream de entrada
-        final File file = File.createTempFile("temp", null);
+        final File file = File.createTempFile("firmaec.rubrica.firmadigital.temp", null);
         try (final FileOutputStream fos = new FileOutputStream(file);) {
             fos.write(data);
             fos.flush();
@@ -74,7 +74,7 @@ public class FileUtils {
         file.deleteOnExit();
         return file;
     }
-    
+
     public static void saveByteArrayToDisc(byte[] archivo, String rutaNombre) throws FileNotFoundException, IOException {
         // TODO validar si hay otro archivo de momento lo sobre escribe
         FileOutputStream fos = new FileOutputStream(rutaNombre);
@@ -197,5 +197,45 @@ public class FileUtils {
             }
         }
         return ruta;
+    }
+    
+        /**
+     * Elimina los archivos con una determinada extensión de una carpeta
+     *
+     * @param path Carpeta de la cual eliminar los archivosq
+     * @param constante Constante de los archivos a eliminar
+     */
+    public static void eliminarPorConstante(String path, final String constante) {
+        File[] archivos = new File(path).listFiles((File archivo) -> {
+            if (archivo.isFile() && archivo.exists()) {
+                if (constante != null) {
+                    return archivo.getName().startsWith(constante);
+                }
+            }
+            return false;
+        });
+        for (File archivo : archivos) {
+            archivo.delete();
+        }
+    }
+    
+    /**
+     * Elimina los archivos con una determinada extensión de una carpeta
+     *
+     * @param path Carpeta de la cual eliminar los archivosq
+     * @param extension Extensión de los archivos a eliminar
+     */
+    public static void eliminarPorExtension(String path, final String extension) {
+        File[] archivos = new File(path).listFiles((File archivo) -> {
+            if (archivo.isFile()) {
+                if (extension != null) {
+                    return archivo.getName().endsWith('.' + extension);
+                }
+            }
+            return false;
+        });
+        for (File archivo : archivos) {
+            archivo.delete();
+        }
     }
 }

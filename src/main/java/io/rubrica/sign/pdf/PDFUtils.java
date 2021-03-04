@@ -17,6 +17,7 @@
  */
 package io.rubrica.sign.pdf;
 
+import com.itextpdf.kernel.pdf.PdfReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,9 +38,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.PdfReader;
-
 import io.rubrica.exceptions.AliasesNotFoundException;
 import io.rubrica.core.PrivateKeyAndCertificateChain;
 
@@ -52,25 +50,6 @@ import io.rubrica.core.PrivateKeyAndCertificateChain;
 public class PDFUtils {
 
     private static final Logger logger = Logger.getLogger(PDFUtils.class.getName());
-
-    public static boolean yaEstaFirmado(byte[] archivoPDF) {
-        try {
-            // Verificar si ya esta firmado?
-            PdfReader reader = new PdfReader(archivoPDF);
-            AcroFields fields = reader.getAcroFields();
-
-            @SuppressWarnings("unchecked")
-            ArrayList<String> nombreLista = fields.getSignatureNames();
-
-            for (String nombre : nombreLista) {
-                System.out.println("Firmante=" + nombre);
-            }
-
-            return (nombreLista.size() == 1);
-        } catch (IOException e) {
-            throw new RuntimeException(e); // FIXME
-        }
-    }
 
     public static PrivateKeyAndCertificateChain[] getList(KeyStore keyStore) {
         List<PrivateKeyAndCertificateChain> privateKeys = new ArrayList<PrivateKeyAndCertificateChain>();
