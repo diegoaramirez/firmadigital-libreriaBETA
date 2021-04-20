@@ -43,6 +43,9 @@ import io.rubrica.certificate.ec.cj.CertificadoPersonaJuridicaPrivadaConsejoJudi
 import io.rubrica.certificate.ec.cj.CertificadoPersonaJuridicaPublicaConsejoJudicatura;
 import io.rubrica.certificate.ec.cj.CertificadoPersonaNaturalConsejoJudicatura;
 import io.rubrica.certificate.ec.cj.ConsejoJudicaturaSubCaCert;
+import io.rubrica.certificate.ec.digercic.CertificadoDigercic;
+import io.rubrica.certificate.ec.digercic.CertificadoDigercicFactory;
+import io.rubrica.certificate.ec.digercic.DigercicSubCaCert20212031;
 import io.rubrica.certificate.ec.securitydata.CertificadoSecurityData;
 import io.rubrica.certificate.ec.securitydata.CertificadoSecurityDataFactory;
 import io.rubrica.certificate.ec.securitydata.SecurityDataSubCaCert20112026;
@@ -98,8 +101,8 @@ public class CertEcUtils {
             }
             case "Consejo de la Judicatura":
                 return new ConsejoJudicaturaSubCaCert();
-            case "Anf AC":
-                try{
+            case "Anf AC": {
+                try {
                     if (io.rubrica.utils.Utils.verifySignature(certificado, new AnfAc18332SubCaCert20162032())) {
                         System.out.println("Anf 2016-2032");
                         return new AnfAc18332SubCaCert20162032();
@@ -112,6 +115,11 @@ public class CertEcUtils {
                 } catch (java.security.InvalidKeyException ex) {
                     //TODO
                 }
+            }
+            case "Dirección General de Registro Civil, Identificación y Cedulación": {
+                return new DigercicSubCaCert20212031();
+            }
+
             default:
                 throw new EntidadCertificadoraNoValidaException("Entidad Certificadora no reconocida");
         }
@@ -131,6 +139,10 @@ public class CertEcUtils {
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains("ANF")) {
             return "Anf AC";
         }
+        if (certificado.getIssuerX500Principal().getName().toUpperCase().contains("DIRECCIÓN GENERAL DE REGISTRO CIVIL")) {
+            return "Dirección General de Registro Civil, Identificación y Cedulación";
+        }
+
         return "Entidad no reconocidad " + certificado.getIssuerX500Principal().getName();
     }
 
@@ -334,7 +346,7 @@ public class CertEcUtils {
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }
-        
+
         if (CertificadoAnfAc37442Factory.esCertificadoDeAnfAc37442(certificado)) {
             CertificadoAnfAc37442 certificadoAnfAc37442 = CertificadoAnfAc37442Factory.construir(certificado);
             if (certificadoAnfAc37442 instanceof CertificadoFuncionarioPublico) {
@@ -372,6 +384,22 @@ public class CertEcUtils {
             datosUsuario.setEntidadCertificadora("Anf AC");
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
+        }
+        if (CertificadoDigercicFactory.esCertificadoDigercic(certificado)) {
+            CertificadoDigercic certificadoDigercic = CertificadoDigercicFactory.construir(certificado);
+            if (certificadoDigercic instanceof CertificadoFuncionarioPublico) {
+                CertificadoFuncionarioPublico certificadoFuncionarioPublico = (CertificadoFuncionarioPublico) certificadoDigercic;
+
+                datosUsuario.setCedula(certificadoFuncionarioPublico.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoFuncionarioPublico.getNombres());
+                datosUsuario.setApellido(certificadoFuncionarioPublico.getPrimerApellido() + " "
+                        + certificadoFuncionarioPublico.getSegundoApellido());
+                datosUsuario.setCargo(certificadoFuncionarioPublico.getCargo());
+                datosUsuario.setInstitucion(certificadoFuncionarioPublico.getInstitucion());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            datosUsuario.setEntidadCertificadora("DIGERCIC");
+            datosUsuario.setCertificadoDigitalValido(true);
         }
         return null;
     }

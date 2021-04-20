@@ -71,7 +71,7 @@ public class Documento {
 
     @Override
     public String toString() {
-        return "\tDoccumento\n"
+        return "\tDocumento\n"
                 + "\t[signValidate=" + signValidate + "\n"
                 + "\tdocValidate=" + docValidate + "\n"
                 + "\terror=" + error + "\n"

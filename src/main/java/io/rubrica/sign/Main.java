@@ -47,6 +47,14 @@ import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
+//NFC
+import java.util.List;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
+import javax.smartcardio.TerminalFactory;
 
 /**
  * Metodo de pruebas funcionales
@@ -65,33 +73,6 @@ public class Main {
 //    private static final String FILE = "/home/mfernandez/Test/Caballero.pdf";
 //    private static final String FILE = "/home/mfernandez/CompartidoWindows/Aplicaciones Windows/caso firma/1.7_Porcentaje_Cero_Papeles_Quipux_Agosto_2020_editado_3.pdf";
 //    private static final String FILE = "/home/mfernandez/CompartidoWindows/Aplicaciones Windows/caso firma/1.7_Porcentaje_Cero_Papeles_Quipux_Agosto_2020_ok.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 01 - Imagen.jpg";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 02 - Aparenta ser PDF.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 03 - Sin firma.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 04 - 1F Consejo Judicatura.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 05 - FIrma EC_CESAR.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 06 - PDF Firmado - Una firma - BCE - segundo ejemplo.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 07 - Archivo de prueba-signedKT.pdf";
-//    private static final String FILE = "/home/mfernandez/CompartidoWindows/%AplicacionesWindows/caso firma/ordenanza documento word presupuesto final 12-signed-signed-signed.pdf";
-//    private static final String FILE = "/home/mfernandez/Descargas/1_17315-2020-00785_20201214_ESCRITO_DINARDAP-DGR-2020-4638-OF_31265_.pdf";
-//    private static final String FILE = "/home/mfernandez/Descargas/OFERTA USHAY CONVALIDACION.pdf";
-//    private static final String FILE = "/home/mfernandez/Descargas/1_Estudio_Previo.pdf";
-//    private static final String FILE = "/home/mfernandez/Descargas/TEST_estudio_previo_software_diseño-FIRMADO.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 08 - PDF Firmado - Una firma - Entidad Extranjera.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 09 - PDF Firmado - Tres firmas - CJ - CJ - CJ.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 10 - Acta 50 firmas.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 11 - 1F BCE NO VIGENTE.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 12 - 1F ALTERADO.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 14 - Archivo-prueba-sello-tiempo-PAdES-LTV.PDF";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 15 - FIRMADO_sellotiempoCJ-yfirma.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 16 - Archivo-prueba-sello-tiempo MODIFICADO.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 17 - 2F ENTIDAD NO AUTORIZADA y AUTORIZADA.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 18 - PDF Firmado - Una firma - Entidad Extranjera y una ecuatoriana.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 19 - PDF Firmado - Una firma - Entidad Extranjera y una ecuatoriana MODIF.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 20 - 3F BCE - SECURITY - ACCV.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 21 - PDF Firmado - Una firma - caducado.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 22 - PDF Firmado - Una firma - revocado.pdf";
-//    private static final String FILE = "/home/efra/repos/mintel/archivos/ArchivosFirma/Caso 23 - PDF Firmado - Una firma - caducado y modificado.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/Editados/Paz y salvo - rige el 2020 Diego Saud DF-signed-signed.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/CasosDePrueba/Caso 09 - PDF Firmado - Tres firmas - CJ - CJ - CJ.pdf";
     private static final String FILE = "/home/mfernandez/documento_blanco.pdf";
@@ -105,6 +86,7 @@ public class Main {
 //        firmarDocumento(FILE);
 //        validarCertificado();
         verificarDocumento(FILE);
+//        leerNFC();
     }
 
     private static Properties parametros() throws IOException {
@@ -185,27 +167,27 @@ public class Main {
             PDFSignerItext pDFSignerItext = new PDFSignerItext();
             signed = pDFSignerItext.sign(docByteArry, "SHA256", key, certChain, properties);
             System.out.println("final firma\n-------");
-//            ////// Permite guardar el archivo en el equipo y luego lo abre
-//            String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
-//            java.io.FileOutputStream fos = new java.io.FileOutputStream(nombreDocumento);
-//            //Abrir documento
-//            new java.util.Timer().schedule(new java.util.TimerTask() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        FileUtils.abrirDocumento(nombreDocumento);
-//                        System.out.println(nombreDocumento);
-//                        verificarDocumento(nombreDocumento);
-//                    } catch (java.lang.Exception ex) {
-//                        ex.printStackTrace();
-//                    } finally {
-//                        System.exit(0);
-//                    }
-//                }
-//            }, 3000); //espera 3 segundos
-//            fos.write(signed);
-//            fos.close();
-//            //Abrir documento
+            ////// Permite guardar el archivo en el equipo y luego lo abre
+            String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(nombreDocumento);
+            //Abrir documento
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        FileUtils.abrirDocumento(nombreDocumento);
+                        System.out.println(nombreDocumento);
+                        verificarDocumento(nombreDocumento);
+                    } catch (java.lang.Exception ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        System.exit(0);
+                    }
+                }
+            }, 3000); //espera 3 segundos
+            fos.write(signed);
+            fos.close();
+            //Abrir documento
         } else {
             System.out.println("Entidad Certificadora no reconocida");
         }
@@ -255,6 +237,38 @@ public class Main {
         }
     }
 
+    private static void leerNFC() throws Exception {
+        TerminalFactory tf = TerminalFactory.getDefault();
+        List< CardTerminal> terminals = tf.terminals().list();
+        System.out.println("Available Readers:");
+        System.out.println(terminals + "\n");
+        CardTerminal terminal = null;
+
+        int i = 0;
+        for (Object next : terminals) {
+            terminal = (CardTerminal) next;
+            if (terminal.isCardPresent()) {
+                System.out.println("i: " + i);
+                break;
+            }
+            i++;
+        }
+
+        System.out.println("keyStore: " + KeyStoreProviderFactory.getKeyStore("11111111"));
+
+        if (terminal.waitForCardPresent(5000)) {
+            Card card = terminal.connect("*");
+            CommandAPDU getAts = new CommandAPDU(0x00, 0xa4, 0x04, 0x00, new byte[]{(byte) 0xa0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x08, 0x01}, 0x7f);
+            CardChannel channel = card.getBasicChannel();
+            ResponseAPDU response = channel.transmit(getAts);
+
+            System.out.println(response.getSW1());
+            System.out.println(response.getSW2());
+
+            System.out.println(" LE=" + getAts.getNc() + " LE=" + getAts.getNe());
+        }
+    }
+    
     //pruebas de fecha-hora
     private static void fechaHora(int segundos) throws KeyStoreException, Exception {
         tiempo(segundos);//espera en segundos

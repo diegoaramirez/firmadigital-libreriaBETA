@@ -482,7 +482,8 @@ public class Utils {
                     for (Certificado certificado : certificados) {
                         if (!certificado.getDatosUsuario().getSelladoTiempo()) {//certificados digitales
                             //certificado digital sin ser revocado, integridad de la firma, dentro de fecha de figencia, válido por CA
-                            if (certificado.getRevocated() != null || !certificado.getSignVerify() || !certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
+                            boolean revocado = validarFirma(certificado.getValidFrom(), certificado.getValidTo(), certificado.getGenerated(), certificado.getRevocated());
+                            if (!revocado || !certificado.getSignVerify() || !certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
                                 documento.setSignValidate(false);
                                 break;
                             }
@@ -538,34 +539,32 @@ public class Utils {
     private static String validacionKeyUsages(X509Certificate signCert) throws CertificateParsingException {
         String keyUsages = "";
         boolean[] keyUsage = signCert.getKeyUsage();
-        if (keyUsage != null) {
-            if (keyUsage[0]) {
-                keyUsages += "Firma Electrónica, ";// digitalSignature
-            }
-            if (keyUsage[1]) {
-                keyUsages += "No Repudio, "; // nonRepudiation
-            }
-            if (keyUsage[2]) {
-                keyUsages += "Cifrado de llave, ";// keyEncipherment
-            }
-            if (keyUsage[3]) {
-                keyUsages += "Cifrado de datos, ";// dataEncipherment
-            }
-            if (keyUsage[4]) {
-                keyUsages += "Acuerdo de llaves, "; // keyAgreement
-            }
-            if (keyUsage[5]) {
-                keyUsages += "Firma y certificado de llave, ";// keyCertSign
-            }
-            if (keyUsage[6]) {
-                keyUsages += "Firma de CRL, ";// cRLSign
-            }
-            if (keyUsage[7]) {
-                keyUsages += "Solo cifrado, ";// encipherOnly
-            }
-            if (keyUsage[8]) {
-                keyUsages += "Solo descifrado"; // decipherOnly
-            }
+        if (keyUsage[0]) {
+            keyUsages += "Firma Electrónica, ";// digitalSignature
+        }
+        if (keyUsage[1]) {
+            keyUsages += "No Repudio, "; // nonRepudiation
+        }
+        if (keyUsage[2]) {
+            keyUsages += "Cifrado de llave, ";// keyEncipherment
+        }
+        if (keyUsage[3]) {
+            keyUsages += "Cifrado de datos, ";// dataEncipherment
+        }
+        if (keyUsage[4]) {
+            keyUsages += "Acuerdo de llaves, "; // keyAgreement
+        }
+        if (keyUsage[5]) {
+            keyUsages += "Firma y certificado de llave, ";// keyCertSign
+        }
+        if (keyUsage[6]) {
+            keyUsages += "Firma de CRL, ";// cRLSign
+        }
+        if (keyUsage[7]) {
+            keyUsages += "Solo cifrado, ";// encipherOnly
+        }
+        if (keyUsage[8]) {
+            keyUsages += "Solo descifrado"; // decipherOnly
         }
         return keyUsages;
     }
@@ -756,14 +755,18 @@ public class Utils {
         return xml;
     }
 
-    public static String validarFirma(Calendar fechaDesde, Calendar fechaHasta, Calendar fechaFirmado, Calendar fechaRevocado) {
-        String retorno = "Válida";
-        if (fechaFirmado.compareTo(fechaDesde) >= 0 && fechaFirmado.compareTo(fechaHasta) <= 0) {
-            if (fechaRevocado != null && fechaRevocado.compareTo(fechaFirmado) <= 0) {
-                retorno = "Inválida";
-            }
+    public static boolean validarFirma(Calendar fechaDesde, Calendar fechaHasta, Calendar fechaFirmado, Calendar fechaRevocado) {
+        boolean retorno = true;
+        if (fechaRevocado == null) {
+            retorno = true;
         } else {
-            retorno = "Inválida";
+            if (fechaFirmado.compareTo(fechaDesde) >= 0 && fechaFirmado.compareTo(fechaHasta) <= 0) {
+                if (fechaRevocado != null && fechaRevocado.compareTo(fechaFirmado) <= 0) {
+                    retorno = false;
+                }
+            } else {
+                retorno = false;
+            }
         }
         return retorno;
     }

@@ -17,12 +17,13 @@
  */
 package io.rubrica.certificate.to;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Objeto para acceder informacion legible del certificado digital
- * 
+ *
  * @author mfernandez
  */
 public class Certificado {
@@ -102,8 +103,7 @@ public class Certificado {
     public void setValidated(Boolean validated) {
         this.validated = validated;
     }
-    
-    
+
     public String getKeyUsages() {
         return keyUsages;
     }
@@ -147,11 +147,11 @@ public class Certificado {
     public void setDocReason(String docReason) {
         this.docReason = docReason;
     }
-    
+
     public String getDocLocation() {
         return docLocation;
     }
-    
+
     public void setDocLocation(String docLocation) {
         this.docLocation = docLocation;
     }
@@ -165,13 +165,13 @@ public class Certificado {
         return "\tCertificado\n"
                 + "\t[issuedTo=" + issuedTo + "\n"
                 + "\tissuedBy=" + issuedBy + "\n"
-                + "\tvalidFrom=" + validFrom + "\n"
-                + "\tvalidTo=" + validTo + "\n"
-                + "\tgenerated=" + generated + "\n"
-                + "\trevocated=" + revocated + "\n"
+                + "\tvalidFrom=" + (validFrom == null ? null : (String) new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((validFrom.getTime()))) + "\n"
+                + "\tvalidTo=" + (validTo == null ? null : (String) new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((validTo.getTime()))) + "\n"
+                + "\tgenerated=" + (generated == null ? null : (String) new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((generated.getTime()))) + "\n"
+                + "\trevocated=" + (revocated == null ? null : (String) new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((revocated.getTime()))) + "\n"
                 + "\tvalidated=" + validated + "\n"
                 + "\tkeyUsages=" + keyUsages + "\n"
-                + "\tdocTimeStamp=" + docTimeStamp + "\n"
+                + "\tdocTimeStamp=" + (docTimeStamp == null ? null : (String) new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((docTimeStamp))) + "\n"
                 + "\tsignVerify=" + signVerify + "\n"
                 + "\tdocReason=" + docReason + "\n"
                 + "\tdocLocation=" + docLocation + "\n"
