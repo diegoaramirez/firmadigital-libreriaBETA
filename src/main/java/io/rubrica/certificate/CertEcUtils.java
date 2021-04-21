@@ -52,6 +52,7 @@ import io.rubrica.certificate.ec.securitydata.SecurityDataSubCaCert20112026;
 import io.rubrica.certificate.ec.securitydata.SecurityDataSubCaCert20192031;
 import io.rubrica.certificate.ec.securitydata.SecurityDataSubCaCert20202039;
 import io.rubrica.certificate.to.DatosUsuario;
+import io.rubrica.utils.Utils;
 import java.security.cert.X509Certificate;
 
 /**
@@ -387,19 +388,17 @@ public class CertEcUtils {
         }
         if (CertificadoDigercicFactory.esCertificadoDigercic(certificado)) {
             CertificadoDigercic certificadoDigercic = CertificadoDigercicFactory.construir(certificado);
-            if (certificadoDigercic instanceof CertificadoFuncionarioPublico) {
-                CertificadoFuncionarioPublico certificadoFuncionarioPublico = (CertificadoFuncionarioPublico) certificadoDigercic;
+            if (certificadoDigercic instanceof CertificadoPersonaNatural) {
+                CertificadoPersonaNatural certificadoPersonaNatural = (CertificadoPersonaNatural) certificadoDigercic;
 
-                datosUsuario.setCedula(certificadoFuncionarioPublico.getCedulaPasaporte());
-                datosUsuario.setNombre(certificadoFuncionarioPublico.getNombres());
-                datosUsuario.setApellido(certificadoFuncionarioPublico.getPrimerApellido() + " "
-                        + certificadoFuncionarioPublico.getSegundoApellido());
-                datosUsuario.setCargo(certificadoFuncionarioPublico.getCargo());
-                datosUsuario.setInstitucion(certificadoFuncionarioPublico.getInstitucion());
+                datosUsuario.setCedula(certificadoPersonaNatural.getCedulaPasaporte());
+                datosUsuario.setNombre(Utils.getCN(certificado));
+                datosUsuario.setApellido("");
                 datosUsuario.setSerial(certificado.getSerialNumber().toString());
             }
             datosUsuario.setEntidadCertificadora("DIGERCIC");
             datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
         }
         return null;
     }

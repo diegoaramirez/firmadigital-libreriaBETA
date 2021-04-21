@@ -20,7 +20,9 @@ package io.rubrica.sign;
 import io.rubrica.certificate.CertEcUtils;
 import static io.rubrica.certificate.CertUtils.seleccionarAlias;
 import io.rubrica.certificate.to.Certificado;
+import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.certificate.to.Documento;
+import io.rubrica.core.Util;
 import io.rubrica.exceptions.InvalidFormatException;
 import java.io.IOException;
 import java.security.KeyStore;
@@ -39,6 +41,8 @@ import io.rubrica.sign.pdf.RectanguloUtil;
 import io.rubrica.utils.FileUtils;
 import io.rubrica.utils.TiempoUtils;
 import io.rubrica.utils.Utils;
+import static io.rubrica.utils.Utils.dateToCalendar;
+import static io.rubrica.utils.Utils.esValido;
 import io.rubrica.utils.UtilsCrlOcsp;
 import io.rubrica.utils.X509CertificateUtils;
 import io.rubrica.validaciones.DocumentoUtils;
@@ -66,6 +70,8 @@ public class Main {
     // ARCHIVO
     private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
     private static final String PASSWORD = "123456";
+//    private static final String ARCHIVO = "/home/mfernandez/Firmas/Digercic/DIGERCIC_abril_9_2021/usuario_dos_OK.pfx";
+//    private static final String PASSWORD = "12121212Qw.";
 //    private static final String FILE = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A.xml";
 //    private static final String FILE_XML = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A-signed.txt.xml";
 //    private static final String FILE_XML = "/home/mfernandez/Test/facturaMovistar.xml";
@@ -84,8 +90,8 @@ public class Main {
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
 //        firmarDocumento(FILE);
-//        validarCertificado();
-        verificarDocumento(FILE);
+        validarCertificado();
+//        verificarDocumento(FILE);
 //        leerNFC();
     }
 
@@ -222,6 +228,18 @@ public class Main {
             System.out.println("Certificado caducado");
         }
         System.out.println("Certificado emitido por entidad certificadora acreditada? " + Utils.verifySignature(x509Certificate));
+        
+        DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(x509Certificate);
+        Certificado certificado = new Certificado(
+                Util.getCN(x509Certificate),
+                CertEcUtils.getNombreCA(x509Certificate),
+                dateToCalendar(x509Certificate.getNotBefore()),
+                dateToCalendar(x509Certificate.getNotAfter()),
+                null,
+                dateToCalendar(UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null)),
+                null,
+                datosUsuario);
+        System.out.println("Certificado: "+certificado);
     }
 
     private static void verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
