@@ -41,6 +41,7 @@ public class KeyStoreProviderFactory {
     static {
         List<KeyStoreProvider> windows = new ArrayList<KeyStoreProvider>();
         windows.add(new WindowsKeyStoreProvider());
+        windows.add(new WindowsPcscKeyStoreProvider());
         windows.add(new UKCGenericWindowsDllKeyStoreProvider());
         lista.put(WINDOWS, windows);
     }

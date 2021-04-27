@@ -1,7 +1,19 @@
-/* 
- * AppsHandler © 2021
- * development@appshandler.com
- * http://www.appshandler.com
+/*
+ * Copyright (C) 2021 
+ * Authors: Edison Lomas Almeida
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.*
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package io.rubrica.certificate.ec.uanataca;
 
@@ -11,16 +23,18 @@ import java.security.cert.X509Certificate;
 import io.rubrica.certificate.CertUtils;
 
 /**
+ * Certificado emitido por Uanataca
+ *
  * @author Edison Lomas Almeida
  */
 public class CertificadoUanataca {
-	
-	 // OIDs de tipo de certificado:
-	public static final String OID_CERTIFICADO_PERSONA_NATURAL = "1.3.6.1.4.1.47286.102.2.1";
-	public static final String OID_CERTIFICADO_MIEMBRO_EMPRESA = "1.3.6.1.4.1.47286.102.2.2";
-	public static final String OID_CERTIFICADO_REPRESENTANTE_EMPRESA = "1.3.6.1.4.1.47286.102.2.3";
-	public static final String OID_CERTIFICADO_PERSONA_JURIDICA = "1.3.6.1.4.1.47286.102.2.4";
-	//public static final String OID_CERTIFICADO_EMPRESA = "1.3.6.1.4.1.43745.1.2.2.1";
+
+    // OIDs de tipo de certificado:
+    public static final String OID_CERTIFICADO_PERSONA_NATURAL = "1.3.6.1.4.1.47286.102.2.1";
+    public static final String OID_CERTIFICADO_MIEMBRO_EMPRESA = "1.3.6.1.4.1.47286.102.2.2";
+    public static final String OID_CERTIFICADO_REPRESENTANTE_EMPRESA = "1.3.6.1.4.1.47286.102.2.3";
+    public static final String OID_CERTIFICADO_PERSONA_JURIDICA = "1.3.6.1.4.1.47286.102.2.4";
+    //public static final String OID_CERTIFICADO_EMPRESA = "1.3.6.1.4.1.43745.1.2.2.1";
     public static final String OID_SELLADO_TIEMPO = "1.3.6.1.4.1.47286.102.2.5";
 
     // OIDs de Campos del Certificado:
@@ -38,7 +52,7 @@ public class CertificadoUanataca {
     public static final String OID_CERTIFICADO = "1.3.6.1.4.1.47286.102.3.50";
     public static final String OID_CONTENEDOR = "1.3.6.1.4.1.47286.102.3.51";
     public static final String OID_RUP = "1.3.6.1.4.1.47286.102.3.52";
-  //TODO Subject del sujeto
+    //TODO Subject del sujeto
     public static final String OID_PROFESION = "2.5.4.12";
     public static final String OID_DEPARTAMENTO = "2.5.4.11";
 
@@ -49,7 +63,7 @@ public class CertificadoUanataca {
 
     public CertificadoUanataca(X509Certificate certificado) {
         this.certificado = certificado;
-	}
+    }
 
     /**
      * Retorna el valor de la extension, y una cadena vacia si no existe.
