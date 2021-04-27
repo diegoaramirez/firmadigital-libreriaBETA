@@ -53,11 +53,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 //NFC
 import java.util.List;
-import javax.smartcardio.Card;
-import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import javax.smartcardio.TerminalFactory;
 
 /**
@@ -89,8 +85,8 @@ public class Main {
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
-//        firmarDocumento(FILE);
-        validarCertificado();
+        firmarDocumento(FILE);
+//        validarCertificado();
 //        verificarDocumento(FILE);
 //        leerNFC();
     }
@@ -158,7 +154,7 @@ public class Main {
         KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
         KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
         // TOKEN
-        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
+//        KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         byte[] signed = null;
         Signer signer = Utils.documentSigner(new File(file));
@@ -228,7 +224,7 @@ public class Main {
             System.out.println("Certificado caducado");
         }
         System.out.println("Certificado emitido por entidad certificadora acreditada? " + Utils.verifySignature(x509Certificate));
-        
+
         DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(x509Certificate);
         Certificado certificado = new Certificado(
                 Util.getCN(x509Certificate),
@@ -239,7 +235,7 @@ public class Main {
                 dateToCalendar(UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null)),
                 null,
                 datosUsuario);
-        System.out.println("Certificado: "+certificado);
+        System.out.println("Certificado: " + certificado);
     }
 
     private static void verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
@@ -267,26 +263,42 @@ public class Main {
             terminal = (CardTerminal) next;
             if (terminal.isCardPresent()) {
                 System.out.println("i: " + i);
+                System.out.println("terminal: " + terminals.get(0));
                 break;
             }
             i++;
         }
 
-        System.out.println("keyStore: " + KeyStoreProviderFactory.getKeyStore("11111111"));
+        System.out.println("\n");
+        KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
+        System.out.println("keyStore:" + keyStore);
+        String alias = seleccionarAlias(keyStore);
+        X509Certificate x509Certificate = (X509Certificate) keyStore.getCertificate(alias);
+        DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(x509Certificate);
+        Certificado certificado = new Certificado(
+                Util.getCN(x509Certificate),
+                CertEcUtils.getNombreCA(x509Certificate),
+                dateToCalendar(x509Certificate.getNotBefore()),
+                dateToCalendar(x509Certificate.getNotAfter()),
+                null,
+                dateToCalendar(UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null)),
+                null,
+                datosUsuario);
+        System.out.println("Certificado: " + certificado);
 
-        if (terminal.waitForCardPresent(5000)) {
-            Card card = terminal.connect("*");
-            CommandAPDU getAts = new CommandAPDU(0x00, 0xa4, 0x04, 0x00, new byte[]{(byte) 0xa0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x08, 0x01}, 0x7f);
-            CardChannel channel = card.getBasicChannel();
-            ResponseAPDU response = channel.transmit(getAts);
-
-            System.out.println(response.getSW1());
-            System.out.println(response.getSW2());
-
-            System.out.println(" LE=" + getAts.getNc() + " LE=" + getAts.getNe());
-        }
+//        if (terminal.waitForCardPresent(5000)) {
+//            Card card = terminal.connect("*");
+//            CommandAPDU getAts = new CommandAPDU(0x00, 0xa4, 0x04, 0x00, new byte[]{(byte) 0xa0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x08, 0x01}, 0x7f);
+//            CardChannel channel = card.getBasicChannel();
+//            ResponseAPDU response = channel.transmit(getAts);
+//
+//            System.out.println(response.getSW1());
+//            System.out.println(response.getSW2());
+//
+//            System.out.println(" LE=" + getAts.getNc() + " LE=" + getAts.getNe());
+//        }
     }
-    
+
     //pruebas de fecha-hora
     private static void fechaHora(int segundos) throws KeyStoreException, Exception {
         tiempo(segundos);//espera en segundos
