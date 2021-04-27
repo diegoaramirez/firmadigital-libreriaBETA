@@ -15,24 +15,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.rubrica.sign.pdf.tsa;
+package io.rubrica.keystore;
 
-import com.lowagie.text.pdf.TSAClient;
+import java.io.File;
 
 /**
- * Implementacion de cliente TSA para utilizar el servidor de Time Stamping del
- * Banco Central del Ecuador.
+ * KeyStoreProvider para tokens de Bit4id.
  *
- * @author Ricardo Arguello <ricardo.arguello@soportelibre.com>
- * @deprecated
+ * @author mfernandez
  */
-public class TSAClientBancoCentral extends TSAClientBouncyCastleWithOid implements TSAClient {
+public class UKCAppleKeyStoreProvider extends PKCS11KeyStoreProvider {
 
-    // OID del Banco Central
-    private static final String OID = "1.3.6.1.4.1.37947.4.10";
+    private static final String CONFIG;
+    private static final String DRIVER_FILE = "/Applications/UKC/UKC.app/Contents/Resources/pkcs11/libbit4p11.so";
 
-    public TSAClientBancoCentral(String url) {
-        // super(url, OID);
-        super(url);
+    static {
+        StringBuilder config = new StringBuilder();
+        config.append("name=UKC\n");
+        config.append("library=" + DRIVER_FILE);
+        CONFIG = config.toString();
+    }
+
+    @Override
+    public String getConfig() {
+        return CONFIG;
+    }
+
+    @Override
+    public boolean existeDriver() {
+        File driver = new File(DRIVER_FILE);
+        return driver.exists();
     }
 }

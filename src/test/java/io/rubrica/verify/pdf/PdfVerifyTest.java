@@ -53,7 +53,7 @@ public class PdfVerifyTest {
     private static final String FILE22 = "/home/mfernandez/Test/Verify/22.pdf";
     private static final String FILE23 = "/home/mfernandez/Test/Verify/23.pdf";
 
-    @Test
+//    @Test
     public void verifyPdf() throws Exception {
         testVerifyPdf01();
         testVerifyPdf02();
@@ -64,7 +64,7 @@ public class PdfVerifyTest {
         testVerifyPdf07();
         testVerifyPdf08();
         testVerifyPdf09();
-        testVerifyPdf10();//50 firmas
+//        testVerifyPdf10();//50 firmas
         testVerifyPdf11();
         testVerifyPdf12();
         testVerifyPdf13();

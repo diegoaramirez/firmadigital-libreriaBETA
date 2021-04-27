@@ -47,6 +47,7 @@ public class KeyStoreProviderFactory {
 
     static {
         List<KeyStoreProvider> linux = new ArrayList<KeyStoreProvider>();
+        linux.add(new LinuxPcscKeyStoreProvider());
         linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
         linux.add(new SafenetLinuxKeyStoreProvider());
         linux.add(new Bit4idLinuxKeyStoreProvider());
@@ -63,6 +64,7 @@ public class KeyStoreProviderFactory {
         macOS.add(new EPass3003AppleKeyStoreProvider());
         macOS.add(new Bit4IdAppleKeyStoreProvider());
         macOS.add(new Bit4IdGenericAppleKeyStoreProvider());
+        macOS.add(new UKCAppleKeyStoreProvider());
         macOS.add(new UKCGenericAppleKeyStoreProvider());
         lista.put(MACOS, macOS);
     }

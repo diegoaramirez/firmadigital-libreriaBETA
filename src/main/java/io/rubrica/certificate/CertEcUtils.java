@@ -44,6 +44,9 @@ import io.rubrica.certificate.ec.cj.CertificadoPersonaJuridicaPrivadaConsejoJudi
 import io.rubrica.certificate.ec.cj.CertificadoPersonaJuridicaPublicaConsejoJudicatura;
 import io.rubrica.certificate.ec.cj.CertificadoPersonaNaturalConsejoJudicatura;
 import io.rubrica.certificate.ec.cj.ConsejoJudicaturaSubCaCert;
+import io.rubrica.certificate.ec.digercic.CertificadoDigercic;
+import io.rubrica.certificate.ec.digercic.CertificadoDigercicFactory;
+import io.rubrica.certificate.ec.digercic.DigercicSubCaCert20212031;
 import io.rubrica.certificate.ec.securitydata.CertificadoSecurityData;
 import io.rubrica.certificate.ec.securitydata.CertificadoSecurityDataFactory;
 import io.rubrica.certificate.ec.securitydata.SecurityDataSubCaCert20112026;
@@ -58,6 +61,7 @@ import io.rubrica.certificate.ec.uanataca.CertificadoUanatacaDataFactory;
 import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert02;
 import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.exceptions.EntidadCertificadoraNoValidaException;
+import io.rubrica.utils.Utils;
 
 /**
  * Validar diferentes certificados digitales acreditados por ARCOTEL
@@ -122,6 +126,9 @@ public class CertEcUtils {
                 } catch (java.security.InvalidKeyException ex) {
                     //TODO
                 }
+            case "Dirección General de Registro Civil, Identificación y Cedulación": {
+                return new DigercicSubCaCert20212031();
+            }
             case UANATACA_NAME:
             	return new UanatacaSubCaCert02();
             default:
@@ -142,6 +149,9 @@ public class CertEcUtils {
         }
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains("ANF")) {
             return "Anf AC";
+        }
+        if (certificado.getIssuerX500Principal().getName().toUpperCase().contains("DIRECCIÓN GENERAL DE REGISTRO CIVIL")) {
+            return "Dirección General de Registro Civil, Identificación y Cedulación";
         }
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(UANATACA_NAME)) {
             return UANATACA_NAME;
@@ -388,7 +398,20 @@ public class CertEcUtils {
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }
-        
+        if (CertificadoDigercicFactory.esCertificadoDigercic(certificado)) {
+            CertificadoDigercic certificadoDigercic = CertificadoDigercicFactory.construir(certificado);
+            if (certificadoDigercic instanceof CertificadoPersonaNatural) {
+                CertificadoPersonaNatural certificadoPersonaNatural = (CertificadoPersonaNatural) certificadoDigercic;
+
+                datosUsuario.setCedula(certificadoPersonaNatural.getCedulaPasaporte());
+                datosUsuario.setNombre(Utils.getCN(certificado));
+                datosUsuario.setApellido("");
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            datosUsuario.setEntidadCertificadora("DIGERCIC");
+            datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
+        }
         if (CertificadoUanatacaDataFactory.esCertificadoUanataca(certificado)) {
             CertificadoUanataca certificadoUanataca = CertificadoUanatacaDataFactory.construir(certificado);
             if (certificadoUanataca instanceof CertificadoMiembroEmpresaUanataca) {
