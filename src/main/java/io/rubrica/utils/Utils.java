@@ -429,7 +429,7 @@ public class Utils {
                             //
                             // </editor-fold>
                             // Retorma la firma en formato PKCS7
-                            PdfPKCS7 pdfPKCS7 = signatureUtil.readSignatureData(signatureName);
+                            PdfPKCS7 pdfPKCS7 = signatureUtil.verifySignature(signatureName);
                             // Validacion Sellado de Tiempo
                             TimeStampToken tsToken = pdfPKCS7.getTimeStampToken();
                             if (tsToken != null) { // Timestamping Change Openpdf to itext

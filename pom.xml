@@ -104,6 +104,7 @@
             <version>7.1.14</version>
             <type>pom</type>
         </dependency>
+        <!-- add all iText 7 modules -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15to18</artifactId>
