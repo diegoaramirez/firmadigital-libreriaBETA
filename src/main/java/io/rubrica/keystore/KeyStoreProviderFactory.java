@@ -41,6 +41,7 @@ public class KeyStoreProviderFactory {
     static {
         List<KeyStoreProvider> windows = new ArrayList<KeyStoreProvider>();
         windows.add(new WindowsKeyStoreProvider());
+        windows.add(new UKCGenericWindowsDllKeyStoreProvider());
         lista.put(WINDOWS, windows);
     }
 
@@ -50,6 +51,7 @@ public class KeyStoreProviderFactory {
         linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
         linux.add(new SafenetLinuxKeyStoreProvider());
         linux.add(new Bit4idLinuxKeyStoreProvider());
+        linux.add(new Bit4idGenericLinuxKeyStoreProvider());
         linux.add(new EPass2003LinuxKeyStoreProvider());
         linux.add(new EPass3003LinuxKeyStoreProvider());
         lista.put(LINUX, linux);
@@ -61,7 +63,9 @@ public class KeyStoreProviderFactory {
         macOS.add(new EPass2003AppleKeyStoreProvider());
         macOS.add(new EPass3003AppleKeyStoreProvider());
         macOS.add(new Bit4IdAppleKeyStoreProvider());
-//        macOS.add(new UKCAppleKeyStoreProvider());
+        macOS.add(new Bit4IdGenericAppleKeyStoreProvider());
+        macOS.add(new UKCAppleKeyStoreProvider());
+        macOS.add(new UKCGenericAppleKeyStoreProvider());
         lista.put(MACOS, macOS);
     }
 
