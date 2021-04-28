@@ -118,10 +118,8 @@ public class PDFSignerItext implements Signer {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            File fileTmp = new File(rutaDocumentoTemporal);
-            File fileSign = new File(rutaDocumentoFirmado);
-            fileTmp.delete();
-            fileSign.delete();
+            new File(rutaDocumentoTemporal).delete();
+            new File(rutaDocumentoFirmado).delete();
             //eliminar temporales
             FileUtils.eliminarPorConstante(System.getProperty("java.io.tmpdir"), "firmaec.rubrica.firmadigital.temp");
         }
@@ -382,7 +380,8 @@ public class PDFSignerItext implements Signer {
             PdfSigner signer = new PdfSigner(reader, os, new StampingProperties());
             IExternalSignatureContainer external = new PDFSignerItext.MyExternalSignatureContainer(pk, chain, algorithm);
             // Signs a PDF where space was already reserved. The field must cover the whole document.
-                signer.signDeferred(signer.getDocument(), fieldName, os, external);
+            signer.signDeferred(signer.getDocument(), fieldName, os, external);
+            reader.close();
             return FileUtils.fileConvertToByteArray(new File(dest));
         }
     }

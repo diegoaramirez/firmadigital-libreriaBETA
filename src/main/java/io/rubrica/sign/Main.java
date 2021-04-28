@@ -65,9 +65,7 @@ public class Main {
 
     // ARCHIVO
     private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
-    private static final String PASSWORD = "123456";
-//    private static final String ARCHIVO = "/home/mfernandez/Firmas/Digercic/DIGERCIC_abril_9_2021/usuario_dos_OK.pfx";
-//    private static final String PASSWORD = "12121212Qw.";
+    private static final String PASSWORD = "";
 //    private static final String FILE = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A.xml";
 //    private static final String FILE_XML = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A-signed.txt.xml";
 //    private static final String FILE_XML = "/home/mfernandez/Test/facturaMovistar.xml";
@@ -85,10 +83,10 @@ public class Main {
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
-        firmarDocumento(FILE);
+//        firmarDocumento(FILE);
 //        validarCertificado();
 //        verificarDocumento(FILE);
-//        leerNFC();
+        leerNFC();
     }
 
     private static Properties parametros() throws IOException {

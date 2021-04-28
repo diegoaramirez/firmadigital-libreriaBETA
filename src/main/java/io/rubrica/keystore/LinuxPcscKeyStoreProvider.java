@@ -27,9 +27,10 @@ import java.io.File;
 public class LinuxPcscKeyStoreProvider extends PKCS11KeyStoreProvider {
 
     private static final String CONFIG;
+//    private static final String DRIVER_FILE_32_BITS = "/home/mfernandez/libcvP11.so";
+//    private static final String DRIVER_FILE_64_BITS = "/home/mfernandez/libcvP11.so";
     private static final String DRIVER_FILE_32_BITS = "/usr/lib/libpcsclite.so";
     private static final String DRIVER_FILE_64_BITS = "/usr/lib64/libpcsclite.so";
-
     static {
         StringBuilder config = new StringBuilder();
         config.append("name=Pcsc\n");

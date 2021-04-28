@@ -25,7 +25,7 @@ import io.rubrica.certificate.base.RubricaCertificate;
  *
  * @author Edison Lomas Almeida <elomas@appshandler.com>
  */
-public class UanatacaSubCaCert01 extends RubricaCertificate {
+public class UanatacaSubCaCert0220162029 extends RubricaCertificate {
 
     private static final StringBuilder stringBuilder;
 
@@ -80,7 +80,7 @@ public class UanatacaSubCaCert01 extends RubricaCertificate {
         stringBuilder.append("-----END CERTIFICATE-----\n");
     }
 
-    public UanatacaSubCaCert01() {
+    public UanatacaSubCaCert0220162029() {
         super(stringBuilder);
     }
 

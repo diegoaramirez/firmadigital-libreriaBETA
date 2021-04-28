@@ -58,7 +58,8 @@ import io.rubrica.certificate.ec.uanataca.CertificadoPersonaNaturalUanataca;
 import io.rubrica.certificate.ec.uanataca.CertificadoRepresentanteLegalUanataca;
 import io.rubrica.certificate.ec.uanataca.CertificadoUanataca;
 import io.rubrica.certificate.ec.uanataca.CertificadoUanatacaDataFactory;
-import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert02;
+import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert0220162029;
+import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert0120162029;
 import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.exceptions.EntidadCertificadoraNoValidaException;
 import io.rubrica.utils.Utils;
@@ -130,7 +131,19 @@ public class CertEcUtils {
                 return new DigercicSubCaCert20212031();
             }
             case UANATACA_NAME:
-            	return new UanatacaSubCaCert02();
+                try{
+                    if (io.rubrica.utils.Utils.verifySignature(certificado, new UanatacaSubCaCert0120162029())) {
+                        System.out.println("Uanataca 2016-2029");
+                        return new UanatacaSubCaCert0120162029();
+                    }
+                    if (io.rubrica.utils.Utils.verifySignature(certificado, new UanatacaSubCaCert0220162029())) {
+                        System.out.println("Uanataca 2016-2029");
+                        return new UanatacaSubCaCert0220162029();
+                    }
+                    return null;
+                } catch (java.security.InvalidKeyException ex) {
+                    //TODO
+                }
             default:
                 throw new EntidadCertificadoraNoValidaException("Entidad Certificadora no reconocida");
         }

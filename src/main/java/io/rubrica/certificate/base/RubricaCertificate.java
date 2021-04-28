@@ -38,162 +38,163 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * Clase base para un certificado manejado por Rubrica <code>X509Certificate</code>.
+ * Clase base para un certificado manejado por Rubrica
+ * <code>X509Certificate</code>.
  *
  * @author Edison Lomas Almeida <elomas@appshandler.com>
  */
 public abstract class RubricaCertificate extends X509Certificate {
 
-	private X509Certificate x509Certificate;
+    private X509Certificate x509Certificate;
 
-	public RubricaCertificate(InputStream inputStream) {
-		super();
-		try {
-			CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-			this.x509Certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
-		} catch (GeneralSecurityException e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
+    public RubricaCertificate(InputStream inputStream) {
+        super();
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            this.x509Certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+        } catch (GeneralSecurityException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-	public RubricaCertificate(StringBuilder stringBuilder) {
-		super();
-		try {
-			InputStream is = new ByteArrayInputStream(stringBuilder.toString().getBytes("UTF-8"));
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			this.x509Certificate = (X509Certificate) cf.generateCertificate(is);
-		} catch (UnsupportedEncodingException | GeneralSecurityException e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
+    public RubricaCertificate(StringBuilder stringBuilder) {
+        super();
+        try {
+            InputStream is = new ByteArrayInputStream(stringBuilder.toString().getBytes("UTF-8"));
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            this.x509Certificate = (X509Certificate) cf.generateCertificate(is);
+        } catch (UnsupportedEncodingException | GeneralSecurityException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-	@Override
-	public boolean hasUnsupportedCriticalExtension() {
-		return x509Certificate.hasUnsupportedCriticalExtension();
-	}
+    @Override
+    public boolean hasUnsupportedCriticalExtension() {
+        return x509Certificate.hasUnsupportedCriticalExtension();
+    }
 
-	@Override
-	public Set<String> getCriticalExtensionOIDs() {
-		return x509Certificate.getCriticalExtensionOIDs();
-	}
+    @Override
+    public Set<String> getCriticalExtensionOIDs() {
+        return x509Certificate.getCriticalExtensionOIDs();
+    }
 
-	@Override
-	public Set<String> getNonCriticalExtensionOIDs() {
-		return x509Certificate.getNonCriticalExtensionOIDs();
-	}
+    @Override
+    public Set<String> getNonCriticalExtensionOIDs() {
+        return x509Certificate.getNonCriticalExtensionOIDs();
+    }
 
-	@Override
-	public byte[] getExtensionValue(String oid) {
-		return x509Certificate.getExtensionValue(oid);
-	}
+    @Override
+    public byte[] getExtensionValue(String oid) {
+        return x509Certificate.getExtensionValue(oid);
+    }
 
-	@Override
-	public void checkValidity() throws CertificateExpiredException, CertificateNotYetValidException {
-		x509Certificate.checkValidity();
-	}
+    @Override
+    public void checkValidity() throws CertificateExpiredException, CertificateNotYetValidException {
+        x509Certificate.checkValidity();
+    }
 
-	@Override
-	public void checkValidity(Date date) throws CertificateExpiredException, CertificateNotYetValidException {
-		x509Certificate.checkValidity(date);
-	}
+    @Override
+    public void checkValidity(Date date) throws CertificateExpiredException, CertificateNotYetValidException {
+        x509Certificate.checkValidity(date);
+    }
 
-	@Override
-	public int getVersion() {
-		return x509Certificate.getVersion();
-	}
+    @Override
+    public int getVersion() {
+        return x509Certificate.getVersion();
+    }
 
-	@Override
-	public BigInteger getSerialNumber() {
-		return x509Certificate.getSerialNumber();
-	}
+    @Override
+    public BigInteger getSerialNumber() {
+        return x509Certificate.getSerialNumber();
+    }
 
-	@Override
-	public Principal getIssuerDN() {
-		return x509Certificate.getIssuerDN();
-	}
+    @Override
+    public Principal getIssuerDN() {
+        return x509Certificate.getIssuerDN();
+    }
 
-	@Override
-	public Principal getSubjectDN() {
-		return x509Certificate.getSubjectDN();
-	}
+    @Override
+    public Principal getSubjectDN() {
+        return x509Certificate.getSubjectDN();
+    }
 
-	@Override
-	public Date getNotBefore() {
-		return x509Certificate.getNotBefore();
-	}
+    @Override
+    public Date getNotBefore() {
+        return x509Certificate.getNotBefore();
+    }
 
-	@Override
-	public Date getNotAfter() {
-		return x509Certificate.getNotAfter();
-	}
+    @Override
+    public Date getNotAfter() {
+        return x509Certificate.getNotAfter();
+    }
 
-	@Override
-	public byte[] getTBSCertificate() throws CertificateEncodingException {
-		return x509Certificate.getTBSCertificate();
-	}
+    @Override
+    public byte[] getTBSCertificate() throws CertificateEncodingException {
+        return x509Certificate.getTBSCertificate();
+    }
 
-	@Override
-	public byte[] getSignature() {
-		return x509Certificate.getSignature();
-	}
+    @Override
+    public byte[] getSignature() {
+        return x509Certificate.getSignature();
+    }
 
-	@Override
-	public String getSigAlgName() {
-		return x509Certificate.getSigAlgName();
-	}
+    @Override
+    public String getSigAlgName() {
+        return x509Certificate.getSigAlgName();
+    }
 
-	@Override
-	public String getSigAlgOID() {
-		return x509Certificate.getSigAlgOID();
-	}
+    @Override
+    public String getSigAlgOID() {
+        return x509Certificate.getSigAlgOID();
+    }
 
-	@Override
-	public byte[] getSigAlgParams() {
-		return x509Certificate.getSigAlgParams();
-	}
+    @Override
+    public byte[] getSigAlgParams() {
+        return x509Certificate.getSigAlgParams();
+    }
 
-	@Override
-	public boolean[] getIssuerUniqueID() {
-		return x509Certificate.getIssuerUniqueID();
-	}
+    @Override
+    public boolean[] getIssuerUniqueID() {
+        return x509Certificate.getIssuerUniqueID();
+    }
 
-	@Override
-	public boolean[] getSubjectUniqueID() {
-		return x509Certificate.getSubjectUniqueID();
-	}
+    @Override
+    public boolean[] getSubjectUniqueID() {
+        return x509Certificate.getSubjectUniqueID();
+    }
 
-	@Override
-	public boolean[] getKeyUsage() {
-		return getKeyUsage();
-	}
+    @Override
+    public boolean[] getKeyUsage() {
+        return getKeyUsage();
+    }
 
-	@Override
-	public int getBasicConstraints() {
-		return x509Certificate.getBasicConstraints();
-	}
+    @Override
+    public int getBasicConstraints() {
+        return x509Certificate.getBasicConstraints();
+    }
 
-	@Override
-	public byte[] getEncoded() throws CertificateEncodingException {
-		return x509Certificate.getEncoded();
-	}
+    @Override
+    public byte[] getEncoded() throws CertificateEncodingException {
+        return x509Certificate.getEncoded();
+    }
 
-	@Override
-	public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
-		x509Certificate.verify(key);
-	}
+    @Override
+    public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+        x509Certificate.verify(key);
+    }
 
-	@Override
-	public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
-		x509Certificate.verify(key, sigProvider);
-	}
+    @Override
+    public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+        x509Certificate.verify(key, sigProvider);
+    }
 
-	@Override
-	public String toString() {
-		return x509Certificate.toString();
-	}
+    @Override
+    public String toString() {
+        return x509Certificate.toString();
+    }
 
-	@Override
-	public PublicKey getPublicKey() {
-		return x509Certificate.getPublicKey();
-	}
+    @Override
+    public PublicKey getPublicKey() {
+        return x509Certificate.getPublicKey();
+    }
 }
