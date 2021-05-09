@@ -383,6 +383,27 @@ public class Utils {
         return tempCertificados;
     }
 
+    private static boolean verifySignValidate(List<Certificado> certificados) {
+        boolean signValidate = true;
+        for (Certificado certificado : certificados) {
+            if (!certificado.getDatosUsuario().getSelladoTiempo()) {//certificados digitales
+                //certificado digital sin ser revocado, integridad de la firma, dentro de fecha de figencia, válido por CA
+                boolean revocado = validarFirma(certificado.getValidFrom(), certificado.getValidTo(), certificado.getGenerated(), certificado.getRevocated());
+                if (!revocado || !certificado.getSignVerify() || !certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
+                    signValidate = false;
+                    break;
+                }
+            } else {// sellos de tiempo
+                //dentro de fecha de figencia, válido por CA
+                if (!certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
+                    signValidate = false;
+                    break;
+                }
+            }
+        }
+        return signValidate;
+    }
+
     public static Documento pdfToDocumento(File pdf) throws IOException, SignatureVerificationException, Exception {
         PdfReader pdfReader = new PdfReader(pdf);
         Documento documento;
@@ -479,22 +500,7 @@ public class Utils {
                 }
 
                 if (certificados != null || !certificados.isEmpty()) {
-                    for (Certificado certificado : certificados) {
-                        if (!certificado.getDatosUsuario().getSelladoTiempo()) {//certificados digitales
-                            //certificado digital sin ser revocado, integridad de la firma, dentro de fecha de figencia, válido por CA
-                            boolean revocado = validarFirma(certificado.getValidFrom(), certificado.getValidTo(), certificado.getGenerated(), certificado.getRevocated());
-                            if (!revocado || !certificado.getSignVerify() || !certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
-                                documento.setSignValidate(false);
-                                break;
-                            }
-                        } else {// sellos de tiempo
-                            //dentro de fecha de figencia, válido por CA
-                            if (!certificado.getValidated() || !certificado.getDatosUsuario().isCertificadoDigitalValido()) {
-                                documento.setSignValidate(false);
-                                break;
-                            }
-                        }
-                    }
+                    documento.setSignValidate(verifySignValidate(certificados));
                 }
                 documento.setCertificados(certificados);
             }
@@ -690,12 +696,18 @@ public class Utils {
 
         String extDocumento = FileUtils.getExtension(docByteArray);
         if (extDocumento.toLowerCase().contains(".p7s")) {
+            documento = new Documento();
             VerificadorCMS verificador = new VerificadorCMS();
             byte[] archivoOriginal = verificador.verify(docByteArray);
             String nombreArchivo = FileUtils.crearNombreVerificado(file, FileUtils.getExtension(archivoOriginal));
             FileUtils.saveByteArrayToDisc(archivoOriginal, nombreArchivo);
             FileUtils.abrirDocumento(nombreArchivo);
-            documento.setCertificados(Utils.datosP7mToCertificado(verificador.certificados, verificador.fechasFirmados));
+            documento.setCertificados(datosP7mToCertificado(verificador.certificados, verificador.fechasFirmados));
+            for (Certificado certificado : documento.getCertificados()) {
+                certificado.setSignVerify(true);
+            }
+            documento.setDocValidate(true);
+            documento.setSignValidate(verifySignValidate(documento.getCertificados()));
             return documento;
         } else {
             if (extDocumento.toLowerCase().equals(".pdf")) {

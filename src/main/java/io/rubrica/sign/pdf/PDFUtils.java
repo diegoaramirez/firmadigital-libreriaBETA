@@ -17,7 +17,6 @@
  */
 package io.rubrica.sign.pdf;
 
-import com.itextpdf.kernel.pdf.PdfReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

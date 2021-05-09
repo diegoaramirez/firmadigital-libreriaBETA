@@ -85,8 +85,8 @@ public class Main {
 //        fechaHora(240);//espera en segundos
 //        firmarDocumento(FILE);
 //        validarCertificado();
-//        verificarDocumento(FILE);
-        leerNFC();
+        verificarDocumento(FILE);
+//        leerNFC();
     }
 
     private static Properties parametros() throws IOException {
@@ -155,7 +155,6 @@ public class Main {
 //        KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         byte[] signed = null;
-        Signer signer = Utils.documentSigner(new File(file));
         String alias = seleccionarAlias(keyStore);
         PrivateKey key = (PrivateKey) keyStore.getKey(alias, PASSWORD.toCharArray());
 
@@ -165,7 +164,7 @@ public class Main {
             Properties properties = parametros();
             properties.setProperty(PDFSignerItext.PATH, file);
             PDFSignerItext pDFSignerItext = new PDFSignerItext();
-            signed = pDFSignerItext.sign(docByteArry, "SHA256", key, certChain, properties);
+            signed = pDFSignerItext.sign(docByteArry, "SHA-512", key, certChain, properties);
             System.out.println("final firma\n-------");
             ////// Permite guardar el archivo en el equipo y luego lo abre
             String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
