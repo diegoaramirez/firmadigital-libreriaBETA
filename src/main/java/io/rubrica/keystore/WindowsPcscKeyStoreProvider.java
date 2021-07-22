@@ -28,7 +28,7 @@ public class WindowsPcscKeyStoreProvider extends PKCS11KeyStoreProvider {
 
     private static final String CONFIG;
     private static final String DRIVER_FILE_32_BITS = "C:\\Windows\\System32\\sgdatap11.dll";
-    private static final String DRIVER_FILE_64_BITS = "C:\\Windows\\System32\\sgdatap11.dlll";
+    private static final String DRIVER_FILE_64_BITS = "C:\\Windows\\System32\\sgdatap11.dll";
 
     static {
         StringBuilder config = new StringBuilder();

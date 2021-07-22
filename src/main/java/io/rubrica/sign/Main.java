@@ -17,6 +17,7 @@
  */
 package io.rubrica.sign;
 
+import com.itextpdf.signatures.DigestAlgorithms;
 import io.rubrica.certificate.CertEcUtils;
 import static io.rubrica.certificate.CertUtils.seleccionarAlias;
 import io.rubrica.certificate.to.Certificado;
@@ -156,7 +157,7 @@ public class Main {
             Properties properties = parametros();
             properties.setProperty(PDFSignerItext.PATH, file);
             PDFSignerItext pDFSignerItext = new PDFSignerItext();
-            signed = pDFSignerItext.sign(docByteArry, "SHA256", key, certChain, properties);
+            signed = pDFSignerItext.sign(docByteArry, DigestAlgorithms.SHA512, key, certChain, properties);
             System.out.println("final firma\n-------");
             ////// Permite guardar el archivo en el equipo y luego lo abre
             String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
