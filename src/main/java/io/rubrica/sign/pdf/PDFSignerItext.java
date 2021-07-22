@@ -39,6 +39,8 @@ import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.signatures.BouncyCastleDigest;
 import com.itextpdf.signatures.DigestAlgorithms;
 import com.itextpdf.signatures.ExternalBlankSignatureContainer;
+import com.itextpdf.signatures.IExternalDigest;
+import com.itextpdf.signatures.IExternalSignature;
 import com.itextpdf.signatures.IExternalSignatureContainer;
 import com.itextpdf.signatures.PdfPKCS7;
 import com.itextpdf.signatures.PdfSignatureAppearance;
@@ -102,7 +104,7 @@ public class PDFSignerItext implements Signer {
      * @throws java.io.IOException
      * @throws io.rubrica.exceptions.RubricaException
      */
-//    BadPasswordException,
+
     @Override
     public byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties xParams) throws IOException, RubricaException {
         byte[] documentoFirmado = null;
@@ -191,7 +193,9 @@ public class PDFSignerItext implements Signer {
 //            throw new RubricaException("Documento encriptado");
 //        }
         Rectangle signaturePositionOnPage = getSignaturePositionOnPage(extraParams);
-        PdfSigner pdfSigner = new PdfSigner(pdfReader, new FileOutputStream(dest), new StampingProperties());
+        StampingProperties properties = new StampingProperties();
+        properties.useAppendMode();
+        PdfSigner pdfSigner = new PdfSigner(pdfReader, new FileOutputStream(dest), properties);
         if (page == 0 || page < 0 || page > pdfSigner.getDocument().getNumberOfPages()) {
             page = pdfSigner.getDocument().getNumberOfPages();
         }

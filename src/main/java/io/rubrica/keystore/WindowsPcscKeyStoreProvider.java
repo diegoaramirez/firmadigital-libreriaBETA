@@ -27,19 +27,13 @@ import java.io.File;
 public class WindowsPcscKeyStoreProvider extends PKCS11KeyStoreProvider {
 
     private static final String CONFIG;
-    private static final String DRIVER_FILE_32_BITS = "c:\\windows\\system32\\cvp11.dll";
-    private static final String DRIVER_FILE_64_BITS = "C:\\Windows\\SysWOW64\\cvP11.dll";
+    private static final String DRIVER_FILE_32_BITS = "C:\\Windows\\System32\\sgdatap11.dll";
+    private static final String DRIVER_FILE_64_BITS = "C:\\Windows\\System32\\sgdatap11.dlll";
 
     static {
         StringBuilder config = new StringBuilder();
-//        config.append("name=Pcsc\n");
-//        config.append("library=").append(is64bit() ? DRIVER_FILE_64_BITS : DRIVER_FILE_32_BITS);
-//        String ext = "attributes(*,*,*)=\n{\nCKA_TOKEN=true\nCKA_LOCAL=true\n}";
         config.append("name=Pcsc\n");
         config.append("library=").append(is64bit() ? DRIVER_FILE_64_BITS : DRIVER_FILE_32_BITS);
-//        config.append("\nslot=" + 0);
-//        config.append("\nslot=" + 0 + "\n");
-//        config.append("attributes=compatibility \n" + ext);
         CONFIG = config.toString();
     }
 

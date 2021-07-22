@@ -64,28 +64,20 @@ import javax.smartcardio.TerminalFactory;
 public class Main {
 
     // ARCHIVO
-    private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
-    private static final String PASSWORD = "";
-//    private static final String FILE = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A.xml";
-//    private static final String FILE_XML = "/home/mfernandez/Descargas/1111201901099252674200120430030017228925486271312_A-signed.txt.xml";
-//    private static final String FILE_XML = "/home/mfernandez/Test/facturaMovistar.xml";
-//    private static final String FILE = "/home/mfernandez/Test/hello_encrypted2.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/Caballero.pdf";
-//    private static final String FILE = "/home/mfernandez/CompartidoWindows/Aplicaciones Windows/caso firma/1.7_Porcentaje_Cero_Papeles_Quipux_Agosto_2020_editado_3.pdf";
-//    private static final String FILE = "/home/mfernandez/CompartidoWindows/Aplicaciones Windows/caso firma/1.7_Porcentaje_Cero_Papeles_Quipux_Agosto_2020_ok.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/Editados/Paz y salvo - rige el 2020 Diego Saud DF-signed-signed.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/CasosDePrueba/Caso 09 - PDF Firmado - Tres firmas - CJ - CJ - CJ.pdf";
-    private static final String FILE = "/home/mfernandez/documento_blanco.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/1.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/firmadoEditado.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/quipux_xls.p7m";
+    //    private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
+//    private static final String PASSWORD = "11111111";
+    private static final String ARCHIVO = "C:\\Users\\desarrollo\\Downloads\\prueba.p12";
+    private static final String PASSWORD = "123456";
+//    private static final String ARCHIVO = "C:\\Users\\desarrollo\\Documents\\Digercic\\Edgar_Columba.pfx";
+//    private static final String PASSWORD = "T35t_3cu4d0r.2021";
+    private static final String FILE = "C:\\Users\\desarrollo\\Downloads\\documento_blanco-signed.pdf";
+//    private static final String FILE = "/home/mfernandez/documento_blanco-signed-signed.pdf";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
-//        firmarDocumento(FILE);
+        firmarDocumento(FILE);
 //        validarCertificado();
-        verificarDocumento(FILE);
+//        verificarDocumento(FILE);
 //        leerNFC();
     }
 
@@ -164,7 +156,7 @@ public class Main {
             Properties properties = parametros();
             properties.setProperty(PDFSignerItext.PATH, file);
             PDFSignerItext pDFSignerItext = new PDFSignerItext();
-            signed = pDFSignerItext.sign(docByteArry, "SHA-512", key, certChain, properties);
+            signed = pDFSignerItext.sign(docByteArry, "SHA256", key, certChain, properties);
             System.out.println("final firma\n-------");
             ////// Permite guardar el archivo en el equipo y luego lo abre
             String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
