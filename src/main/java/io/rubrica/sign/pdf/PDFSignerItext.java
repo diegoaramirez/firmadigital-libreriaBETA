@@ -39,8 +39,6 @@ import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.signatures.BouncyCastleDigest;
 import com.itextpdf.signatures.DigestAlgorithms;
 import com.itextpdf.signatures.ExternalBlankSignatureContainer;
-import com.itextpdf.signatures.IExternalDigest;
-import com.itextpdf.signatures.IExternalSignature;
 import com.itextpdf.signatures.IExternalSignatureContainer;
 import com.itextpdf.signatures.PdfPKCS7;
 import com.itextpdf.signatures.PdfSignatureAppearance;
@@ -71,6 +69,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,10 +86,15 @@ public class PDFSignerItext implements Signer {
     public static final String TYPE_SIG = "typeSignature";
     public static final String INFO_QR = "infoQR";
     public static final String PATH = "path";
-
+    private Provider provider;
+    
     static {
         BouncyCastleUtils.initializeBouncyCastle();
     }
+    
+    public void setProvider (Provider provider){
+        this.provider = provider;
+    }        
 
     // ETSI TS 102 778-1 V1.1.1 (2009-07)
     // PAdES Basic - Profile based on ISO 32000-1
@@ -476,7 +480,7 @@ public class PDFSignerItext implements Signer {
         @Override
         public byte[] sign(InputStream is) throws GeneralSecurityException {
             try {
-                PrivateKeySignature signature = new PrivateKeySignature(pk, algorithm, "BC");
+                PrivateKeySignature signature = new PrivateKeySignature(pk, algorithm, provider == null ? "BC" : provider.getName());
                 String hashAlgorithm = signature.getHashAlgorithm();
                 BouncyCastleDigest digest = new BouncyCastleDigest();
 

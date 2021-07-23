@@ -20,7 +20,7 @@ package io.rubrica.keystore;
 import java.io.File;
 
 /**
- * KeyStoreProvider para tokens ePass2003.
+ * KeyStoreProvider para tokens Pcsc.
  *
  * @author mfernandez
  */

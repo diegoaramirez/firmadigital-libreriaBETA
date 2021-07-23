@@ -68,16 +68,17 @@ public class Main {
     //    private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
 //    private static final String PASSWORD = "11111111";
     private static final String ARCHIVO = "C:\\Users\\desarrollo\\Downloads\\prueba.p12";
-    private static final String PASSWORD = "123456";
+//    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "12345678";
 //    private static final String ARCHIVO = "C:\\Users\\desarrollo\\Documents\\Digercic\\Edgar_Columba.pfx";
 //    private static final String PASSWORD = "T35t_3cu4d0r.2021";
-    private static final String FILE = "C:\\Users\\desarrollo\\Downloads\\documento_blanco-signed.pdf";
+    private static final String FILE = "C:\\Users\\desarrollo\\Downloads\\documento_blanco.pdf";
 //    private static final String FILE = "/home/mfernandez/documento_blanco-signed-signed.pdf";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
-        firmarDocumento(FILE);
-//        validarCertificado();
+//        firmarDocumento(FILE);
+        validarCertificado();
 //        verificarDocumento(FILE);
 //        leerNFC();
     }
@@ -157,6 +158,7 @@ public class Main {
             Properties properties = parametros();
             properties.setProperty(PDFSignerItext.PATH, file);
             PDFSignerItext pDFSignerItext = new PDFSignerItext();
+            pDFSignerItext.setProvider(keyStore.getProvider());//QA
             signed = pDFSignerItext.sign(docByteArry, DigestAlgorithms.SHA512, key, certChain, properties);
             System.out.println("final firma\n-------");
             ////// Permite guardar el archivo en el equipo y luego lo abre
@@ -187,10 +189,10 @@ public class Main {
 
     private static void validarCertificado() throws IOException, KeyStoreException, Exception {
         // ARCHIVO
-        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
-        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
+//        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
+//        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
         // TOKEN
-        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
+        KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         String alias = seleccionarAlias(keyStore);
         X509Certificate x509Certificate = (X509Certificate) keyStore.getCertificate(alias);
