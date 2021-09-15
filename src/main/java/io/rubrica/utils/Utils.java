@@ -592,7 +592,9 @@ public class Utils {
                 certificados.add(signInfoToCertificado(signInfo));
             }
         }
+        documento = new Documento(true, false, null, null);
         documento.setCertificados(certificados);
+        documento.setSignValidate(validarCertificados(documento.getCertificados(), false));
         return documento;
     }
 
@@ -729,7 +731,7 @@ public class Utils {
                     //SRI
                 } catch (NullPointerException | InvalidFormatException exception) {
                     List<Certificado> certificados = new ArrayList<>();
-                    return new Documento(false, false, certificados, "El archivo no es un PDF");
+                    return new Documento(false, false, certificados, "El archivo no es un XML");
                 }
                 return documento;
             }

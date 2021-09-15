@@ -53,6 +53,7 @@ public class PdfVerifyTest {
     private static final String FILE22 = "/home/mfernandez/Test/Verify/22.pdf";
     private static final String FILE23 = "/home/mfernandez/Test/Verify/23.pdf";
     private static final String FILE24 = "/home/mfernandez/Test/Verify/24.pdf.p7m";
+    private static final String FILE25 = "/home/mfernandez/Test/Verify/25.xml";
 
     @Test
     public void verifyPdf() throws Exception {
@@ -79,7 +80,8 @@ public class PdfVerifyTest {
         testVerifyPdf21();
         testVerifyPdf22();
         testVerifyPdf23();
-        testVerifyPdf24();
+        testVerifyP7m24();
+        testVerifyXml25();
     }
     
     /*¿Es archivo PDF?
@@ -989,10 +991,48 @@ public class PdfVerifyTest {
     SI
     Resultado DESEADO al final de la validación
     ACEPTADO*/
-    public void testVerifyPdf24() throws Exception {
+    public void testVerifyP7m24() throws Exception {
         try {
             System.out.println("P7M con una firma electrónica vigente de la entidad certificadora BCE");
             Documento documento = verificarDocumento(FILE24);
+            if (documento.getSignValidate()== true) {
+                System.out.println("Se obtuvo resultado esperado");
+            } else {
+                fail("Problema en la validación de la clase " + new Object() {}.getClass().getEnclosingMethod().getName());
+            }
+        System.out.println("*******************************************************************************************");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Problemas en el documento");
+        }
+    }
+    
+    /*¿Es archivo P7M?
+    SI
+    ¿Tiene firma electrónica?
+    SI
+    ¿Es de entidad autorizada?
+    SI
+    ¿Tiene sello de tiempo? (característi-ca opcional)
+    NO
+    ¿Es un certificado íntegro?
+    SI
+    ¿Es un certificado vigente?
+    NO
+    ¿Es la firma íntegra?
+    SI
+    ¿El uso está autorizado para firma electrónica?
+    SI
+    ¿Tiene firma vigente? (al momento de firmar el documento)
+    SI
+    ¿El documento es íntegro?
+    SI
+    Resultado DESEADO al final de la validación
+    ACEPTADO*/
+    public void testVerifyXml25() throws Exception {
+        try {
+            System.out.println("Xml con una firma electrónica vigente de la entidad certificadora ANF");
+            Documento documento = verificarDocumento(FILE25);
             if (documento.getSignValidate()== true) {
                 System.out.println("Se obtuvo resultado esperado");
             } else {
