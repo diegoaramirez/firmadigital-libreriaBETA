@@ -32,14 +32,14 @@ import java.util.Map;
  */
 public class KeyStoreProviderFactory {
 
-    public static final String WINDOWS = "WINDOWS";
-    public static final String LINUX = "LINUX";
-    public static final String MACOS = "MACOS";
+    private static final String WINDOWS = "WINDOWS";
+    private static final String LINUX = "LINUX";
+    private static final String MACOS = "MACOS";
     private static String tipoKeyStoreProvider;
 
     private static final Map<String, List<KeyStoreProvider>> lista = new HashMap<String, List<KeyStoreProvider>>();
 
-    static {
+    private static void listaWindows() {
         List<KeyStoreProvider> windows = new ArrayList<KeyStoreProvider>();
         if (tipoKeyStoreProvider.equals("TOKEN")) {
             windows.add(new WindowsKeyStoreProvider());
@@ -51,7 +51,7 @@ public class KeyStoreProviderFactory {
         lista.put(WINDOWS, windows);
     }
 
-    static {
+    private static void listaLinux() {
         List<KeyStoreProvider> linux = new ArrayList<KeyStoreProvider>();
         if (tipoKeyStoreProvider.equals("TOKEN")) {
             linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
@@ -68,7 +68,7 @@ public class KeyStoreProviderFactory {
         lista.put(LINUX, linux);
     }
 
-    static {
+    private static void listaMac() {
         List<KeyStoreProvider> macOS = new ArrayList<KeyStoreProvider>();
         if (tipoKeyStoreProvider.equals("TOKEN")) {
             macOS.add(new SafenetAppleKeyStoreProvider());
@@ -90,6 +90,9 @@ public class KeyStoreProviderFactory {
     }
 
     public static List<KeyStoreProvider> getKeyStoreProviderList() {
+        listaWindows();
+        listaLinux();
+        listaMac();
         if (isWindows()) {
             return lista.get(WINDOWS);
         } else if (isLinux()) {
