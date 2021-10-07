@@ -57,8 +57,7 @@ import java.util.Date;
 public class Main {
 
     // ARCHIVO
-    // ARCHIVO
-    //    private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
+//    private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
 //    private static final String PASSWORD = "11111111";
     private static final String ARCHIVO = "/home/mfernandez/prueba.p12";
 //    private static final String ARCHIVO = "C:\\Users\\desarrollo\\Downloads\\prueba.p12";

@@ -57,31 +57,31 @@ public class PdfVerifyTest {
 
     @Test
     public void verifyPdf() throws Exception {
-        testVerifyPdf01();
-        testVerifyPdf02();
-        testVerifyPdf03();
-        testVerifyPdf04();
-        testVerifyPdf05();
-        testVerifyPdf06();
-        testVerifyPdf07();
-        testVerifyPdf08();
-        testVerifyPdf09();
-        testVerifyPdf10();//50 firmas
-        testVerifyPdf11();
-        testVerifyPdf12();
-        testVerifyPdf13();
-        testVerifyPdf14();
-        testVerifyPdf15();
-        testVerifyPdf16();
-        testVerifyPdf17();
-        testVerifyPdf18();
-        testVerifyPdf19();
-        testVerifyPdf20();
-        testVerifyPdf21();
-        testVerifyPdf22();
-        testVerifyPdf23();
-        testVerifyP7m24();
-        testVerifyXml25();
+//        testVerifyPdf01();
+//        testVerifyPdf02();
+//        testVerifyPdf03();
+//        testVerifyPdf04();
+//        testVerifyPdf05();
+//        testVerifyPdf06();
+//        testVerifyPdf07();
+//        testVerifyPdf08();
+//        testVerifyPdf09();
+//        testVerifyPdf10();//50 firmas
+//        testVerifyPdf11();
+//        testVerifyPdf12();
+//        testVerifyPdf13();
+//        testVerifyPdf14();
+//        testVerifyPdf15();
+//        testVerifyPdf16();
+//        testVerifyPdf17();
+//        testVerifyPdf18();
+//        testVerifyPdf19();
+//        testVerifyPdf20();
+//        testVerifyPdf21();
+//        testVerifyPdf22();
+//        testVerifyPdf23();
+//        testVerifyP7m24();
+//        testVerifyXml25();
     }
     
     /*¿Es archivo PDF?
