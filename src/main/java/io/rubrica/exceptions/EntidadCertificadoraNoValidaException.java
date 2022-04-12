@@ -18,8 +18,9 @@
 package io.rubrica.exceptions;
 
 /**
- * Excepcion que se lanza en caso de problemas con la entidad certificadora no reconocida
- * 
+ * Excepcion que se lanza en caso de problemas con la entidad certificadora no
+ * reconocida
+ *
  * @author jdc
  */
 public class EntidadCertificadoraNoValidaException extends Exception {

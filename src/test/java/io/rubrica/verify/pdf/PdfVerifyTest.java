@@ -52,32 +52,36 @@ public class PdfVerifyTest {
     private static final String FILE21 = "/home/mfernandez/Test/Verify/21.pdf";
     private static final String FILE22 = "/home/mfernandez/Test/Verify/22.pdf";
     private static final String FILE23 = "/home/mfernandez/Test/Verify/23.pdf";
+    private static final String FILE24 = "/home/mfernandez/Test/Verify/24.pdf.p7m";
+    private static final String FILE25 = "/home/mfernandez/Test/Verify/25.xml";
 
-//    @Test
+    @Test
     public void verifyPdf() throws Exception {
-        testVerifyPdf01();
-        testVerifyPdf02();
-        testVerifyPdf03();
-        testVerifyPdf04();
-        testVerifyPdf05();
-        testVerifyPdf06();
-        testVerifyPdf07();
-        testVerifyPdf08();
-        testVerifyPdf09();
+//        testVerifyPdf01();
+//        testVerifyPdf02();
+//        testVerifyPdf03();
+//        testVerifyPdf04();
+//        testVerifyPdf05();
+//        testVerifyPdf06();
+//        testVerifyPdf07();
+//        testVerifyPdf08();
+//        testVerifyPdf09();
 //        testVerifyPdf10();//50 firmas
-        testVerifyPdf11();
-        testVerifyPdf12();
-        testVerifyPdf13();
-        testVerifyPdf14();
-        testVerifyPdf15();
-        testVerifyPdf16();
-        testVerifyPdf17();
-        testVerifyPdf18();
-        testVerifyPdf19();
-        testVerifyPdf20();
-        testVerifyPdf21();
-        testVerifyPdf22();
-        testVerifyPdf23();
+//        testVerifyPdf11();
+//        testVerifyPdf12();
+//        testVerifyPdf13();
+//        testVerifyPdf14();
+//        testVerifyPdf15();
+//        testVerifyPdf16();
+//        testVerifyPdf17();
+//        testVerifyPdf18();
+//        testVerifyPdf19();
+//        testVerifyPdf20();
+//        testVerifyPdf21();
+//        testVerifyPdf22();
+//        testVerifyPdf23();
+//        testVerifyP7m24();
+//        testVerifyXml25();
     }
     
     /*¿Es archivo PDF?
@@ -954,6 +958,82 @@ public class PdfVerifyTest {
             System.out.println("PDF con una firma invisible no vigente de una entidad certificadora autorizada y con sello de tiempo, firmado con un certificado que se encuentra caducado y luego archivo modificado");
             Documento documento = verificarDocumento(FILE23);
             if (documento.getDocValidate() != true && documento.getSignValidate() != true) {
+                System.out.println("Se obtuvo resultado esperado");
+            } else {
+                fail("Problema en la validación de la clase " + new Object() {}.getClass().getEnclosingMethod().getName());
+            }
+        System.out.println("*******************************************************************************************");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Problemas en el documento");
+        }
+    }
+    
+    /*¿Es archivo P7M?
+    SI
+    ¿Tiene firma electrónica?
+    SI
+    ¿Es de entidad autorizada?
+    SI
+    ¿Tiene sello de tiempo? (característi-ca opcional)
+    NO
+    ¿Es un certificado íntegro?
+    SI
+    ¿Es un certificado vigente?
+    NO
+    ¿Es la firma íntegra?
+    SI
+    ¿El uso está autorizado para firma electrónica?
+    SI
+    ¿Tiene firma vigente? (al momento de firmar el documento)
+    SI
+    ¿El documento es íntegro?
+    SI
+    Resultado DESEADO al final de la validación
+    ACEPTADO*/
+    public void testVerifyP7m24() throws Exception {
+        try {
+            System.out.println("P7M con una firma electrónica vigente de la entidad certificadora BCE");
+            Documento documento = verificarDocumento(FILE24);
+            if (documento.getSignValidate()== true) {
+                System.out.println("Se obtuvo resultado esperado");
+            } else {
+                fail("Problema en la validación de la clase " + new Object() {}.getClass().getEnclosingMethod().getName());
+            }
+        System.out.println("*******************************************************************************************");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Problemas en el documento");
+        }
+    }
+    
+    /*¿Es archivo P7M?
+    SI
+    ¿Tiene firma electrónica?
+    SI
+    ¿Es de entidad autorizada?
+    SI
+    ¿Tiene sello de tiempo? (característi-ca opcional)
+    NO
+    ¿Es un certificado íntegro?
+    SI
+    ¿Es un certificado vigente?
+    NO
+    ¿Es la firma íntegra?
+    SI
+    ¿El uso está autorizado para firma electrónica?
+    SI
+    ¿Tiene firma vigente? (al momento de firmar el documento)
+    SI
+    ¿El documento es íntegro?
+    SI
+    Resultado DESEADO al final de la validación
+    ACEPTADO*/
+    public void testVerifyXml25() throws Exception {
+        try {
+            System.out.println("Xml con una firma electrónica vigente de la entidad certificadora ANF");
+            Documento documento = verificarDocumento(FILE25);
+            if (documento.getSignValidate()== true) {
                 System.out.println("Se obtuvo resultado esperado");
             } else {
                 fail("Problema en la validación de la clase " + new Object() {}.getClass().getEnclosingMethod().getName());

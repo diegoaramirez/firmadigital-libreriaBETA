@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 /**
  * Utilidad para menejar properties
- * 
+ *
  * @author mfernandez
  */
 public class PropertiesUtils {

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 
- * Authors: Ricardo Arguello, Misael Fernández
+ * Authors: Misael Fernández
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,9 @@ import java.security.cert.X509Certificate;
 import io.rubrica.certificate.ec.CertificadoPersonaNatural;
 
 /**
- * Certificado de persona natural emitido por el Banco Central del Ecuador.
+ * Certificado de persona natural emitido por la Dirección General de Registro Civil, Identificación y Cedulación.
  *
- * @author Ricardo Arguello <ricardo.arguello@soportelibre.com>
+ * @author mfernandez
  */
 public class CertificadoPersonaNaturalDigercic extends CertificadoDigercic
         implements CertificadoPersonaNatural {

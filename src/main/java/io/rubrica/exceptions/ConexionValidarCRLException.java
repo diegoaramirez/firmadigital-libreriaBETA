@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de problemas al validar CRL
- * 
+ *
  * @author mfernandez
  */
 public class ConexionValidarCRLException extends Exception {

@@ -18,8 +18,9 @@
 package io.rubrica.exceptions;
 
 /**
- * Excepcion que se lanza en caso de problemas con el certificado cuando es inválido
- * 
+ * Excepcion que se lanza en caso de problemas con el certificado cuando es
+ * inválido
+ *
  * @author jdc
  */
 public class CertificadoInvalidoException extends Exception {

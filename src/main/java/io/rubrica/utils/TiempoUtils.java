@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 /**
  * Utilidades para manejar tiempos
- * 
+ *
  * @author mfernandez
  */
 public class TiempoUtils {

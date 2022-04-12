@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 
- * Authors: Ricardo Arguello, Misael Fernández
+ * Authors: Misael Fernández
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,9 @@ import java.security.cert.X509Certificate;
 import io.rubrica.certificate.CertUtils;
 
 /**
- * Certificado emitido por el Banco Central del Ecuador.
+ * Certificado emitido por la Dirección General de Registro Civil, Identificación y Cedulación.
  *
- * @author Ricardo Arguello <ricardo.arguello@soportelibre.com>
+ * @author mfernandez
  */
 public abstract class CertificadoDigercic {
 
@@ -38,7 +38,7 @@ public abstract class CertificadoDigercic {
     public static final String OID_PASAPORTE = "1.3.6.1.4.1.55519.1.1.1.5.2.2";
     public static final String OID_APELLIDO_2 = "1.3.6.1.4.1.55519.1.1.1.5.2.3";
     public static final String OID_RUC = "1.3.6.1.4.1.55519.1.1.1.5.2.4";
-    
+
     /**
      * Certificado a analizar
      */
@@ -47,7 +47,7 @@ public abstract class CertificadoDigercic {
     public CertificadoDigercic(X509Certificate certificado) {
         this.certificado = certificado;
     }
-    
+
     public String getCedulaPasaporte() {
         return obtenerExtension(OID_CEDULA);
     }

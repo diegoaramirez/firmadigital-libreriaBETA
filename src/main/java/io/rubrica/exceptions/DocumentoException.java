@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de que problemas con el documento
- * 
+ *
  * @author jdc
  */
 public class DocumentoException extends Exception {

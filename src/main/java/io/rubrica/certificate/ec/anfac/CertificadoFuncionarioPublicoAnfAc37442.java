@@ -23,7 +23,7 @@ import io.rubrica.certificate.ec.CertificadoFuncionarioPublico;
 
 /**
  * Certificado de Funcionario Publico emitido por ANf AC Ecuador
- * 
+ *
  * @author mfernandez
  */
 public class CertificadoFuncionarioPublicoAnfAc37442 extends CertificadoAnfAc37442

@@ -32,41 +32,56 @@ import java.util.Map;
  */
 public class KeyStoreProviderFactory {
 
-    public static final String WINDOWS = "WINDOWS";
-    public static final String LINUX = "LINUX";
-    public static final String MACOS = "MACOS";
+    private static final String WINDOWS = "WINDOWS";
+    private static final String LINUX = "LINUX";
+    private static final String MACOS = "MACOS";
+    private static String tipoKeyStoreProvider;
 
     private static final Map<String, List<KeyStoreProvider>> lista = new HashMap<String, List<KeyStoreProvider>>();
 
-    static {
+    private static void listaWindows() {
         List<KeyStoreProvider> windows = new ArrayList<KeyStoreProvider>();
-        windows.add(new WindowsPcscKeyStoreProvider());
-        windows.add(new UKCGenericWindowsDllKeyStoreProvider());
-        windows.add(new WindowsKeyStoreProvider());
+        if (tipoKeyStoreProvider.equals("TOKEN")) {
+            windows.add(new WindowsKeyStoreProvider());
+            windows.add(new UKCGenericWindowsDllKeyStoreProvider());
+        }
+        if (tipoKeyStoreProvider.equals("PCSC")) {
+            windows.add(new WindowsPcscKeyStoreProvider());
+        }
         lista.put(WINDOWS, windows);
     }
 
-    static {
+    private static void listaLinux() {
         List<KeyStoreProvider> linux = new ArrayList<KeyStoreProvider>();
-        linux.add(new LinuxPcscKeyStoreProvider());
-        linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
-        linux.add(new SafenetLinuxKeyStoreProvider());
-        linux.add(new Bit4idLinuxKeyStoreProvider());
-        linux.add(new Bit4idGenericLinuxKeyStoreProvider());
-        linux.add(new EPass2003LinuxKeyStoreProvider());
-        linux.add(new EPass3003LinuxKeyStoreProvider());
+        if (tipoKeyStoreProvider.equals("TOKEN")) {
+            linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
+            linux.add(new SafenetLinuxKeyStoreProvider());
+            linux.add(new Bit4idLinuxKeyStoreProvider());
+            linux.add(new Bit4idGenericLinuxKeyStoreProvider());
+            linux.add(new EPass2003LinuxKeyStoreProvider());
+            linux.add(new EPass3003LinuxKeyStoreProvider());
+            linux.add(new UKCLinuxKeyStoreProvider());
+        }
+        if (tipoKeyStoreProvider.equals("PCSC")) {
+            linux.add(new LinuxPcscKeyStoreProvider());
+        }
         lista.put(LINUX, linux);
     }
 
-    static {
+    private static void listaMac() {
         List<KeyStoreProvider> macOS = new ArrayList<KeyStoreProvider>();
-        macOS.add(new SafenetAppleKeyStoreProvider());
-        macOS.add(new EPass2003AppleKeyStoreProvider());
-        macOS.add(new EPass3003AppleKeyStoreProvider());
-        macOS.add(new Bit4IdAppleKeyStoreProvider());
-        macOS.add(new Bit4IdGenericAppleKeyStoreProvider());
-        macOS.add(new UKCAppleKeyStoreProvider());
-        macOS.add(new UKCGenericAppleKeyStoreProvider());
+        if (tipoKeyStoreProvider.equals("TOKEN")) {
+            macOS.add(new SafenetAppleKeyStoreProvider());
+            macOS.add(new EPass2003AppleKeyStoreProvider());
+            macOS.add(new EPass3003AppleKeyStoreProvider());
+            macOS.add(new Bit4IdAppleKeyStoreProvider());
+            macOS.add(new Bit4IdGenericAppleKeyStoreProvider());
+            macOS.add(new UKCAppleKeyStoreProvider());
+            macOS.add(new UKCGenericAppleKeyStoreProvider());
+        }
+        if (tipoKeyStoreProvider.equals("PCSC")) {
+            macOS.add(new PcscAppleKeyStoreProvider());
+        }
         lista.put(MACOS, macOS);
     }
 
@@ -75,6 +90,9 @@ public class KeyStoreProviderFactory {
     }
 
     public static List<KeyStoreProvider> getKeyStoreProviderList() {
+        listaWindows();
+        listaLinux();
+        listaMac();
         if (isWindows()) {
             return lista.get(WINDOWS);
         } else if (isLinux()) {
@@ -86,7 +104,16 @@ public class KeyStoreProviderFactory {
         throw new RuntimeException("Sistema operativo no soportado");
     }
 
-    public static KeyStore getKeyStore(String clave) {
+    /**
+     * Dependiento el tipo de dispositivo que utilice para almacenar el
+     * certificado digital
+     *
+     * @param clave
+     * @param tipoKeyStoreProvider "TOKEN", "PCSC"
+     * @return KeyStore
+     */
+    public static KeyStore getKeyStore(String clave, String tipoKeyStoreProvider) {
+        KeyStoreProviderFactory.tipoKeyStoreProvider = tipoKeyStoreProvider;
         List<KeyStoreProvider> ksps = getKeyStoreProviderList();
         return getKeyStore(ksps, clave);
     }

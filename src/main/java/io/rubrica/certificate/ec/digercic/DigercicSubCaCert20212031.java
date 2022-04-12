@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 
- * Authors: Ricardo Arguello, Misael Fernández
+ * Authors: Misael Fernández
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,10 +38,10 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * Certificado intermedio del Banco Central del Ecuador, representado como un
+ * Certificado intermedio de la Dirección General de Registro Civil, Identificación y Cedulación, representado como un
  * objeto <code>X509Certificate</code>.
  *
- * @author Ricardo Arguello <ricardo.arguello@soportelibre.com>
+ * @author mfernandez
  */
 public class DigercicSubCaCert20212031 extends X509Certificate {
 

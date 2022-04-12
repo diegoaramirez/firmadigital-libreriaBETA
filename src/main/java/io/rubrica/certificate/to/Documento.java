@@ -25,6 +25,7 @@ import java.util.List;
  * @author mfernandez
  */
 public class Documento {
+
     private Boolean signValidate;//validez de todas las firmas
     private Boolean docValidate;//validez de todo el documento
     private List<Certificado> certificados;//si la lista de certificados se encuentra en null, el documento no contiene firmas
@@ -64,10 +65,13 @@ public class Documento {
         this.certificados = certificados;
     }
 
-    public String getError() { return error; }
+    public String getError() {
+        return error;
+    }
 
-    public void setProcess(String error) { this.error = error; }
-
+    public void setProcess(String error) {
+        this.error = error;
+    }
 
     @Override
     public String toString() {

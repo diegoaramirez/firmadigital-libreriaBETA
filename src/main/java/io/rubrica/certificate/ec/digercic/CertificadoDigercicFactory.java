@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 
- * Authors: Ricardo Arguello, Misael Fernández
+ * Authors: Misael Fernández
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,10 @@ import static io.rubrica.utils.BouncyCastleUtils.certificateHasPolicy;
 import java.security.cert.X509Certificate;
 
 /**
- * Permite construir certificados tipo CertificadoBancoCentral a partir de
+ * Permite construir certificados tipo CertificadoDigercic a partir de
  * certificados X509Certificate.
  *
- * @author Ricardo Arguello <ricardo.arguello@soportelibre.com>
+ * @author mfernandez
  */
 public class CertificadoDigercicFactory {
 

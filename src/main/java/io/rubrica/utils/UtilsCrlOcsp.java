@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 
 /**
  * Utilidades para CRL y OCSP
- * 
+ *
  * @author jdc
  */
 public class UtilsCrlOcsp {

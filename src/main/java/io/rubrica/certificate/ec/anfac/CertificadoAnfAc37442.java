@@ -24,15 +24,18 @@ import io.rubrica.certificate.CertUtils;
 
 /**
  * Certificado emitido por ANF AC Ecuador
- * 
+ *
  * @author mfernandez
  */
 public abstract class CertificadoAnfAc37442 {
 
     // OIDs de tipo de certificado:
     public static final String OID_CERTIFICADO_PERSONA_NATURAL = "1.3.6.1.4.1.37442.3.4.1.2.22";
+    public static final String OID_CERTIFICADO_PERSONA_NATURAL_TOKEN = "1.3.6.1.4.1.37442.3.4.1.4.22";
     public static final String OID_CERTIFICADO_PERSONA_JURIDICA = "1.3.6.1.4.1.37442.2.5.1.3";
+    public static final String OID_CERTIFICADO_PERSONA_JURIDICA_TOKEN = "1.3.6.1.4.1.37442.2.5.1.10";
     public static final String OID_CERTIFICADO_FUNCIONARIO_PUBLICO = "1.3.6.1.4.1.37442.4.1.3.22";
+    public static final String OID_CERTIFICADO_FUNCIONARIO_PUBLICO_TOKEN = "1.3.6.1.4.1.37442.4.1.3.22";
 
     // OIDs de Campos del Certificado:
     public static final String OID_CEDULA_PASAPORTE = "1.3.6.1.4.1.37442.3.1";

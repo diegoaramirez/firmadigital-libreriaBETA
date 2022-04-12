@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package io.rubrica.sign.pdf;
 
 import com.itextpdf.kernel.geom.Rectangle;
@@ -45,22 +46,20 @@ public class RectanguloUtil {
                         Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_Y).trim()),
                         Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_UPPER_RIGHT_X).trim()),
                         Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_UPPER_RIGHT_Y).trim()));
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 logger.severe("Se ha indicado una posicion invalida para la firma: " + e);
             }
         }
 
-        //QR
+        // QR
         if (extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_X) != null
                 && extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_Y) != null
                 && extraParams.getProperty(POSITION_ON_PAGE_UPPER_RIGHT_X) == null
                 && extraParams.getProperty(POSITION_ON_PAGE_UPPER_RIGHT_Y) == null) {
             try {
                 return new Rectangle(Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_X).trim()),
-                        Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_Y).trim())-36,
-                        110,
-                        36);
-            } catch (final Exception e) {
+                        Integer.parseInt(extraParams.getProperty(POSITION_ON_PAGE_LOWER_LEFT_Y).trim()) - 36, 110, 36);
+            } catch (Exception e) {
                 logger.severe("Se ha indicado una posicion invalida para la firma: " + e);
             }
         }

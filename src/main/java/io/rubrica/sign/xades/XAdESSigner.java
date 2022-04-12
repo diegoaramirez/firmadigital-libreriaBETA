@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package io.rubrica.sign.xades;
 
 import java.io.ByteArrayInputStream;
@@ -321,7 +322,7 @@ public final class XAdESSigner implements Signer {
     /**
      * Algoritmo de huella digital por defecto para las referencias XML.
      */
-    static final String DIGEST_METHOD = DigestMethod.SHA512;
+    static final String DIGEST_METHOD = DigestMethod.SHA1;
 
     static final String STYLE_REFERENCE_PREFIX = "StyleReference-";
 

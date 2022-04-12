@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de problemas en la hora del servidor.
- * 
+ *
  * @author jdc
  */
 public class HoraServidorException extends Exception {

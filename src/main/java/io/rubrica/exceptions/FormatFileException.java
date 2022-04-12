@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de problemas con el formato del archivo
- * 
+ *
  * @author jdc
  */
 public class FormatFileException extends RubricaException {

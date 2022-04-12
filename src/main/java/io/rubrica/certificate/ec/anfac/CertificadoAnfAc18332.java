@@ -24,7 +24,7 @@ import io.rubrica.certificate.CertUtils;
 
 /**
  * Certificado emitido por ANF AC Ecuador
- * 
+ *
  * @author mfernandez
  */
 public abstract class CertificadoAnfAc18332 {

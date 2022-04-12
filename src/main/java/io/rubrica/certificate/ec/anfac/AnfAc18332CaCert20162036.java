@@ -40,7 +40,7 @@ import java.util.Set;
 /**
  * Certificado raiz de ANF AC Ecuador, representado como un objeto
  * <code>X509Certificate</code>.
- * 
+ *
  * @author mfernandez
  */
 public class AnfAc18332CaCert20162036 extends X509Certificate {

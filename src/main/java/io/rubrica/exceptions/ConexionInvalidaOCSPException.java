@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de problemas con la validación en OCSP
- * 
+ *
  * @author jdc
  */
 public class ConexionInvalidaOCSPException extends Exception {

@@ -46,7 +46,7 @@ public class CertificadoUanataca {
     public static final String OID_DIRECCION = "1.3.6.1.4.1.47286.102.3.7";
     public static final String OID_TELEFONO = "1.3.6.1.4.1.47286.102.3.8";
     public static final String OID_CIUDAD = "1.3.6.1.4.1.47286.102.3.9";
-    public static final String OID_RAZON_SOCIAL = "1.3.6.1.4.1.47286.102.3.10 ";
+    public static final String OID_RAZON_SOCIAL = "1.3.6.1.4.1.47286.102.3.10";
     public static final String OID_RUC = "1.3.6.1.4.1.47286.102.3.11";
     public static final String OID_PAIS = "1.3.6.1.4.1.47286.102.3.12";
     public static final String OID_CERTIFICADO = "1.3.6.1.4.1.47286.102.3.50";

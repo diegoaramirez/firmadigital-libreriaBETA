@@ -19,7 +19,7 @@ package io.rubrica.exceptions;
 
 /**
  * Excepcion que se lanza en caso de problemas con la conexión con el api
- * 
+ *
  * @author mfernandez
  */
 public class ConexionApiException extends Exception {
