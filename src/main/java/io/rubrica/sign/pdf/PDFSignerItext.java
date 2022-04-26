@@ -200,8 +200,7 @@ public class PDFSignerItext implements Signer {
         // throw new RubricaException("Documento encriptado");
         // }
         Rectangle signaturePositionOnPage = getSignaturePositionOnPage(extraParams);
-        StampingProperties properties = new StampingProperties();
-        properties.useAppendMode();
+        StampingProperties properties = new StampingProperties().preserveEncryption();
         PdfSigner pdfSigner = new PdfSigner(pdfReader, new FileOutputStream(dest), properties);
         if (page == 0 || page < 0 || page > pdfSigner.getDocument().getNumberOfPages()) {
             page = pdfSigner.getDocument().getNumberOfPages();
@@ -428,7 +427,7 @@ public class PDFSignerItext implements Signer {
             String algorithm) throws IOException, GeneralSecurityException {
         PdfReader reader = new PdfReader(src);
         try (FileOutputStream os = new FileOutputStream(dest)) {
-            PdfSigner signer = new PdfSigner(reader, os, new StampingProperties());
+            PdfSigner signer = new PdfSigner(reader, os, new StampingProperties().preserveEncryption());
             IExternalSignatureContainer external = new PDFSignerItext.MyExternalSignatureContainer(pk, chain,
                     algorithm);
             // Signs a PDF where space was already reserved. The field must cover the whole
