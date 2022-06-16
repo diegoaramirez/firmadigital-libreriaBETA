@@ -39,7 +39,8 @@ public class BasicSignature {
     public Document sign(Document document, SignatureParameters parameters) {
         try (PdfReader reader = new PdfReader(document.openStream());
                 ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            StampingProperties properties = new StampingProperties().preserveEncryption();
+            StampingProperties properties = new StampingProperties();
+            properties.useAppendMode();
 
             PdfSigner signer = new PdfSigner(reader, os, properties);
             IExternalDigest digest = new BouncyCastleDigest();

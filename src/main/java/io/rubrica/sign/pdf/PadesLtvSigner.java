@@ -80,7 +80,7 @@ public class PadesLtvSigner extends PadesEnhancedSigner {
             String name, IOcspClient ocspClient, ICrlClient crlClient, ITSAClient tsc) {
         try (PdfReader pdfReader = new PdfReader(signedPdfInput)) {
             PdfDocument document = new PdfDocument(pdfReader, new PdfWriter(baos),
-                    new StampingProperties().preserveEncryption());
+                    new StampingProperties().useAppendMode());
 
             LtvVerification ltvVerification = new LtvVerification(document, "BC");
             crlClient = null;

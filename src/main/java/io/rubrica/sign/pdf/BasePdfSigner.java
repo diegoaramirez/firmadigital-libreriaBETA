@@ -80,10 +80,11 @@ public abstract class BasePdfSigner implements PdfSigner {
     public byte[] sign(InputStream is, RubricaSigner signer, Certificate[] certChain, Properties params)
             throws IOException {
         try (PdfReader pdfReader = new PdfReader(is); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            StampingProperties properties = new StampingProperties().preserveEncryption();
+            StampingProperties stampingProperties = new StampingProperties();
+            stampingProperties.useAppendMode();
 
             com.itextpdf.signatures.PdfSigner pdfSigner = new com.itextpdf.signatures.PdfSigner(pdfReader, os,
-                    properties);
+                    stampingProperties);
 
             X509Certificate x509Certificate = (X509Certificate) certChain[0];
 
@@ -141,6 +142,9 @@ public abstract class BasePdfSigner implements PdfSigner {
             }
 
             Rectangle signaturePositionOnPage = RectanguloUtil.getPositionOnPage(extraParams);
+
+            StampingProperties properties = new StampingProperties();
+            properties.useAppendMode();
 
             PdfSignatureAppearance signatureAppearance = pdfSigner.getSignatureAppearance();
             signatureAppearance.setPageRect(signaturePositionOnPage).setPageNumber(page);

@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package io.rubrica.sign.pdf;
 
 import java.io.File;
@@ -200,7 +199,8 @@ public class PDFSignerItext implements Signer {
         // throw new RubricaException("Documento encriptado");
         // }
         Rectangle signaturePositionOnPage = getSignaturePositionOnPage(extraParams);
-        StampingProperties properties = new StampingProperties().preserveEncryption();
+        StampingProperties properties = new StampingProperties();
+        properties.useAppendMode();
         PdfSigner pdfSigner = new PdfSigner(pdfReader, new FileOutputStream(dest), properties);
         if (page == 0 || page < 0 || page > pdfSigner.getDocument().getNumberOfPages()) {
             page = pdfSigner.getDocument().getNumberOfPages();
@@ -427,7 +427,7 @@ public class PDFSignerItext implements Signer {
             String algorithm) throws IOException, GeneralSecurityException {
         PdfReader reader = new PdfReader(src);
         try (FileOutputStream os = new FileOutputStream(dest)) {
-            PdfSigner signer = new PdfSigner(reader, os, new StampingProperties().preserveEncryption());
+            PdfSigner signer = new PdfSigner(reader, os, new StampingProperties());
             IExternalSignatureContainer external = new PDFSignerItext.MyExternalSignatureContainer(pk, chain,
                     algorithm);
             // Signs a PDF where space was already reserved. The field must cover the whole
@@ -443,7 +443,7 @@ public class PDFSignerItext implements Signer {
         try {
             Document document = new InMemoryDocument(sign);
             try (InputStream is = document.openStream()) {
-            pdfReader = new PdfReader(is);
+                pdfReader = new PdfReader(is);
             }
         } catch (Exception e) {
             logger.severe("No se ha podido leer el PDF: " + e);
@@ -456,7 +456,7 @@ public class PDFSignerItext implements Signer {
         } catch (Exception e) {
             logger.severe(
                     "No se ha podido obtener la informacion de los firmantes del PDF, se devolvera un arbol vacio: "
-                            + e);
+                    + e);
             throw new InvalidFormatException("No se ha podido obtener la informacion de los firmantes del PDF", e);
         }
 

@@ -54,6 +54,7 @@ import io.rubrica.sign.pdf.PDFSignerItext;
 import io.rubrica.sign.pdf.BasePdfSigner;
 import io.rubrica.sign.pdf.PadesBasicSigner;
 import io.rubrica.sign.pdf.RectanguloUtil;
+import io.rubrica.sign.xades.XAdESSigner;
 import io.rubrica.utils.FileUtils;
 import io.rubrica.utils.Json;
 import io.rubrica.utils.TiempoUtils;
@@ -74,15 +75,17 @@ public class Main {
 //    private static final String ARCHIVO = "/home/mfernandez/Descargas/Firma electronica 24012022/LENIN BOLTAIRE MORENO GARCES.p12";
 //    private static final String ARCHIVO = "/home/mfernandez/miska/prueba.pfx";
     private static final String ARCHIVO = "/home/mfernandez/appFirmaEC/prueba.p12";
+    private static final String PASSWORD = "123456";
 //    private static final String PASSWORD = "Digercic24012022.";
 //    private static final String PASSWORD = "Senae123456@";
-    private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
+    private static final String FILE = "/home/mfernandez/Test/Verify/25.xml";
+//    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
-        firmarDocumentoTrifasica(FILE);
-//        firmarDocumento(FILE);
+//        firmarDocumentoTrifasica(FILE);
+//        firmarDocumentoPDF(FILE);
+        firmarDocumentoXML(FILE);
 //        validarCertificado();
 //        verificarDocumento(FILE);
 //        leerNFC();
@@ -200,7 +203,7 @@ public class Main {
         fos.close();
     }
 
-    private static void firmarDocumento(String file) throws KeyStoreException, Exception {
+    private static void firmarDocumentoPDF(String file) throws KeyStoreException, Exception {
         ////// LEER PDF:
         byte[] docByteArry = DocumentoUtils.loadFile(file);
 
@@ -248,6 +251,52 @@ public class Main {
         //  } else {
         //      System.out.println("Entidad Certificadora no reconocida");
         //   }
+    }
+
+    private static void firmarDocumentoXML(String file) throws KeyStoreException, Exception {
+        ////// LEER XML:
+        byte[] docByteArry = DocumentoUtils.loadFile(file);
+
+        // ARCHIVO
+        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
+        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
+        // TOKEN
+        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
+
+        byte[] signed = null;
+        String alias = seleccionarAlias(keyStore);
+        PrivateKey key = (PrivateKey) keyStore.getKey(alias, PASSWORD.toCharArray());
+
+        X509CertificateUtils x509CertificateUtils = new X509CertificateUtils();
+
+        if (x509CertificateUtils.validarX509Certificate((X509Certificate) keyStore.getCertificate(alias), null)) {//validación de firmaEC
+            Certificate[] certChain = keyStore.getCertificateChain(alias);
+            XAdESSigner signer = new XAdESSigner();
+            signed = signer.sign(docByteArry, SignConstants.SIGN_ALGORITHM_SHA512WITHRSA, key, certChain, null);
+            System.out.println("final firma\n-------");
+            ////// Permite guardar el archivo en el equipo y luego lo abre
+            String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
+            FileOutputStream fos = new java.io.FileOutputStream(nombreDocumento);
+            //Abrir documento
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        FileUtils.abrirDocumento(nombreDocumento);
+                        System.out.println(nombreDocumento);
+                        // verificarDocumento(nombreDocumento);
+                    } catch (java.lang.Exception ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        System.exit(0);
+                    }
+                }
+            }, 3000); //espera 3 segundos
+            fos.write(signed);
+            fos.close();
+        } else {
+            System.out.println("Entidad Certificadora no reconocida");
+        }
     }
 
     private static void validarCertificado() throws IOException, KeyStoreException, Exception {
@@ -311,7 +360,6 @@ public class Main {
 //            }
 //        }
 //    }
-
     private static void verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
         File document = new File(file);
         Documento documento = Utils.verificarDocumento(document);
