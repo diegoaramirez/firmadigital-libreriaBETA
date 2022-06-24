@@ -77,25 +77,23 @@ import org.apache.http.util.EntityUtils;
 public class Main {
 
     // ARCHIVO
-    private static final String ARCHIVO = "/home/mfernandez/appFirmaEC/prueba.p12";
-    private static final String PASSWORD = "123456";
-
+    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
+    private static final String PASSWORD = "123456d";
     private static final String FILE = "/home/mfernandez/Descargas/ManuCal-Usuario-FirmaEC-v2.7.0.pdf";
     private static String hashAlgorithm = "SHA512";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
-//        fechaHora(240);//espera en segundos
 //        firmarDocumentoTrifasica(FILE);
 //        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
         validarCertificadoAPI();
 //        validarCertificado();
 //        verificarDocumento(FILE);
-//        leerNFC();
+//        fechaHora(240);//espera en segundos
     }
 
     private static void firmarDocumentoTrifasica(String file) throws KeyStoreException, Exception {
-        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+        KeyStore keyStore = getKeyStore(PKCS12, PASSWORD, null);
 //        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
 
         ////// LEER PDF:
@@ -147,7 +145,7 @@ public class Main {
     }
 
     private static void firmarDocumentoPDF(String file) throws KeyStoreException, Exception {
-        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+        KeyStore keyStore = getKeyStore(PKCS12, PASSWORD, null);
 //        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
 
         ////// LEER PDF:
@@ -194,7 +192,7 @@ public class Main {
     }
 
     private static void firmarDocumentoXML(String file) throws KeyStoreException, Exception {
-        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+        KeyStore keyStore = getKeyStore(PKCS12, PASSWORD, null);
 //        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
         ////// LEER XML:
         byte[] docByteArry = DocumentoUtils.loadFile(file);
@@ -240,7 +238,7 @@ public class Main {
         String urlws = "http://localhost:8080/api/validarCertificadoDigital";
         StringBuilder entity = new StringBuilder();
         String result;
-        File pkcs12 = new File(ARCHIVO);
+        File pkcs12 = new File(PKCS12);
 
         //configuracion de cabecera
         HttpPost post = new HttpPost(urlws);
@@ -251,7 +249,6 @@ public class Main {
         com.google.gson.JsonObject gsonObject = null;
         gsonObject = new com.google.gson.JsonObject();
         gsonObject.addProperty("pkcs12", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath())));
-//        gsonObject.addProperty("password", 12);
         gsonObject.addProperty("password", PASSWORD);
         System.out.println("gsonObject: " + gsonObject.toString());
 
@@ -271,7 +268,7 @@ public class Main {
     }
 
     private static void validarCertificado() throws IOException, KeyStoreException, Exception {
-        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+        KeyStore keyStore = getKeyStore(PKCS12, PASSWORD, null);
 //        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
         String alias = seleccionarAlias(keyStore);
         X509Certificate x509Certificate = (X509Certificate) keyStore.getCertificate(alias);
