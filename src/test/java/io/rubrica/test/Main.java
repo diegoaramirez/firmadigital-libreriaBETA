@@ -78,7 +78,7 @@ public class Main {
 
     // ARCHIVO
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
-    private static final String PASSWORD = "123456d";
+    private static final String PASSWORD = "123456";
     private static final String FILE = "/home/mfernandez/Descargas/ManuCal-Usuario-FirmaEC-v2.7.0.pdf";
     private static String hashAlgorithm = "SHA512";
 
@@ -234,8 +234,9 @@ public class Main {
     }
 
     private static void validarCertificadoAPI() throws IOException, KeyStoreException, Exception {
-//        String urlws = "http://impws.firmadigital.gob.ec:8080/api/validarCertificadoDigital";
-        String urlws = "http://localhost:8080/api/validarCertificadoDigital";
+//        String urlws = "https://impapi.firmadigital.gob.ec/api/validarCertificadoDigital";
+//        String urlws = "http://impapi.firmadigital.gob.ec:8080/api/validarCertificadoDigital";
+        String urlws = "http://localhost:8080/api/validarcertificadodigital";
         StringBuilder entity = new StringBuilder();
         String result;
         File pkcs12 = new File(PKCS12);
