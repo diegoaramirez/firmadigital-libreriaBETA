@@ -32,12 +32,8 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
-//NFC
-import java.util.List;
 import java.util.Properties;
-
 import com.itextpdf.signatures.DigestAlgorithms;
-
 import io.rubrica.certificate.CertEcUtils;
 import io.rubrica.certificate.to.Certificado;
 import io.rubrica.certificate.to.DatosUsuario;
@@ -54,7 +50,6 @@ import io.rubrica.sign.DigestAlgorithm;
 import io.rubrica.sign.PrivateKeySigner;
 import io.rubrica.sign.SignConstants;
 import io.rubrica.sign.pdf.PDFSignerItext;
-import io.rubrica.sign.pdf.BasePdfSigner;
 import io.rubrica.sign.pdf.PadesBasicSigner;
 import io.rubrica.sign.pdf.RectanguloUtil;
 import io.rubrica.sign.xades.XAdESSigner;
@@ -65,12 +60,8 @@ import io.rubrica.utils.Utils;
 import io.rubrica.utils.UtilsCrlOcsp;
 import io.rubrica.utils.X509CertificateUtils;
 import io.rubrica.validaciones.DocumentoUtils;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Base64;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -86,14 +77,11 @@ import org.apache.http.util.EntityUtils;
 public class Main {
 
     // ARCHIVO
-//    private static final String ARCHIVO = "/home/mfernandez/Descargas/Firma electronica 24012022/LENIN BOLTAIRE MORENO GARCES.p12";
-//    private static final String ARCHIVO = "/home/mfernandez/miska/prueba.pfx";
     private static final String ARCHIVO = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-//    private static final String PASSWORD = "Digercic24012022.";
-//    private static final String PASSWORD = "Senae123456@";
-//    private static final String FILE = "/home/mfernandez/Test/Verify/25.xml";
+
     private static final String FILE = "/home/mfernandez/Descargas/ManuCal-Usuario-FirmaEC-v2.7.0.pdf";
+    private static String hashAlgorithm = "SHA512";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        fechaHora(240);//espera en segundos
@@ -106,72 +94,12 @@ public class Main {
 //        leerNFC();
     }
 
-    private static Properties parametros() throws IOException {
-        //PageSize.A4.getWidth();//595.0
-        //PageSize.A4.getHeight();//842.0
-        //QR
-        //SUPERIOR IZQUIERDA
-        String llx = "10";
-        String lly = "830";
-        //INFERIOR IZQUIERDA
-        //String llx = "100";
-        //String lly = "91";
-        //INFERIOR DERECHA
-        //String llx = "419";
-        //String lly = "91";
-        //INFERIOR CENTRADO
-        //String llx = "260";
-        //String lly = "91";
-        //QR
-        //SUPERIOR IZQUIERDA
-        //String llx = "10";
-        //String lly = "830";
-        //String urx = String.valueOf(Integer.parseInt(llx) + 110);
-        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
-        //INFERIOR CENTRADO
-        //String llx = "190";
-        //String lly = "85";
-        //String urx = String.valueOf(Integer.parseInt(llx) + 260);
-        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
-        //INFERIOR CENTRADO (ancho pie pagina)
-        //String llx = "100";
-        //String lly = "80";&
-        //String urx = String.valueOf(Integer.parseInt(llx) + 430);
-        //String ury = String.valueOf(Integer.parseInt(lly) - 25);
-        //INFERIOR DERECHA
-        //String llx = "10";
-        //String lly = "85";
-        //String urx = String.valueOf(Integer.parseInt(llx) + 260);
-        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
-
-        Properties params = new Properties();
-        params.setProperty(PDFSignerItext.SIGNING_LOCATION, "Teletrabajo");
-        params.setProperty(PDFSignerItext.SIGNING_REASON, "Firmado digitalmente con RUBRICA");
-        params.setProperty(PDFSignerItext.SIGN_TIME, TiempoUtils.getFechaHoraServidor(null));
-        params.setProperty(PDFSignerItext.LAST_PAGE, "1");
-        params.setProperty(PDFSignerItext.TYPE_SIG, "QR");
-        params.setProperty(PDFSignerItext.INFO_QR, "Firmado digitalmente con RUBRICA\nhttps://minka.gob.ec/rubrica/rubrica");
-        //params.setProperty(PDFSignerItext.TYPE_SIG, "information2");
-        //params.setProperty(PDFSigner.FONT_SIZE, "4.5");
-        // Posicion firma
-        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_X, llx);
-        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_Y, lly);
-        //params.setProperty(RectanguloUtil.POSITION_ON_PAGE_UPPER_RIGHT_X, urx);
-        //params.setProperty(RectanguloUtil.POSITION_ON_PAGE_UPPER_RIGHT_Y, ury);
-        return params;
-    }
-
-    private static String hashAlgorithm = "SHA512";
-
     private static void firmarDocumentoTrifasica(String file) throws KeyStoreException, Exception {
+        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
+
         ////// LEER PDF:
         byte[] docByteArry = DocumentoUtils.loadFile(file);
-
-        // ARCHIVO
-        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
-        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
-        // TOKEN
-        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         byte[] signed = null;
         String alias = seleccionarAlias(keyStore);
@@ -219,14 +147,11 @@ public class Main {
     }
 
     private static void firmarDocumentoPDF(String file) throws KeyStoreException, Exception {
+        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
+
         ////// LEER PDF:
         byte[] docByteArry = DocumentoUtils.loadFile(file);
-
-        // ARCHIVO
-        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
-        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
-        // TOKEN
-        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         byte[] signed = null;
         String alias = seleccionarAlias(keyStore);
@@ -269,14 +194,10 @@ public class Main {
     }
 
     private static void firmarDocumentoXML(String file) throws KeyStoreException, Exception {
+        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
         ////// LEER XML:
         byte[] docByteArry = DocumentoUtils.loadFile(file);
-
-        // ARCHIVO
-        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
-        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
-        // TOKEN
-        //KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
 
         byte[] signed = null;
         String alias = seleccionarAlias(keyStore);
@@ -350,11 +271,8 @@ public class Main {
     }
 
     private static void validarCertificado() throws IOException, KeyStoreException, Exception {
-        // ARCHIVO
-        KeyStoreProvider ksp = new FileKeyStoreProvider(ARCHIVO);
-        KeyStore keyStore = ksp.getKeystore(PASSWORD.toCharArray());
-        // TOKEN
-//        KeyStore keyStore = KeyStoreProviderFactory.getKeyStore(PASSWORD);
+        KeyStore keyStore = getKeyStore(ARCHIVO, PASSWORD, null);
+//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
         String alias = seleccionarAlias(keyStore);
         X509Certificate x509Certificate = (X509Certificate) keyStore.getCertificate(alias);
         System.out.println("UID: " + Utils.getUID(x509Certificate));
@@ -364,9 +282,7 @@ public class Main {
         System.out.println("fecha expiración: " + x509Certificate.getNotAfter());
         System.out.println("ISSUER: " + x509Certificate.getIssuerX500Principal().getName());
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        TemporalAccessor accessor = dateTimeFormatter.parse(TiempoUtils.getFechaHoraServidor(null));
-        Date fechaHoraISO = Date.from(Instant.from(accessor));
+        Date fechaHoraISO = fechaHoraISO();
 
         //Validad certificado revocado
         Date fechaRevocado = UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null);
@@ -422,6 +338,78 @@ public class Main {
         } else {
             throw new InvalidFormatException("Documento no soportado");
         }
+    }
+
+    private static Properties parametros() throws IOException {
+        //PageSize.A4.getWidth();//595.0
+        //PageSize.A4.getHeight();//842.0
+        //QR
+        //SUPERIOR IZQUIERDA
+        String llx = "10";
+        String lly = "830";
+        //INFERIOR IZQUIERDA
+        //String llx = "100";
+        //String lly = "91";
+        //INFERIOR DERECHA
+        //String llx = "419";
+        //String lly = "91";
+        //INFERIOR CENTRADO
+        //String llx = "260";
+        //String lly = "91";
+        //QR
+        //SUPERIOR IZQUIERDA
+        //String llx = "10";
+        //String lly = "830";
+        //String urx = String.valueOf(Integer.parseInt(llx) + 110);
+        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
+        //INFERIOR CENTRADO
+        //String llx = "190";
+        //String lly = "85";
+        //String urx = String.valueOf(Integer.parseInt(llx) + 260);
+        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
+        //INFERIOR CENTRADO (ancho pie pagina)
+        //String llx = "100";
+        //String lly = "80";&
+        //String urx = String.valueOf(Integer.parseInt(llx) + 430);
+        //String ury = String.valueOf(Integer.parseInt(lly) - 25);
+        //INFERIOR DERECHA
+        //String llx = "10";
+        //String lly = "85";
+        //String urx = String.valueOf(Integer.parseInt(llx) + 260);
+        //String ury = String.valueOf(Integer.parseInt(lly) - 36);
+
+        Properties params = new Properties();
+        params.setProperty(PDFSignerItext.SIGNING_LOCATION, "Teletrabajo");
+        params.setProperty(PDFSignerItext.SIGNING_REASON, "Firmado digitalmente con RUBRICA");
+        params.setProperty(PDFSignerItext.SIGN_TIME, TiempoUtils.getFechaHoraServidor(null));
+        params.setProperty(PDFSignerItext.LAST_PAGE, "1");
+        params.setProperty(PDFSignerItext.TYPE_SIG, "QR");
+        params.setProperty(PDFSignerItext.INFO_QR, "Firmado digitalmente con RUBRICA\nhttps://minka.gob.ec/rubrica/rubrica");
+        //params.setProperty(PDFSignerItext.TYPE_SIG, "information2");
+        //params.setProperty(PDFSigner.FONT_SIZE, "4.5");
+        // Posicion firma
+        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_X, llx);
+        params.setProperty(RectanguloUtil.POSITION_ON_PAGE_LOWER_LEFT_Y, lly);
+        //params.setProperty(RectanguloUtil.POSITION_ON_PAGE_UPPER_RIGHT_X, urx);
+        //params.setProperty(RectanguloUtil.POSITION_ON_PAGE_UPPER_RIGHT_Y, ury);
+        return params;
+    }
+
+    private static KeyStore getKeyStore(String archivo, String password, String tipoKeyStoreProvider) throws KeyStoreException {
+        if (archivo != null) {
+            // ARCHIVO
+            KeyStoreProvider ksp = new FileKeyStoreProvider(archivo);
+            return ksp.getKeystore(password.toCharArray());
+        } // TOKEN
+        else {
+            return KeyStoreProviderFactory.getKeyStore(password, tipoKeyStoreProvider);
+        }
+    }
+
+    private static Date fechaHoraISO() throws IOException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+        TemporalAccessor accessor = dateTimeFormatter.parse(TiempoUtils.getFechaHoraServidor(null));
+        return Date.from(Instant.from(accessor));
     }
 
     //pruebas de fecha-hora

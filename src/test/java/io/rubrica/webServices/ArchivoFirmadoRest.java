@@ -1,7 +1,7 @@
 /**
  *
  */
-package io.rubrica.sw;
+package io.rubrica.webServices;
 
 import java.io.StringReader;
 import java.util.Collection;
