@@ -85,7 +85,6 @@ import io.rubrica.exceptions.InvalidFormatException;
 import io.rubrica.exceptions.OcspValidationException;
 import io.rubrica.exceptions.RubricaException;
 import io.rubrica.exceptions.SignatureVerificationException;
-import io.rubrica.sign.Main;
 import io.rubrica.sign.SignInfo;
 import io.rubrica.sign.Signer;
 import io.rubrica.sign.cms.VerificadorCMS;
@@ -503,7 +502,7 @@ public class Utils {
                             }
                         }
                     } catch (SignatureException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     certificados.add(certificado);
                 }
@@ -607,7 +606,7 @@ public class Utils {
                             }
                         }
                     } catch (SignatureException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     certificados.add(certificado);
                 }
