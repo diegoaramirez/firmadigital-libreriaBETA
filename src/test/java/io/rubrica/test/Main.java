@@ -236,7 +236,7 @@ public class Main {
     private static void validarCertificadoAPI() throws IOException, KeyStoreException, Exception {
 //        String urlws = "https://impapi.firmadigital.gob.ec/api/validarCertificadoDigital";
 //        String urlws = "http://impapi.firmadigital.gob.ec:8080/api/validarCertificadoDigital";
-        String urlws = "http://localhost:8080/api/validarcertificadodigital";
+        String urlws = "http://localhost:8080/api/validarCertificadoDigital";
         StringBuilder entity = new StringBuilder();
         String result;
         File pkcs12 = new File(PKCS12);
