@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import io.rubrica.utils.TiempoUtils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -25,39 +24,22 @@ import java.nio.charset.StandardCharsets;
  */
 public class Main {
 
-    private static void fechaHora(int segundos) throws KeyStoreException, Exception {
-        tiempo(segundos);//espera en segundos
-        do {
-            try {
-                System.out.println("getFechaHora() " + TiempoUtils.getFechaHora(null));
-                System.out.println("getFechaHoraServidor() " + TiempoUtils.getFechaHoraServidor(null));
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        } while (tiempo);
-        System.exit(0);
-    }
+//    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
+//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+    private static final String URLAPI = "http://localhost:8080/api";
+//    private static final String URLWS = "https://impapi.firmadigital.gob.ec/servicio";
+//    private static final String URLWS = "http://impapi.firmadigital.gob.ec:8080/servicio";
+    private static final String URLWS = "http://localhost:8080/servicio";
 
-    private static boolean tiempo = true;
-
-    private static void tiempo(int segundos) {
-        new java.util.Timer().schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                tiempo = false;
-            }
-        }, segundos * 1000); //espera 3 segundos
-    }
+    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
+    private static final String PASSWORD = "123456";
+    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
 
     public static void main(String args[]) throws Exception {
-        //fechaHora(240);//espera en segundos
         consumoServicioWeb();
     }
 
     private static void consumoServicioWeb() throws KeyStoreException, Exception {
-        //constantes
-        String urlapi = "https://impapi.firmadigital.gob.ec/api";
-        String urlws = "https://impws.firmadigital.gob.ec/servicio/documentos";
         String sistema = "pruebas";
         String apiKey = "pruebas";
         String tipoEstampado = "QR";//QR, information1, information2
@@ -78,12 +60,12 @@ public class Main {
 
         //Variantes
         int certificado = 2;//1 token 2 archivo
-        String cedula = "0704604032";
-        int numeroCopias = 2;
-        File documento = new File("/home/mfernandez/documento_blanco.pdf");
+        String cedula = "1234567890";
+        int numeroCopias = 1;
+        File documento = new File(FILE);
 
         //configuracion de cabecera
-        HttpPost post = new HttpPost(urlws);
+        HttpPost post = new HttpPost(URLWS + "/documentos");
         post.addHeader("content-type", "application/json");
         post.addHeader("X-API-KEY", apiKey);
 
@@ -129,18 +111,46 @@ public class Main {
             //presentar por consola el JWT (Json Web Token)
             System.out.println("JWT: " + result);
 
-            /*String url = "firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&url=" + urlapi;
             //presentar por consola la url para ejecutar desde navegador
-            System.out.println(url);
-            
-            //presentar por consola la url para ejecutar desde navegador ()
-            System.out.println(URLEncoder.encode(url, StandardCharsets.UTF_8));*/
-            
-            //presentar por consola la url para ejecutar desde navegador
-            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + urlapi);
-            
+            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLAPI);
+
             //presentar por consola la url para ejecutar desde navegador (URLEncoder)
-            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLEncoder.encode(urlapi, StandardCharsets.UTF_8));
+            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLEncoder.encode(URLAPI, StandardCharsets.UTF_8));
+
+            //FIRMAR TRANSVERSAL
+            entity = new StringBuilder();
+            File pkcs12 = new File(PKCS12);
+
+            //configuracion de cabecera
+            post = new HttpPost(URLAPI + "/firmartransversal");
+            post.addHeader("Accept", "application/json");
+            post.addHeader("content-type", "text/plain");
+
+            //creacion del JSON
+            gsonObject = new com.google.gson.JsonObject();
+            gsonObject.addProperty("pkcs12", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath())));
+            gsonObject.addProperty("password", PASSWORD);
+            gsonObject.addProperty("jwt", result);
+            gsonObject.addProperty("llx", llx);
+            gsonObject.addProperty("lly", lly);
+            gsonObject.addProperty("tipoEstampado", tipoEstampado);
+            gsonObject.addProperty("pagina", pagina);
+            gsonObject.addProperty("pre", true);
+            gsonObject.addProperty("url", URLAPI);
+            System.out.println("gsonObject: " + gsonObject.toString());
+
+            entity.append(gsonObject.toString());
+
+            // send a JSON data
+            post.setEntity(new StringEntity(entity.toString()));
+            try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                    CloseableHttpResponse response = httpClient.execute(post)) {
+                result = EntityUtils.toString(response.getEntity());
+                System.out.println("result: " + result);
+                //presentar por consola la respuesta
+                System.out.println(response.getStatusLine().getStatusCode() + " - " + response.getStatusLine().getReasonPhrase());
+                httpClient.close();
+            }
         } else {
             System.out.println("No se encontró el documento: " + documento.getPath());
         }
