@@ -6,6 +6,7 @@
 package io.rubrica.webServices;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.KeyStoreException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,6 +17,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 
 /**
  *
@@ -24,22 +31,39 @@ import java.nio.charset.StandardCharsets;
 public class Main {
 
 //    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
-    private static final String URLAPI = "http://localhost:8080/api";
-//    private static final String URLWS = "https://impapi.firmadigital.gob.ec/servicio";
-//    private static final String URLWS = "http://impapi.firmadigital.gob.ec:8080/servicio";
-    private static final String URLWS = "http://localhost:8080/servicio";
+    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+//    private static final String URLAPI = "http://localhost:8080/api";
+//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
+    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
+//    private static final String URLWS = "http://localhost:8080/servicio";
 
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
-//    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
 
     public static void main(String args[]) throws Exception {
-        consumoServicioWeb();
+        appValidarCertificado();
+//        appFirmaTransversal();
     }
 
-    private static void consumoServicioWeb() throws KeyStoreException, Exception {
+    private static void appValidarCertificado() throws IOException, KeyStoreException, Exception {
+        String urlws = URLAPI + "/appvalidarcertificadodigital";
+        File pkcs12 = new File(PKCS12);
+        String pkcs12Base64=java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(urlws);
+        Invocation.Builder builder = target.request();
+        
+        Form form = new Form();
+        form.param("pkcs12", pkcs12Base64);
+        form.param("password", PASSWORD);
+        
+        Invocation invocation=builder.buildPost(Entity.form(form));
+        System.out.println(invocation.invoke(String.class));
+    }
+    
+    private static void appFirmaTransversal() throws KeyStoreException, Exception {
         String sistema = "pruebas";
         String apiKey = "pruebas";
         String tipoEstampado = "QR";//QR, information1, information2
@@ -120,6 +144,7 @@ public class Main {
             //FIRMAR TRANSVERSAL
             entity = new StringBuilder();
             File pkcs12 = new File(PKCS12);
+            String pkcs12Base64=java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
 
             //configuracion de cabecera
             post = new HttpPost(URLAPI + "/firmartransversal");
@@ -128,7 +153,7 @@ public class Main {
 
             //creacion del JSON
             gsonObject = new com.google.gson.JsonObject();
-            gsonObject.addProperty("pkcs12", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath())));
+            gsonObject.addProperty("pkcs12", pkcs12Base64);
             gsonObject.addProperty("password", PASSWORD);
             gsonObject.addProperty("sistema", sistema);
             gsonObject.addProperty("operacion", "firmar");

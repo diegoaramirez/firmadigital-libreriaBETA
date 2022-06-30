@@ -61,13 +61,6 @@ import io.rubrica.utils.UtilsCrlOcsp;
 import io.rubrica.utils.X509CertificateUtils;
 import io.rubrica.validaciones.DocumentoUtils;
 import java.io.InputStream;
-import java.nio.file.Files;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 /**
  * Metodo de pruebas funcionales
@@ -86,8 +79,7 @@ public class Main {
 //        firmarDocumentoTrifasica(FILE);
 //        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
-        validarCertificadoAPI();
-//        validarCertificado();
+        validarCertificado();
 //        verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
@@ -230,41 +222,6 @@ public class Main {
             fos.close();
         } else {
             System.out.println("Entidad Certificadora no reconocida");
-        }
-    }
-
-    private static void validarCertificadoAPI() throws IOException, KeyStoreException, Exception {
-//        String urlws = "https://impapi.firmadigital.gob.ec/api/validarcertificadodigital";
-//        String urlws = "http://impapi.firmadigital.gob.ec:8080/api/validarcertificadodigital";
-        String urlws = "http://localhost:8080/api/validarcertificadodigital";
-        StringBuilder entity = new StringBuilder();
-        String result;
-        File pkcs12 = new File(PKCS12);
-
-        //configuracion de cabecera
-        HttpPost post = new HttpPost(urlws);
-        post.addHeader("Accept", "application/json");
-        post.addHeader("content-type", "text/plain");
-
-        //creacion del JSON
-        com.google.gson.JsonObject gsonObject = null;
-        gsonObject = new com.google.gson.JsonObject();
-        gsonObject.addProperty("pkcs12", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath())));
-        gsonObject.addProperty("password", PASSWORD);
-        System.out.println("gsonObject: " + gsonObject.toString());
-
-        entity.append(gsonObject.toString());
-//        entity.append(URLEncoder.encode(gsonObject.toString(), StandardCharsets.UTF_8));
-
-        // send a JSON data
-        post.setEntity(new StringEntity(entity.toString()));
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                CloseableHttpResponse response = httpClient.execute(post)) {
-            result = EntityUtils.toString(response.getEntity());
-            System.out.println("result: " + result);
-            //presentar por consola la respuesta
-            System.out.println(response.getStatusLine().getStatusCode() + " - " + response.getStatusLine().getReasonPhrase());
-            httpClient.close();
         }
     }
 
