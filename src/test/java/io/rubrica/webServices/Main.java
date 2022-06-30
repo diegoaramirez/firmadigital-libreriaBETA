@@ -6,7 +6,6 @@
 package io.rubrica.webServices;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.security.KeyStoreException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -33,7 +32,8 @@ public class Main {
 
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+//    private static final String FILE = "/home/mfernandez/Descargas/Manual-Usuario-FirmaEC-v2.7.0.pdf";
 
     public static void main(String args[]) throws Exception {
         consumoServicioWeb();
@@ -130,12 +130,17 @@ public class Main {
             gsonObject = new com.google.gson.JsonObject();
             gsonObject.addProperty("pkcs12", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath())));
             gsonObject.addProperty("password", PASSWORD);
-            gsonObject.addProperty("jwt", result);
+            gsonObject.addProperty("sistema", sistema);
+            gsonObject.addProperty("operacion", "firmar");
+            gsonObject.addProperty("versionFirmaEC", "RUBRICA");
+            gsonObject.addProperty("formatoDocumento", "PDF");
+            gsonObject.addProperty("tokenJwt", result);
             gsonObject.addProperty("llx", llx);
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
             gsonObject.addProperty("pagina", pagina);
-            gsonObject.addProperty("pre", true);
+//            gsonObject.addProperty("pre", true);
+            gsonObject.addProperty("des", true);
             gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
 
