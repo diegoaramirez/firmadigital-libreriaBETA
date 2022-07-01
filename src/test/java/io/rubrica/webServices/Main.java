@@ -31,8 +31,7 @@ import javax.ws.rs.core.Form;
 public class Main {
 
 //    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
-    private static final String URLAPI = "http://impws.firmadigital.gob.ec:8080/servicio";
+    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
 //    private static final String URLAPI = "http://localhost:8080/api";
 //    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
     private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
