@@ -154,9 +154,9 @@ public abstract class BasePdfSigner implements PdfSigner {
                 String nombreFirmante = (datosUsuario.getNombre() + " " + datosUsuario.getApellido()).toUpperCase();
                 String informacionCertificado = x509Certificate.getSubjectDN().getName();
 
-                logger.info("datosUsuario: " + datosUsuario);
-                logger.info("Nombre firmante: " + nombreFirmante);
-                logger.info("Informacion certificado: " + informacionCertificado);
+//                logger.info("datosUsuario: " + datosUsuario);
+//                logger.info("Nombre firmante: " + nombreFirmante);
+//                logger.info("Informacion certificado: " + informacionCertificado);
 
                 PdfDocument pdfDocument = pdfSigner.getDocument();
 

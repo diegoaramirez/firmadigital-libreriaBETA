@@ -935,13 +935,13 @@ public class Utils {
                 return true;
             } catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException
                     | NoSuchProviderException | SignatureException e) {
-                System.out.println("\n"
-                        + "\tSignature verification of certificate having distinguished name \n"
-                        + "\t'" + certificate.getSubjectX500Principal() + "'\n"
-                        + "\twith certificate having distinguished name (the issuer) \n"
-                        + "\t'" + rootCertificate.getSubjectX500Principal() + "'\n"
-                        + "\tfailed. Expected issuer has distinguished name \n"
-                        + "\t'" + certificate.getIssuerX500Principal() + "' (" + e.getClass().getSimpleName() + ")");
+//                System.out.println("\n"
+//                        + "\tSignature verification of certificate having distinguished name \n"
+//                        + "\t'" + certificate.getSubjectX500Principal() + "'\n"
+//                        + "\twith certificate having distinguished name (the issuer) \n"
+//                        + "\t'" + rootCertificate.getSubjectX500Principal() + "'\n"
+//                        + "\tfailed. Expected issuer has distinguished name \n"
+//                        + "\t'" + certificate.getIssuerX500Principal() + "' (" + e.getClass().getSimpleName() + ")");
             }
         }
         return false;

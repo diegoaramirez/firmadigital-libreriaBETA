@@ -31,7 +31,8 @@ import javax.ws.rs.core.Form;
 public class Main {
 
 //    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+    private static final String URLAPI = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLAPI = "http://localhost:8080/api";
 //    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
     private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
@@ -42,27 +43,27 @@ public class Main {
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
 
     public static void main(String args[]) throws Exception {
-        appValidarCertificado();
-//        appFirmaTransversal();
+//        appValidarCertificado();
+        appFirmaTransversal();
     }
 
     private static void appValidarCertificado() throws IOException, KeyStoreException, Exception {
         String urlws = URLAPI + "/appvalidarcertificadodigital";
         File pkcs12 = new File(PKCS12);
-        String pkcs12Base64=java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
+        String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
 
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(urlws);
         Invocation.Builder builder = target.request();
-        
+
         Form form = new Form();
         form.param("pkcs12", pkcs12Base64);
         form.param("password", PASSWORD);
-        
-        Invocation invocation=builder.buildPost(Entity.form(form));
+
+        Invocation invocation = builder.buildPost(Entity.form(form));
         System.out.println(invocation.invoke(String.class));
     }
-    
+
     private static void appFirmaTransversal() throws KeyStoreException, Exception {
         String sistema = "pruebas";
         String apiKey = "pruebas";
@@ -142,19 +143,16 @@ public class Main {
             System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLEncoder.encode(URLAPI, StandardCharsets.UTF_8));
 
             //FIRMAR TRANSVERSAL
-            entity = new StringBuilder();
+            String urlws = URLAPI + "/appfirmardocumentotransversal";
             File pkcs12 = new File(PKCS12);
-            String pkcs12Base64=java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
+            String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
 
-            //configuracion de cabecera
-            post = new HttpPost(URLAPI + "/firmartransversal");
-            post.addHeader("Accept", "application/json");
-            post.addHeader("content-type", "text/plain");
+            Client client = ClientBuilder.newClient();
+            WebTarget target = client.target(urlws);
+            Invocation.Builder builder = target.request();
 
             //creacion del JSON
             gsonObject = new com.google.gson.JsonObject();
-            gsonObject.addProperty("pkcs12", pkcs12Base64);
-            gsonObject.addProperty("password", PASSWORD);
             gsonObject.addProperty("sistema", sistema);
             gsonObject.addProperty("operacion", "firmar");
             gsonObject.addProperty("versionFirmaEC", "RUBRICA");
@@ -168,19 +166,14 @@ public class Main {
             gsonObject.addProperty("des", true);
             gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
+            
+            Form form = new Form();
+            form.param("pkcs12", pkcs12Base64);
+            form.param("password", PASSWORD);
+            form.param("json", gsonObject.toString());
 
-            entity.append(gsonObject.toString());
-
-            // send a JSON data
-            post.setEntity(new StringEntity(entity.toString()));
-            try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                    CloseableHttpResponse response = httpClient.execute(post)) {
-                result = EntityUtils.toString(response.getEntity());
-                System.out.println("result: " + result);
-                //presentar por consola la respuesta
-                System.out.println(response.getStatusLine().getStatusCode() + " - " + response.getStatusLine().getReasonPhrase());
-                httpClient.close();
-            }
+            Invocation invocation = builder.buildPost(Entity.form(form));
+            System.out.println(invocation.invoke(String.class));
         } else {
             System.out.println("No se encontró el documento: " + documento.getPath());
         }
