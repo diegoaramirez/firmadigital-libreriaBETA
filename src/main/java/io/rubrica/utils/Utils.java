@@ -412,7 +412,125 @@ public class Utils {
         return signValidate;
     }
 
+    //revertir
     public static Documento pdfToDocumento(InputStream pdf) throws IOException, SignatureVerificationException, Exception {
+        PdfReader pdfReader = new PdfReader(pdf);
+        Signer signer = new PDFSignerItext();
+        java.util.List<SignInfo> signInfos;
+        signInfos = signer.getSigners(pdf.readAllBytes());
+        return pdfToDocumento(pdfReader, signInfos);
+    }
+
+    public static Documento pdfToDocumento(File pdf) throws IOException, SignatureVerificationException, Exception {
+        PdfReader pdfReader = new PdfReader(pdf);
+        java.util.List<SignInfo> signInfos;
+        Signer signer = new PDFSignerItext();
+        signInfos = signer.getSigners(FileUtils.fileConvertToByteArray(pdf));
+        return pdfToDocumento(pdfReader, signInfos);
+    }
+
+    public static Documento pdfToDocumento(PdfReader pdfReader, java.util.List<SignInfo> signInfos) throws IOException, SignatureVerificationException, Exception {
+        Documento documento;
+        try (PdfDocument pdfDocument = new PdfDocument(pdfReader)) {
+            SignatureUtil signatureUtil = new SignatureUtil(pdfDocument);
+            List<Certificado> certificados = new ArrayList<>();
+            documento = new Documento(true, false, certificados, null);
+            if (signInfos == null || signInfos.isEmpty()) {
+                return new Documento(false, false, certificados, "Documento sin firmas");
+            } else {
+                for (SignInfo signInfo : signInfos) {
+                    Certificado certificado = signInfoToCertificado(signInfo);
+                    try {
+                        java.util.List<String> signatureNames = signatureUtil.getSignatureNames();
+                        for (String signatureName : signatureNames) {
+                            // <editor-fold defaultstate="collapsed" desc="Tested Code">
+                            //
+//                            HashMap<String, String> info = pdfReader.getInfo();
+//                            System.out.println(info.get("ModDate"));
+//                            String xmlMetadata = new String(pdfReader.getMetadata());
+//                            System.out.println("xmlMetadata: "+xmlMetadata);
+                            //
+//                        System.out.println("--------------signatureName"+signatureName+"--------------");
+//                        System.out.println("Signature covers whole document: " + pdfReader.getAcroFields().signatureCoversWholeDocument(signatureName)); //si esta modificado
+//                        InputStream revisionStream = pdfReader.getAcroFields().extractRevision(signatureName);
+//                        String xmlMetadata = new String(pdfReader.getMetadata());
+//                        System.out.println("xmlMetadata: " + xmlMetadata);
+//                        PdfReader pdfReaderRevision = new PdfReader(revisionStream);
+//                        for (String signatureNameRevision : pdfReaderRevision.getAcroFields().getSignatureNames()) {
+//                            String nameRevision = signatureNameRevision;
+//                            if (pdfReaderRevision.getMetadata() != null) {
+//                                String xmlMetadataRevision = new String(pdfReaderRevision.getMetadata());
+//                                System.out.println("xmlMetadata: " + xmlMetadataRevision);
+//                            }
+//                            System.out.println("++++++++++++++signatureNameRevision++++++++++++++");
+//                            System.out.println("Signature covers whole document: " + pdfReaderRevision.getAcroFields().signatureCoversWholeDocument(nameRevision)); //si esta modificado
+//                            System.out.println("Document revision: " + pdfReaderRevision.getAcroFields().getRevision(nameRevision) + "/" + pdfReaderRevision.getAcroFields().getTotalRevisions());
+//                            System.out.println("++++++++++++++++++++++++++++");
+//                        }
+//                        System.out.println("----------------------------");
+                            //
+                            // </editor-fold>
+                            // Retorma la firma en formato PKCS7
+                            PdfPKCS7 pdfPKCS7 = signatureUtil.verifySignature(signatureName);
+                            // Validacion Sellado de Tiempo
+                            TimeStampToken tsToken = pdfPKCS7.getTimeStampToken();
+                            if (tsToken != null) { // Timestamping Change Openpdf to itext
+                                TimeStampTokenInfo tsInfo = tsToken.getTimeStampInfo();
+                                certificado.setDocTimeStamp(tsInfo.getGenTime());
+                            }
+                            for (X509Certificate certificate : signInfo.getCerts()) {
+                                if (pdfPKCS7.getSigningCertificate().equals(certificate)) {
+                                    certificado.setDocReason(pdfPKCS7.getReason());
+                                    certificado.setDocLocation(pdfPKCS7.getLocation());
+                                    certificado.setSignVerify(pdfPKCS7.verifySignatureIntegrityAndAuthenticity());
+                                    //documento sin ser modificado
+                                    if (!documento.getDocValidate()) {
+                                        documento.setDocValidate(signatureUtil.signatureCoversWholeDocument(signatureName));
+                                    }
+                                    // Obtiene KeyUsages
+                                    certificado.setKeyUsages(validacionKeyUsages(pdfPKCS7.getSigningCertificate()));
+                                    certificado = isTimeStamping(signatureUtil, signatureName, certificado);
+                                    if (certificado.getDatosUsuario().getSelladoTiempo()) {
+                                        certificado.setDatosUsuario(infoCertificado(certificado.getDatosUsuario(), signInfo));
+                                    }
+                                    // <editor-fold defaultstate="collapsed" desc="Tested Code">
+//                                    System.out.println("--------------signatureName " + signatureName + "--------------");
+//                                    verifySignature(signatureUtil, signatureName);
+//                                    InputStream revisionStream = signatureUtil.extractRevision(signatureName);
+//                                    PdfReader pdfReaderRevision = new PdfReader(revisionStream);
+//                                    try (PdfDocument pdfDocumentRevision = new PdfDocument(pdfReaderRevision)) {
+//                                        SignatureUtil signatureUtilRevision = new SignatureUtil(pdfDocumentRevision);
+//                                        for (String signatureNameRevision : signatureUtilRevision.getSignatureNames()) {
+//                                            System.out.println("++++++++++++++signatureNameRevision++++++++++++++");
+//                                            infoPDF(pdfDocumentRevision);
+//                                            System.out.println("getGenerated: " + certificado.getGenerated().getTime());
+//                                            verifySignature(signatureUtilRevision, signatureNameRevision);
+//                                            System.out.println("++++++++++++++++++++++++++++");
+//                                        }
+//                                        System.out.println("----------------------------");
+//                                    }
+                                    // </editor-fold>
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (SignatureException ex) {
+                        Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    certificados.add(certificado);
+                }
+
+                if (certificados != null || !certificados.isEmpty()) {
+                    documento.setSignValidate(verifySignValidate(certificados));
+                }
+                documento.setCertificados(certificados);
+            }
+        }
+        return documento;
+    }
+    //revertir
+    
+    /*public static Documento pdfToDocumento(InputStream pdf) throws IOException, SignatureVerificationException, Exception {
         PdfReader pdfReader = new PdfReader(pdf);
         Documento documento;
         try (PdfDocument pdfDocument = new PdfDocument(pdfReader)) {
@@ -506,7 +624,7 @@ public class Utils {
                     }
                     certificados.add(certificado);
                 }
-
+    
                 if (certificados != null || !certificados.isEmpty()) {
                     documento.setSignValidate(verifySignValidate(certificados));
                 }
@@ -618,7 +736,7 @@ public class Utils {
             }
         }
         return documento;
-    }
+    }*/
 
     private static void infoPDF(PdfDocument pdfDocument) {
         //get metadata map

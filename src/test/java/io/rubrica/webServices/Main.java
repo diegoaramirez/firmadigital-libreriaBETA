@@ -23,6 +23,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -42,8 +43,26 @@ public class Main {
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
 
     public static void main(String args[]) throws Exception {
+        appVerificarDocumento();
 //        appValidarCertificado();
-        appFirmaTransversal();
+//        appFirmaTransversal();
+    }
+
+    private static void appVerificarDocumento() throws IOException, KeyStoreException, Exception {
+        String urlws = URLAPI + "/appverificardocumento";
+        File file = new File(FILE);
+        String fileBase64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(urlws);
+        Invocation.Builder builder = target.request();
+
+        Form form = new Form();
+        form.param("documento", fileBase64);
+
+        Invocation invocation = builder.buildPost(Entity.form(form));
+        Response response = invocation.invoke();
+        System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
     }
 
     private static void appValidarCertificado() throws IOException, KeyStoreException, Exception {
@@ -60,7 +79,8 @@ public class Main {
         form.param("password", PASSWORD);
 
         Invocation invocation = builder.buildPost(Entity.form(form));
-        System.out.println(invocation.invoke(String.class));
+        Response response = invocation.invoke();
+        System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
     }
 
     private static void appFirmaTransversal() throws KeyStoreException, Exception {
@@ -161,18 +181,19 @@ public class Main {
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
             gsonObject.addProperty("pagina", pagina);
-//            gsonObject.addProperty("pre", true);
-            gsonObject.addProperty("des", true);
-            gsonObject.addProperty("url", URLAPI);
+            gsonObject.addProperty("pre", true);
+//            gsonObject.addProperty("des", true);
+//            gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
-            
+
             Form form = new Form();
             form.param("pkcs12", pkcs12Base64);
             form.param("password", PASSWORD);
             form.param("json", gsonObject.toString());
 
             Invocation invocation = builder.buildPost(Entity.form(form));
-            System.out.println(invocation.invoke(String.class));
+            Response response = invocation.invoke();
+            System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
         } else {
             System.out.println("No se encontró el documento: " + documento.getPath());
         }
