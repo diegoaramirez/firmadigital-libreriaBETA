@@ -40,11 +40,12 @@ public class Main {
 
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+//    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
 
     public static void main(String args[]) throws Exception {
-        appVerificarDocumento();
-//        appValidarCertificado();
+//        appVerificarDocumento();
+        appValidarCertificado();
 //        appFirmaTransversal();
     }
 
@@ -62,7 +63,9 @@ public class Main {
 
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
-        System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
+        int status = response.getStatus();
+        String result = response.readEntity(String.class);
+        System.out.println("Status: " + status + "\nResult: " + result);
     }
 
     private static void appValidarCertificado() throws IOException, KeyStoreException, Exception {
@@ -80,7 +83,9 @@ public class Main {
 
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
-        System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
+        int status = response.getStatus();
+        String result = response.readEntity(String.class);
+        System.out.println("Status: " + status + "\nResult: " + result);
     }
 
     private static void appFirmaTransversal() throws KeyStoreException, Exception {

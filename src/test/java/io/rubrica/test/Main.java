@@ -72,15 +72,16 @@ public class Main {
     // ARCHIVO
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Descargas/ManuCal-Usuario-FirmaEC-v2.7.0.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
+//    private static final String FILE = "/home/mfernandez/Descargas/ManuCal-Usuario-FirmaEC-v2.7.0.pdf";
     private static String hashAlgorithm = "SHA512";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        firmarDocumentoTrifasica(FILE);
 //        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
-        validarCertificado();
-//        verificarDocumento(FILE);
+//        validarCertificado();
+        verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
 
@@ -260,6 +261,7 @@ public class Main {
                 null,
                 datosUsuario);
         System.out.println("Certificado: " + certificado);
+        System.out.println(Json.generarJsonCertificado(certificado));
     }
 
 //    private static void verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
@@ -290,6 +292,7 @@ public class Main {
             documento.getCertificados().forEach((certificado) -> {
                 System.out.println(certificado.toString());
             });
+            System.out.println(Json.generarJsonDocumento(documento));
         } else {
             throw new InvalidFormatException("Documento no soportado");
         }
