@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
  */
 public class Main {
 
+//    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";
 //    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
     private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
 //    private static final String URLAPI = "http://localhost:8080/api";
@@ -44,8 +45,8 @@ public class Main {
     private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
 
     public static void main(String args[]) throws Exception {
-//        appVerificarDocumento();
-        appValidarCertificado();
+        appVerificarDocumento();
+//        appValidarCertificado();
 //        appFirmaTransversal();
     }
 

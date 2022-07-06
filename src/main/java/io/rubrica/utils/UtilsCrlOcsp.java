@@ -180,6 +180,7 @@ public class UtilsCrlOcsp {
             try (InputStream is = urlConnection.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(is);
                 BufferedReader in = new BufferedReader(reader);
+                System.out.println("in.readLine(): "+in.readLine());//NO BORRAR, HACE FUNCIONAR EL METODO
                 return in.readLine();
             }
         } else {

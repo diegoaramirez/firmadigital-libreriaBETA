@@ -529,7 +529,7 @@ public class Utils {
         return documento;
     }
     //revertir
-    
+
     /*public static Documento pdfToDocumento(InputStream pdf) throws IOException, SignatureVerificationException, Exception {
         PdfReader pdfReader = new PdfReader(pdf);
         Documento documento;
@@ -737,7 +737,6 @@ public class Utils {
         }
         return documento;
     }*/
-
     private static void infoPDF(PdfDocument pdfDocument) {
         //get metadata map
         PdfDictionary catalog = pdfDocument.getTrailer();
