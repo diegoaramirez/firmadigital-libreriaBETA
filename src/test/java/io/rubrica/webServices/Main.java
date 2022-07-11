@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 
+ * Authors: Ricardo Arguello, Misael Fernández
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.*
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package io.rubrica.webServices;
 
@@ -26,6 +38,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 
 /**
+ * Metodo de pruebas funcionales
  *
  * @author mfernandez
  */
@@ -45,9 +58,53 @@ public class Main {
     private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
 
     public static void main(String args[]) throws Exception {
-        appVerificarDocumento();
+        appFirmarDocumento();
+//        appVerificarDocumento();
 //        appValidarCertificado();
-//        appFirmaTransversal();
+//        appFirmarDocumentoTransversal();
+    }
+
+    private static void appFirmarDocumento() throws IOException, KeyStoreException, Exception {
+        String tipoEstampado = "QR";//QR, information1, information2
+        int pagina = 1;//pagina en donde se estampa la firma (sin el parametro, se estampa en la ultima hoja)
+        //SUPERIOR IZQUIERDA
+        String llx = "10";
+        String lly = "830";
+        //FIRMAR
+        String urlws = URLAPI + "/appfirmardocumento";
+        File pkcs12 = new File(PKCS12);
+        String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
+        File file = new File(FILE);
+        String fileBase64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(urlws);
+        Invocation.Builder builder = target.request();
+
+        //creacion del JSON
+        com.google.gson.JsonObject gsonObject = new com.google.gson.JsonObject();
+        gsonObject = new com.google.gson.JsonObject();
+        gsonObject.addProperty("versionFirmaEC", "RUBRICA");
+        gsonObject.addProperty("formatoDocumento", "PDF");
+        gsonObject.addProperty("llx", llx);
+        gsonObject.addProperty("lly", lly);
+        gsonObject.addProperty("pagina", pagina);
+        gsonObject.addProperty("tipoEstampado", tipoEstampado);
+        
+        gsonObject.addProperty("pre", true);
+//            gsonObject.addProperty("des", true);
+//            gsonObject.addProperty("url", URLAPI);
+        System.out.println("gsonObject: " + gsonObject.toString());
+
+        Form form = new Form();
+        form.param("pkcs12", pkcs12Base64);
+        form.param("password", PASSWORD);
+        form.param("documento", fileBase64);
+        form.param("json", gsonObject.toString());
+
+        Invocation invocation = builder.buildPost(Entity.form(form));
+        Response response = invocation.invoke();
+        System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
     }
 
     private static void appVerificarDocumento() throws IOException, KeyStoreException, Exception {
@@ -65,7 +122,8 @@ public class Main {
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
         int status = response.getStatus();
-        String result = response.readEntity(String.class);
+        String result = response.readEntity(String.class
+        );
         System.out.println("Status: " + status + "\nResult: " + result);
     }
 
@@ -85,11 +143,12 @@ public class Main {
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
         int status = response.getStatus();
-        String result = response.readEntity(String.class);
+        String result = response.readEntity(String.class
+        );
         System.out.println("Status: " + status + "\nResult: " + result);
     }
 
-    private static void appFirmaTransversal() throws KeyStoreException, Exception {
+    private static void appFirmarDocumentoTransversal() throws KeyStoreException, Exception {
         String sistema = "pruebas";
         String apiKey = "pruebas";
         String tipoEstampado = "QR";//QR, information1, information2
@@ -199,7 +258,8 @@ public class Main {
 
             Invocation invocation = builder.buildPost(Entity.form(form));
             Response response = invocation.invoke();
-            System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class));
+            System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class
+            ));
         } else {
             System.out.println("No se encontró el documento: " + documento.getPath());
         }

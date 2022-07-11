@@ -5,7 +5,6 @@
  */
 package io.rubrica.utils;
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -24,12 +23,19 @@ public class Json {
     private static final SimpleDateFormat simpleDateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     public static String generarJsonDocumento(Documento documento) {
+        return generarJsonDocumentoFirmado(null, documento);
+    }
+
+    public static String generarJsonDocumentoFirmado(byte[] byteDocumentoSigned, Documento documento) {
         //creacion del JSON
         com.google.gson.JsonArray gsonArray = new com.google.gson.JsonArray();
         com.google.gson.JsonObject jsonObjectDocumento = null;
         jsonObjectDocumento = new com.google.gson.JsonObject();
         jsonObjectDocumento.addProperty("signValidate", documento.getSignValidate());
         jsonObjectDocumento.addProperty("docValidate", documento.getDocValidate());
+        if (byteDocumentoSigned != null) {
+            jsonObjectDocumento.addProperty("docSigned", java.util.Base64.getEncoder().encodeToString(byteDocumentoSigned));
+        }
         jsonObjectDocumento.addProperty("error", documento.getError());
 
         //Arreglo de Certificado(s)
@@ -117,4 +123,3 @@ public class Json {
     }
 
 }
-
