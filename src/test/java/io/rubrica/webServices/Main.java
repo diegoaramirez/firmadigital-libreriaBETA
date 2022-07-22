@@ -45,11 +45,11 @@ import javax.ws.rs.core.Response;
 public class Main {
 
 //    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
+//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
 //    private static final String URLAPI = "http://localhost:8080/api";
-//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
-    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
+    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
+//    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLWS = "http://localhost:8080/servicio";
 
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
@@ -58,10 +58,10 @@ public class Main {
     private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
 
     public static void main(String args[]) throws Exception {
-        appFirmarDocumento();
+//        appFirmarDocumento();
 //        appVerificarDocumento();
 //        appValidarCertificado();
-//        appFirmarDocumentoTransversal();
+        appFirmarDocumentoTransversal();
     }
 
     private static void appFirmarDocumento() throws IOException, KeyStoreException, Exception {
@@ -90,10 +90,6 @@ public class Main {
         gsonObject.addProperty("lly", lly);
         gsonObject.addProperty("pagina", pagina);
         gsonObject.addProperty("tipoEstampado", tipoEstampado);
-        
-        gsonObject.addProperty("pre", true);
-//            gsonObject.addProperty("des", true);
-//            gsonObject.addProperty("url", URLAPI);
         System.out.println("gsonObject: " + gsonObject.toString());
 
         Form form = new Form();
@@ -170,7 +166,7 @@ public class Main {
         //Variantes
         int certificado = 2;//1 token 2 archivo
         String cedula = "1234567890";
-        int numeroCopias = 1;
+        int numeroCopias = 3;
         File documento = new File(FILE);
 
         //configuracion de cabecera
@@ -190,11 +186,11 @@ public class Main {
             //Arreglo de documento(s)
             com.google.gson.JsonArray gsonDocumentoArray = new com.google.gson.JsonArray();
             com.google.gson.JsonObject gsonDocumentoObject = null;
-            gsonDocumentoObject = new com.google.gson.JsonObject();
             //dependiendo numero de copias
             for (int i = 0; i < numeroCopias; i++) {
+                gsonDocumentoObject = new com.google.gson.JsonObject();
                 //Generando documento en base64 y agregando en JSON
-                gsonDocumentoObject.addProperty("nombre", documento.getName() + i);
+                gsonDocumentoObject.addProperty("nombre", documento.getName() + i + ".pdf");
                 gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento.toPath())));
                 gsonDocumentoArray.add(gsonDocumentoObject);
             }
