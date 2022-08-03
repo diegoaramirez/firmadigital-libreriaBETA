@@ -100,7 +100,8 @@ public class X509CertificateUtils {
             }
 
             if ((revocado != null) || caducado || desconocido) {
-                javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+                //problemas si se activa en sw
+//                javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
                 retorno = false;
             } else {
                 retorno = true;

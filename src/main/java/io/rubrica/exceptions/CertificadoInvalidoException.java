@@ -30,4 +30,8 @@ public class CertificadoInvalidoException extends Exception {
     public CertificadoInvalidoException(String msg) {
         super(msg);
     }
+    
+    public CertificadoInvalidoException() {
+        super();
+    }
 }

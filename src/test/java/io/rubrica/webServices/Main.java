@@ -45,14 +45,20 @@ import javax.ws.rs.core.Response;
 public class Main {
 
 //    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";
-    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+//    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
+    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
 //    private static final String URLAPI = "http://localhost:8080/api";
-    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
+//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
+//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
+    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLWS = "http://localhost:8080/servicio";
 
-    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
+//    private static final String PKCS12 = "/home/mfernandez/Firmas/Digercic/DIGERCIC_abril_9_2021/Usuario_tres_REVOCADOS.pfx";
+//    private static final String PASSWORD = "12121212Qw.";
+//    private static final String PKCS12 = "/home/mfernandez/Firmas/SecurityData/prubas_misael_revocado.p12";
+//    private static final String PASSWORD = "1234";
+    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba2.p12";
     private static final String PASSWORD = "123456";
 //    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
@@ -242,8 +248,8 @@ public class Main {
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
             gsonObject.addProperty("pagina", pagina);
-            gsonObject.addProperty("pre", true);
-//            gsonObject.addProperty("des", true);
+//            gsonObject.addProperty("pre", true);
+            gsonObject.addProperty("des", true);
 //            gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
 

@@ -79,8 +79,8 @@ public class Main {
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        firmarDocumentoTrifasica(FILE);
 //        firmarDocumentoPDF(FILE);
-//        firmarDocumentoXML(FILE);
-//        validarCertificado();
+        firmarDocumentoXML(FILE);
+        validarCertificado();
         verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
@@ -149,7 +149,7 @@ public class Main {
         PrivateKey key = (PrivateKey) keyStore.getKey(alias, PASSWORD.toCharArray());
 
         X509CertificateUtils x509CertificateUtils = new X509CertificateUtils();
-
+        System.out.println("x509CertificateUtils: "+x509CertificateUtils);
         // if (x509CertificateUtils.validarX509Certificate((X509Certificate) keyStore.getCertificate(alias), null)) {//validación de firmaEC
         Certificate[] certChain = keyStore.getCertificateChain(alias);
         Properties properties = parametros();
@@ -161,6 +161,7 @@ public class Main {
         ////// Permite guardar el archivo en el equipo y luego lo abre
         String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
         FileOutputStream fos = new java.io.FileOutputStream(nombreDocumento);
+        System.out.println("fos: "+fos);
         //Abrir documento
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
@@ -237,6 +238,8 @@ public class Main {
         System.out.println("fecha emisión: " + x509Certificate.getNotBefore());
         System.out.println("fecha expiración: " + x509Certificate.getNotAfter());
         System.out.println("ISSUER: " + x509Certificate.getIssuerX500Principal().getName());
+        System.out.println("Subject: " + x509Certificate.getSubjectDN());
+        System.out.println("Serial: " + x509Certificate.getSerialNumber());
 
         Date fechaHoraISO = fechaHoraISO();
 
