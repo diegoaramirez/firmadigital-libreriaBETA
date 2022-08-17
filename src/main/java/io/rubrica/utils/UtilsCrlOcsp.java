@@ -75,14 +75,6 @@ public class UtilsCrlOcsp {
         try {
             BigInteger serial = cert.getSerialNumber();
             fechaRevocado = validarCrlServidorAPI(serial, apiUrl);
-            if (fechaRevocado != null) {
-                System.out.println("Fallo la validacion por el servicio del API, Ahora intentamos por OCSP");
-                fechaRevocado = validarOCSP(cert);
-                if (fechaRevocado.equals("unknownStatus")) {
-                    System.out.println("Fallo la validacion por OCSP, Ahora intentamos por CRL");
-                    fechaRevocado = validarCRL(cert);
-                }
-            }
         } catch (IOException | ConexionApiException ex) {
             System.out.println("Fallo la validacion por el servicio del API, Ahora intentamos por OCSP");
             try {
@@ -180,7 +172,6 @@ public class UtilsCrlOcsp {
             try (InputStream is = urlConnection.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(is);
                 BufferedReader in = new BufferedReader(reader);
-                System.out.println("in.readLine(): "+in.readLine());//NO BORRAR, HACE FUNCIONAR EL METODO
                 return in.readLine();
             }
         } else {

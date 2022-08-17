@@ -96,7 +96,10 @@ public class Json {
         jsonObjectCertificado.addProperty("docReason", certificado.getDocReason());
         jsonObjectCertificado.addProperty("docLocation", certificado.getDocLocation());
 
-        String json = generarJsonDatosUsuario(certificado.getDatosUsuario());
+        String json = null;
+        if (certificado.getDatosUsuario() != null) {
+            json = generarJsonDatosUsuario(certificado.getDatosUsuario());
+        }
         JsonObject jsonObjectDatosUsuario = new Gson().fromJson(json, JsonObject.class);
         jsonObjectCertificado.add("datosUsuario", jsonObjectDatosUsuario);
 

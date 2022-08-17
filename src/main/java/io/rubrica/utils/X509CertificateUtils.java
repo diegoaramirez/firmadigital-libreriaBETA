@@ -38,6 +38,7 @@ import java.util.Date;
  */
 public class X509CertificateUtils {
 
+    private String error = null;
     private String revocado = null;
     private boolean caducado = false;
     private boolean desconocido = false;
@@ -55,6 +56,10 @@ public class X509CertificateUtils {
 
     public String getRevocado() {
         return revocado;
+    }
+    
+    public String getError() {
+        return error;
     }
 
     public static String getCedula(KeyStore keyStore, String alias) {
@@ -91,7 +96,8 @@ public class X509CertificateUtils {
                 calendarRecordatorio.add(java.util.Calendar.DATE, -diasAnticipacion);
                 if (calendarRecordatorio.getTime().compareTo(fechaHora) <= 0) {
                     java.text.SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.advertencia.certificado_advertencia") + simpleDateFormat.format(x509Certificate.getNotAfter().getTime()), "Advertencia", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    //javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.advertencia.certificado_advertencia") + simpleDateFormat.format(x509Certificate.getNotAfter().getTime()), "Advertencia", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    error = PropertiesUtils.getMessages().getProperty("mensaje.advertencia.certificado_advertencia") + simpleDateFormat.format(x509Certificate.getNotAfter().getTime());
                 }
             }
 
@@ -102,6 +108,7 @@ public class X509CertificateUtils {
             if ((revocado != null) || caducado || desconocido) {
                 //problemas si se activa en sw
 //                javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+                error = PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido");
                 retorno = false;
             } else {
                 retorno = true;

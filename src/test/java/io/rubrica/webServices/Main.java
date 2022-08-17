@@ -46,22 +46,18 @@ public class Main {
 
 //    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";
 //    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8080/api";
+    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8181/api";
 //    private static final String URLAPI = "http://localhost:8080/api";
 //    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
 //    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
     private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
 //    private static final String URLWS = "http://localhost:8080/servicio";
-
-//    private static final String PKCS12 = "/home/mfernandez/Firmas/Digercic/DIGERCIC_abril_9_2021/Usuario_tres_REVOCADOS.pfx";
-//    private static final String PASSWORD = "12121212Qw.";
-//    private static final String PKCS12 = "/home/mfernandez/Firmas/SecurityData/prubas_misael_revocado.p12";
-//    private static final String PASSWORD = "1234";
-    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba2.p12";
-    private static final String PASSWORD = "123456";
-//    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
-    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
+    private static final String PKCS12 = "/home/mfernandez/1018194986337219131791004649.pfx";
+    private static final String PASSWORD = "";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+//    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
+    private static String cedula = "0704604032";
 
     public static void main(String args[]) throws Exception {
 //        appFirmarDocumento();
@@ -150,6 +146,64 @@ public class Main {
         System.out.println("Status: " + status + "\nResult: " + result);
     }
 
+    private static String generarJWT(String sistema, String apiKey, String tipoEstampado, int pagina, String llx, String lly, int certificado, String cedula, int numeroCopias, File documento) throws KeyStoreException, Exception {
+        String result = null;
+
+        //configuracion de cabecera
+        HttpPost post = new HttpPost(URLWS + "/documentos");
+        post.addHeader("content-type", "application/json");
+        post.addHeader("X-API-KEY", apiKey);
+
+        StringBuilder entity = new StringBuilder();
+
+        //creacion del JSON
+        com.google.gson.JsonArray gsonArray = new com.google.gson.JsonArray();
+        com.google.gson.JsonObject gsonObject = null;
+        gsonObject = new com.google.gson.JsonObject();
+        gsonObject.addProperty("cedula", cedula);
+        gsonObject.addProperty("sistema", sistema);
+
+        //Arreglo de documento(s)
+        com.google.gson.JsonArray gsonDocumentoArray = new com.google.gson.JsonArray();
+        com.google.gson.JsonObject gsonDocumentoObject = null;
+        //dependiendo numero de copias
+        for (int i = 0; i < numeroCopias; i++) {
+            gsonDocumentoObject = new com.google.gson.JsonObject();
+            //Generando documento en base64 y agregando en JSON
+            gsonDocumentoObject.addProperty("nombre", documento.getName() + i + ".pdf");
+            gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento.toPath())));
+            gsonDocumentoArray.add(gsonDocumentoObject);
+        }
+        gsonObject.add("documentos", new com.google.gson.JsonParser()
+                .parse(new com.google.gson.Gson().toJson(gsonDocumentoArray)).getAsJsonArray());
+        gsonArray.add(gsonObject);
+
+        //presentar por consola el JSON
+        System.out.println("JSON: " + gsonObject.toString());
+        entity.append(gsonObject.toString());
+
+        // send a JSON data
+        post.setEntity(new StringEntity(entity.toString()));
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                CloseableHttpResponse response = httpClient.execute(post)) {
+            result = EntityUtils.toString(response.getEntity());
+            //presentar por consola la respuesta
+            System.out.println(response.getStatusLine().getStatusCode() + " - " + response.getStatusLine().getReasonPhrase());
+            httpClient.close();
+        }
+
+        //presentar por consola el JWT (Json Web Token)
+        System.out.println("JWT: " + result);
+
+        //presentar por consola la url para ejecutar desde navegador
+        System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLAPI);
+
+        //presentar por consola la url para ejecutar desde navegador (URLEncoder)
+        System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLEncoder.encode(URLAPI, StandardCharsets.UTF_8));
+
+        return result;
+    }
+
     private static void appFirmarDocumentoTransversal() throws KeyStoreException, Exception {
         String sistema = "pruebas";
         String apiKey = "pruebas";
@@ -171,68 +225,33 @@ public class Main {
 
         //Variantes
         int certificado = 2;//1 token 2 archivo
-        String cedula = "1234567890";
+        
         int numeroCopias = 3;
         File documento = new File(FILE);
 
-        //configuracion de cabecera
-        HttpPost post = new HttpPost(URLWS + "/documentos");
-        post.addHeader("content-type", "application/json");
-        post.addHeader("X-API-KEY", apiKey);
-
-        StringBuilder entity = new StringBuilder();
+        //creacion del JSON
+        com.google.gson.JsonObject gsonObject = null;
+        gsonObject = new com.google.gson.JsonObject();
+        
+        String jwt = null;
+        //PRUEBAS GENERANDO JWT
         if (documento.exists() == true) {
-            //creacion del JSON
-            com.google.gson.JsonArray gsonArray = new com.google.gson.JsonArray();
-            com.google.gson.JsonObject gsonObject = null;
-            gsonObject = new com.google.gson.JsonObject();
-            gsonObject.addProperty("cedula", cedula);
-            gsonObject.addProperty("sistema", sistema);
-
-            //Arreglo de documento(s)
-            com.google.gson.JsonArray gsonDocumentoArray = new com.google.gson.JsonArray();
-            com.google.gson.JsonObject gsonDocumentoObject = null;
-            //dependiendo numero de copias
-            for (int i = 0; i < numeroCopias; i++) {
-                gsonDocumentoObject = new com.google.gson.JsonObject();
-                //Generando documento en base64 y agregando en JSON
-                gsonDocumentoObject.addProperty("nombre", documento.getName() + i + ".pdf");
-                gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento.toPath())));
-                gsonDocumentoArray.add(gsonDocumentoObject);
-            }
-            gsonObject.add("documentos", new com.google.gson.JsonParser()
-                    .parse(new com.google.gson.Gson().toJson(gsonDocumentoArray)).getAsJsonArray());
-            gsonArray.add(gsonObject);
-
-            //presentar por consola el JSON
-            System.out.println("JSON: " + gsonObject.toString());
-            entity.append(gsonObject.toString());
-
-            // send a JSON data
-            String result;
-            post.setEntity(new StringEntity(entity.toString()));
-            try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                    CloseableHttpResponse response = httpClient.execute(post)) {
-                result = EntityUtils.toString(response.getEntity());
-                //presentar por consola la respuesta
-                System.out.println(response.getStatusLine().getStatusCode() + " - " + response.getStatusLine().getReasonPhrase());
-                httpClient.close();
-            }
-
-            //presentar por consola el JWT (Json Web Token)
-            System.out.println("JWT: " + result);
-
-            //presentar por consola la url para ejecutar desde navegador
-            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLAPI);
-
-            //presentar por consola la url para ejecutar desde navegador (URLEncoder)
-            System.out.println("firmaec://" + sistema + "/firmar?token=" + result + "&tipo_certificado=" + certificado + "&llx=" + llx + "&lly=" + lly + "&estampado=" + tipoEstampado + "&pagina=" + pagina + "&pre=true&url=" + URLEncoder.encode(URLAPI, StandardCharsets.UTF_8));
-
+            jwt = generarJWT(sistema, apiKey, tipoEstampado, pagina, llx, lly, certificado, cedula, numeroCopias, documento);
+        } else {
+            System.out.println("No se encontró el documento: " + documento.getPath());
+        }
+        //PRUEBAS GENERANDO JWT
+        
+        //PRUEBAS CON JWT GENERADO
+//        sistema = "quipuxPruebas";
+//        jwt = "";
+        //PRUEBAS CON JWT GENERADO
+        
+        if (jwt != null) {
             //FIRMAR TRANSVERSAL
             String urlws = URLAPI + "/appfirmardocumentotransversal";
             File pkcs12 = new File(PKCS12);
             String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
-
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(urlws);
             Invocation.Builder builder = target.request();
@@ -243,7 +262,7 @@ public class Main {
             gsonObject.addProperty("operacion", "firmar");
             gsonObject.addProperty("versionFirmaEC", "RUBRICA");
             gsonObject.addProperty("formatoDocumento", "PDF");
-            gsonObject.addProperty("tokenJwt", result);
+            gsonObject.addProperty("tokenJwt", jwt);
             gsonObject.addProperty("llx", llx);
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
@@ -262,8 +281,7 @@ public class Main {
             Response response = invocation.invoke();
             System.out.println("Status: " + response.getStatus() + "\nResult: " + response.readEntity(String.class
             ));
-        } else {
-            System.out.println("No se encontró el documento: " + documento.getPath());
+
         }
     }
 }
