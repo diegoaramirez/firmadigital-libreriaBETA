@@ -40,6 +40,7 @@ public class ServicioCRL {
     public static final String DIGERCIC_CRL = "https://firma.registrocivil.gob.ec/crl.crl";
     public static final String UANATACA_CRL1 = "http://crl1.uanataca.com/public/pki/crl/CA2subordinada.crl";
     public static final String UANATACA_CRL2 = "http://crl2.uanataca.com/public/pki/crl/CA2subordinada.crl";
+    public static final String DATIL_CRL = "https://datil-subca-crl.s3.us-west-2.amazonaws.com/crl/a0788ee0-78bb-406b-b38a-32e36aa4dbdb.crl";
 
     public static X509CRL downloadCrl(String url) throws Exception {
         byte[] content;

@@ -66,6 +66,14 @@ import io.rubrica.certificate.ec.uanataca.CertificadoUanataca;
 import io.rubrica.certificate.ec.uanataca.CertificadoUanatacaDataFactory;
 import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert0120162029;
 import io.rubrica.certificate.ec.uanataca.UanatacaSubCaCert0220162029;
+import io.rubrica.certificate.ec.datil.CertificadoMiembroEmpresaDatil;
+import io.rubrica.certificate.ec.datil.CertificadoPersonaJuridicaPrivadaDatil;
+import io.rubrica.certificate.ec.datil.CertificadoPersonaNaturalDatil;
+import io.rubrica.certificate.ec.datil.CertificadoRepresentanteLegalDatil;
+import io.rubrica.certificate.ec.datil.CertificadoDatil;
+import io.rubrica.certificate.ec.datil.CertificadoDatilDataFactory;
+import io.rubrica.certificate.ec.datil.DatilSubCaCert20212031;
+
 import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.exceptions.EntidadCertificadoraNoValidaException;
 import io.rubrica.utils.Utils;
@@ -77,7 +85,9 @@ import io.rubrica.utils.Utils;
  */
 public class CertEcUtils {
 
-    private static final String UANATACA_NAME = "UANATACA S.A.";
+    public static final String UANATACA_NAME = "UANATACA S.A.";
+    public static final String ECLIPSOFT_NAME = "ECLIPSOFT S.A.";
+    public static final String DATIL_NAME = "DATILMEDIA S.A.";
 
     public static X509Certificate getRootCertificate(X509Certificate certificado) throws EntidadCertificadoraNoValidaException {
         String entidadCertStr = getNombreCA(certificado);
@@ -150,6 +160,10 @@ public class CertEcUtils {
             } catch (java.security.InvalidKeyException ex) {
                 //TODO
             }
+            case DATIL_NAME: {
+                return new DatilSubCaCert20212031();
+            }
+
             default:
                 throw new EntidadCertificadoraNoValidaException("Entidad Certificadora no reconocida");
         }
@@ -175,6 +189,10 @@ public class CertEcUtils {
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(UANATACA_NAME)) {
             return UANATACA_NAME;
         }
+        if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(DATIL_NAME)) {
+            return DATIL_NAME;
+        }
+
         return "Entidad no reconocidad " + certificado.getIssuerX500Principal().getName();
     }
 
@@ -503,7 +521,50 @@ public class CertEcUtils {
             } else if (certificadoEclipsoft instanceof CertificadoSelladoTiempo) {
                 datosUsuario.setSerial(certificado.getSerialNumber().toString());
             }
-            datosUsuario.setEntidadCertificadora("Eclipsoft");
+            datosUsuario.setEntidadCertificadora(ECLIPSOFT_NAME);
+            datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
+        }
+        if (CertificadoDatilDataFactory.esCertificadoDatil(certificado)) {
+            CertificadoDatil certificadoDatil = CertificadoDatilDataFactory.construir(certificado);
+            if (certificadoDatil instanceof CertificadoMiembroEmpresaDatil) {
+                CertificadoMiembroEmpresaDatil certificadoMiembroEmpresaDatil = (CertificadoMiembroEmpresaDatil) certificadoDatil;
+                datosUsuario.setCedula(certificadoMiembroEmpresaDatil.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoMiembroEmpresaDatil.getNombres());
+                datosUsuario.setApellido(certificadoMiembroEmpresaDatil.getPrimerApellido() + " " + certificadoMiembroEmpresaDatil.getSegundoApellido());
+                datosUsuario.setCargo(certificadoMiembroEmpresaDatil.getCargo());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            if (certificadoDatil instanceof CertificadoPersonaJuridicaPrivadaDatil) {
+                CertificadoPersonaJuridicaPrivadaDatil certificadoPersonaJuridicaPrivadaDatil = (CertificadoPersonaJuridicaPrivadaDatil) certificadoDatil;
+                datosUsuario.setCedula(certificadoPersonaJuridicaPrivadaDatil.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoPersonaJuridicaPrivadaDatil.getNombres());
+                datosUsuario.setApellido(certificadoPersonaJuridicaPrivadaDatil.getPrimerApellido() + " "
+                        + certificadoPersonaJuridicaPrivadaDatil.getSegundoApellido());
+                datosUsuario.setCargo(certificadoPersonaJuridicaPrivadaDatil.getCargo());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            if (certificadoDatil instanceof CertificadoRepresentanteLegalDatil) {
+                CertificadoRepresentanteLegalDatil certificadoRepresentanteLegalDatil = (CertificadoRepresentanteLegalDatil) certificadoDatil;
+                datosUsuario.setCedula(certificadoRepresentanteLegalDatil.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoRepresentanteLegalDatil.getNombres());
+                datosUsuario.setApellido(certificadoRepresentanteLegalDatil.getPrimerApellido() + " "
+                        + certificadoRepresentanteLegalDatil.getSegundoApellido());
+                datosUsuario.setCargo(certificadoRepresentanteLegalDatil.getCargo());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            if (certificadoDatil instanceof CertificadoPersonaNaturalDatil) {
+                CertificadoPersonaNaturalDatil certificadoPersonaNaturalDatil = (CertificadoPersonaNaturalDatil) certificadoDatil;
+                datosUsuario.setCedula(certificadoPersonaNaturalDatil.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoPersonaNaturalDatil.getNombres());
+                datosUsuario.setApellido(certificadoPersonaNaturalDatil.getPrimerApellido() + " "
+                        + certificadoPersonaNaturalDatil.getSegundoApellido());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            if (certificadoDatil instanceof CertificadoSelladoTiempo) {
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            datosUsuario.setEntidadCertificadora(DATIL_NAME);
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }

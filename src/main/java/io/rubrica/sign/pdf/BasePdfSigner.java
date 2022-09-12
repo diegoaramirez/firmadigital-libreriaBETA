@@ -81,6 +81,7 @@ public abstract class BasePdfSigner implements PdfSigner {
             throws IOException {
         try (PdfReader pdfReader = new PdfReader(is); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             StampingProperties stampingProperties = new StampingProperties();
+            //TODO Edison Lomas Almeida: La línea siguiente genera error PdfException: Append mode requires a document without errors, even if recovery is possible.
             stampingProperties.useAppendMode();
 
             com.itextpdf.signatures.PdfSigner pdfSigner = new com.itextpdf.signatures.PdfSigner(pdfReader, os,

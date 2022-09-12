@@ -79,10 +79,9 @@ public class CertUtils {
                             // Check the object identifier
                             ASN1ObjectIdentifier objectId = (ASN1ObjectIdentifier) otherNameSeq.getObjectAt(0);
                             if (objectId.toString().equals(oid)) {
-                                ASN1Encodable ooobj = otherNameSeq.getObjectAt(1);
                                 ASN1Encodable objectDetail = ((ASN1Encodable) otherNameSeq.getObjectAt(1));
                                 decoded = objectDetail.toASN1Primitive().toString();
-                                decoded = decoded.substring(3);
+                                decoded = decoded.replace("[0]", "");
                                 break;
                             }
                         }

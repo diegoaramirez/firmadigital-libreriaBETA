@@ -868,7 +868,7 @@ public class Utils {
         }
         certificado = new Certificado(
                 Util.getCN(signInfo.getCerts()[0]),
-                CertEcUtils.getNombreCA(signInfo.getCerts()[0]),
+                getIssuedBy(datosUsuario, signInfo.getCerts()[0]),
                 dateToCalendar(signInfo.getCerts()[0].getNotBefore()),
                 dateToCalendar(signInfo.getCerts()[0].getNotAfter()),
                 dateToCalendar(signInfo.getSigningTime()),
@@ -885,6 +885,14 @@ public class Utils {
             calendar.setTime(date);
         }
         return calendar;
+    }
+
+    private static String getIssuedBy(DatosUsuario datosUsuario, X509Certificate certificado) {
+        String issuedBy = CertEcUtils.getNombreCA(certificado);
+        if (CertEcUtils.UANATACA_NAME.equals(issuedBy) && CertEcUtils.ECLIPSOFT_NAME.equals(datosUsuario.getEntidadCertificadora())) {
+            return CertEcUtils.ECLIPSOFT_NAME;
+        }
+        return issuedBy;
     }
 
     /**

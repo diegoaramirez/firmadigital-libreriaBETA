@@ -38,7 +38,7 @@ public class CertificadoEclipsoft {
     public static final String OID_CEDULA_PASAPORTE = "1.3.6.1.4.1.57153.102.3.1";
     public static final String OID_NOMBRES = "1.3.6.1.4.1.57153.102.3.2";
     public static final String OID_APELLIDO_1 = "1.3.6.1.4.1.57153.102.3.3";
-    public static final String OID_APELLIDO_2 = "11.3.6.1.4.1.57153.102.3.4";
+    public static final String OID_APELLIDO_2 = "1.3.6.1.4.1.57153.102.3.4";
     public static final String OID_CARGO = "1.3.6.1.4.1.57153.102.3.5";
     public static final String OID_DIRECCION = "1.3.6.1.4.1.57153.102.3.7";
     public static final String OID_TELEFONO = "1.3.6.1.4.1.57153.102.3.8";
