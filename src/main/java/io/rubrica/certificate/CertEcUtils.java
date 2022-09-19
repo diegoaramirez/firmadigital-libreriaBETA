@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 
+ * Copyright (C) 2020
  * Authors: Ricardo Arguello, Misael Fernández
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,6 +31,10 @@ import io.rubrica.certificate.ec.anfac.CertificadoAnfAc18332;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc18332Factory;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc37442;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc37442Factory;
+import io.rubrica.certificate.ec.argosdata.CertificadoArgosData;
+import io.rubrica.certificate.ec.argosdata.CertificadoArgosDataFactory;
+import io.rubrica.certificate.ec.argosdata.CertificadoPersonaNaturalArgosData;
+import io.rubrica.certificate.ec.argosdata.CertificadoRepresentanteLegalArgosData;
 import io.rubrica.certificate.ec.bce.BceSubCaCert20112021;
 import io.rubrica.certificate.ec.bce.BceSubCaCert20192029;
 import io.rubrica.certificate.ec.bce.CertificadoBancoCentral;
@@ -507,6 +511,32 @@ public class CertEcUtils {
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }
+
+        if (CertificadoArgosDataFactory.esCertificadoDeArgosData(certificado)) {
+            CertificadoArgosData certificadoArgosData = CertificadoArgosDataFactory.construir(certificado);
+
+            if (certificadoArgosData instanceof CertificadoPersonaNaturalArgosData) {
+                CertificadoPersonaNaturalArgosData certificadoPersonaNatural = (CertificadoPersonaNaturalArgosData) certificadoArgosData;
+                datosUsuario.setCedula(certificadoPersonaNatural.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoPersonaNatural.getNombres());
+                datosUsuario.setApellido(certificadoPersonaNatural.getPrimerApellido() + " "
+                        + certificadoPersonaNatural.getSegundoApellido());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            } else if (certificadoArgosData instanceof CertificadoRepresentanteLegalArgosData) {
+                CertificadoRepresentanteLegalArgosData certificadoRepresentanteLegal = (CertificadoRepresentanteLegalArgosData) certificadoArgosData;
+                datosUsuario.setCedula(certificadoRepresentanteLegal.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoRepresentanteLegal.getNombres());
+                datosUsuario.setApellido(certificadoRepresentanteLegal.getPrimerApellido() + " "
+                        + certificadoRepresentanteLegal.getSegundoApellido());
+                datosUsuario.setCargo(certificadoRepresentanteLegal.getCargo());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+
+            datosUsuario.setEntidadCertificadora("ArgosData");
+            datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
+        }
+
         return null;
     }
 }
