@@ -32,7 +32,7 @@ public class FileDocument extends CommonDocument {
 		Objects.requireNonNull(file, "File cannot be null");
 
 		if (!file.exists()) {
-			throw new RubricaException("File Not Found: " + file.getAbsolutePath());
+			throw new RubricaRuntimeException("File Not Found: " + file.getAbsolutePath());
 		}
 
 		this.file = file;
@@ -44,7 +44,7 @@ public class FileDocument extends CommonDocument {
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new RubricaException("Unable to create a FileInputStream", e);
+			throw new RubricaRuntimeException("Unable to create a FileInputStream", e);
 		}
 	}
 

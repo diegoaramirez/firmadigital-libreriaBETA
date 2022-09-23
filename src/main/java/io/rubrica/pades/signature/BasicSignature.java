@@ -23,7 +23,7 @@ import com.itextpdf.signatures.TSAClientBouncyCastle;
 
 import io.rubrica.model.Document;
 import io.rubrica.model.InMemoryDocument;
-import io.rubrica.model.RubricaException;
+import io.rubrica.model.RubricaRuntimeException;
 import io.rubrica.pades.SignatureParameters;
 import io.rubrica.sign.RubricaSigner;
 import io.rubrica.sign.pdf.itext.ITextSignerAdapter;
@@ -61,9 +61,9 @@ public class BasicSignature {
 
             return new InMemoryDocument(os.toByteArray());
         } catch (IOException e) {
-            throw new RubricaException(e);
+            throw new RubricaRuntimeException(e);
         } catch (GeneralSecurityException e) {
-            throw new RubricaException(e);
+            throw new RubricaRuntimeException(e);
         }
     }
 

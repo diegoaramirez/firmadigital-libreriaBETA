@@ -62,7 +62,7 @@ public class InMemoryDocument extends CommonDocument {
             }
             return baos.toByteArray();
         } catch (Exception e) {
-            throw new RubricaException("Unable to fully read the InputStream", e);
+            throw new RubricaRuntimeException("Unable to fully read the InputStream", e);
         }
     }
 }

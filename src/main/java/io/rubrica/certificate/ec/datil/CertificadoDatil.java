@@ -30,11 +30,10 @@ import io.rubrica.certificate.CertUtils;
 public class CertificadoDatil {
 
     // OIDs de tipo de certificado:
-    public static final String OID_CERTIFICADO_PERSONA_NATURAL = "1.3.6.1.4.1.52643.2.1";
-    public static final String OID_CERTIFICADO_MIEMBRO_EMPRESA = "1.3.6.1.4.1.52643.2.2";
-    public static final String OID_CERTIFICADO_REPRESENTANTE_EMPRESA = "1.3.6.1.4.1.52643.2.3";
-    public static final String OID_CERTIFICADO_PERSONA_JURIDICA = "1.3.6.1.4.1.52643.2.4";
-    //public static final String OID_CERTIFICADO_EMPRESA = "1.3.6.1.4.1.52643.1.2.2.1";
+    public static final String OID_CERTIFICADO_PERSONA_NATURAL = "1.3.6.1.4.1.52643.2.5.1";
+    public static final String OID_CERTIFICADO_MIEMBRO_EMPRESA = "1.3.6.1.4.1.52643.2.5.1";
+    public static final String OID_CERTIFICADO_REPRESENTANTE_EMPRESA = "1.3.6.1.4.1.52643.2.5.1";
+    public static final String OID_CERTIFICADO_PERSONA_JURIDICA = "1.3.6.1.4.1.52643.2.5.1";
     public static final String OID_SELLADO_TIEMPO = "1.3.6.1.4.1.52643.2.5";
 
     // OIDs de Campos del Certificado:
@@ -61,6 +60,12 @@ public class CertificadoDatil {
      */
     private final X509Certificate certificado;
 
+    /**
+     * Permite analizar los contenidos de un X509Certificate segun las OIDs de
+     * Security Data.
+     *
+     * @param certificado
+     */
     public CertificadoDatil(X509Certificate certificado) {
         this.certificado = certificado;
     }
@@ -73,11 +78,10 @@ public class CertificadoDatil {
      */
     protected String obtenerExtension(String oid) {
         try {
-            String valor = CertUtils.getExtensionValueSubjectAlternativeNames(certificado, oid);
+            String valor = CertUtils.getExtensionValue(certificado, oid);
             return (valor != null) ? valor : "";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

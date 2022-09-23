@@ -31,6 +31,11 @@ import io.rubrica.certificate.ec.anfac.CertificadoAnfAc18332;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc18332Factory;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc37442;
 import io.rubrica.certificate.ec.anfac.CertificadoAnfAc37442Factory;
+import io.rubrica.certificate.ec.argosdata.ArgosDataSubCaCert;
+import io.rubrica.certificate.ec.argosdata.CertificadoArgosData;
+import io.rubrica.certificate.ec.argosdata.CertificadoArgosDataFactory;
+import io.rubrica.certificate.ec.argosdata.CertificadoPersonaNaturalArgosData;
+import io.rubrica.certificate.ec.argosdata.CertificadoRepresentanteLegalArgosData;
 import io.rubrica.certificate.ec.bce.BceSubCaCert20112021;
 import io.rubrica.certificate.ec.bce.BceSubCaCert20192029;
 import io.rubrica.certificate.ec.bce.CertificadoBancoCentral;
@@ -88,6 +93,7 @@ public class CertEcUtils {
     public static final String UANATACA_NAME = "UANATACA S.A.";
     public static final String ECLIPSOFT_NAME = "ECLIPSOFT S.A.";
     public static final String DATIL_NAME = "DATILMEDIA S.A.";
+    public static final String AGOSDATA_NAME = "ARGOSDATA CA";
 
     public static X509Certificate getRootCertificate(X509Certificate certificado) throws EntidadCertificadoraNoValidaException {
         String entidadCertStr = getNombreCA(certificado);
@@ -163,6 +169,9 @@ public class CertEcUtils {
             case DATIL_NAME: {
                 return new DatilSubCaCert20212031();
             }
+            case AGOSDATA_NAME: {
+                return new ArgosDataSubCaCert();
+            }
 
             default:
                 throw new EntidadCertificadoraNoValidaException("Entidad Certificadora no reconocida");
@@ -192,8 +201,11 @@ public class CertEcUtils {
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(DATIL_NAME)) {
             return DATIL_NAME;
         }
+        if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(AGOSDATA_NAME)) {
+            return AGOSDATA_NAME;
+        }
 
-        return "Entidad no reconocidad " + certificado.getIssuerX500Principal().getName();
+        return "Entidad no reconocida " + certificado.getIssuerX500Principal().getName();
     }
 
     //TODO poner los nombres como constantes
@@ -565,6 +577,28 @@ public class CertEcUtils {
                 datosUsuario.setSerial(certificado.getSerialNumber().toString());
             }
             datosUsuario.setEntidadCertificadora(DATIL_NAME);
+            datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
+        }
+        if (CertificadoArgosDataFactory.esCertificadoArgosData(certificado)) {
+            CertificadoArgosData certificadoArgosData = CertificadoArgosDataFactory.construir(certificado);
+            if (certificadoArgosData instanceof CertificadoPersonaNaturalArgosData) {
+                CertificadoPersonaNaturalArgosData certificadoPersonaNatural = (CertificadoPersonaNaturalArgosData) certificadoArgosData;
+                datosUsuario.setCedula(certificadoPersonaNatural.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoPersonaNatural.getNombres());
+                datosUsuario.setApellido(certificadoPersonaNatural.getPrimerApellido() + " "
+                        + certificadoPersonaNatural.getSegundoApellido());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            } else if (certificadoArgosData instanceof CertificadoRepresentanteLegalArgosData) {
+                CertificadoRepresentanteLegalArgosData certificadoRepresentanteLegal = (CertificadoRepresentanteLegalArgosData) certificadoArgosData;
+                datosUsuario.setCedula(certificadoRepresentanteLegal.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoRepresentanteLegal.getNombres());
+                datosUsuario.setApellido(certificadoRepresentanteLegal.getPrimerApellido() + " "
+                        + certificadoRepresentanteLegal.getSegundoApellido());
+                datosUsuario.setCargo(certificadoRepresentanteLegal.getCargo());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+            datosUsuario.setEntidadCertificadora(AGOSDATA_NAME);
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }
