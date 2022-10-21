@@ -43,40 +43,38 @@ public interface Signer {
      * @param key Clave privada a usar para firmar
      * @param certChain Cadena de certificados del firmante
      * @param extraParams Parámetros adicionales para la firma
+     * @param base64
      * @return Contenido firmado
      * @throws RubricaException Cuando ocurre cualquier problema durante el
      * proceso
      * @throws IOException Cuando ocurren problemas relacionados con la lectura
      * de los datos
      */
-    byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties extraParams)
-           throws RubricaException, IOException;
+    byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties extraParams, String base64)
+            throws RubricaException, IOException;
 
-	 List<SignInfo> getSigners(byte[] sign) throws InvalidFormatException, IOException;
-	
+    List<SignInfo> getSigners(byte[] sign) throws InvalidFormatException, IOException;
+
     /**
      * Returns the hash algorithm.
      *
      * @return The hash algorithm (e.g. "SHA-1", "SHA-256,...").
      */
-   // String getHashAlgorithm();
-
+    // String getHashAlgorithm();
     /**
      * Returns the encryption algorithm used for signing.
      *
      * @return The encryption algorithm ("RSA" or "DSA").
      */
-   // String getEncryptionAlgorithm();
-
+    // String getEncryptionAlgorithm();
     /**
-     * Signs the given message using the encryption algorithm in combination with
-     * the hash algorithm.
-     * 
+     * Signs the given message using the encryption algorithm in combination
+     * with the hash algorithm.
+     *
      * @param message The message you want to be hashed and signed.
      * @return A signed message digest.
-     * @throws GeneralSecurityException when requested cryptographic algorithm or
-     *                                  security provider is not available
+     * @throws GeneralSecurityException when requested cryptographic algorithm
+     * or security provider is not available
      */
     //byte[] sign(byte[] message) throws GeneralSecurityException;
-    
 }

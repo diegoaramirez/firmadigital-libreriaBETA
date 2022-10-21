@@ -22,6 +22,19 @@ public class Json {
 
     private static final SimpleDateFormat simpleDateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
+    public static String generarJsonVersion(String sistemaOperativo, String aplicacion, String versionApp, String sha) {
+        if (sistemaOperativo != null && versionApp != null && sha != null) {
+            com.google.gson.JsonObject gsonObject = new com.google.gson.JsonObject();
+            gsonObject.addProperty("sistemaOperativo", sistemaOperativo);
+            gsonObject.addProperty("aplicacion", aplicacion);
+            gsonObject.addProperty("versionApp", versionApp);
+            gsonObject.addProperty("sha", sha);
+            return gsonObject.toString();
+        } else {
+            return null;
+        }
+    }
+
     public static String generarJsonDocumento(Documento documento) {
         return generarJsonDocumentoFirmado(null, documento);
     }

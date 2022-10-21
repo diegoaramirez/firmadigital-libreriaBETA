@@ -445,7 +445,7 @@ public final class XAdESSigner implements Signer {
      */
     @Override
     public byte[] sign(final byte[] data, final String algorithm, final PrivateKey key, final Certificate[] certChain,
-            final Properties xParams) throws RubricaException {
+            final Properties xParams, String base64) throws RubricaException {
 
         return FirmadorXAdES.sign(data, algorithm, key, certChain, xParams);
     }

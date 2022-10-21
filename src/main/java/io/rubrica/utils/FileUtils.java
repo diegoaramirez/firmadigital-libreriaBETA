@@ -17,6 +17,7 @@
  */
 package io.rubrica.utils;
 
+import io.rubrica.exceptions.HoraServidorException;
 import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -95,11 +96,11 @@ public class FileUtils {
         }
     }
 
-    public static String crearNombreTemporal(File documento, String extension) throws IOException {
-        String hora = (TiempoUtils.getFechaHoraServidor(null).replace(":", "").replace(" ", "").replace(".", "").replace("-", "")).substring(0, 20);
+    public static String crearNombreTemporal(File documento, String extension, String base64) throws IOException, HoraServidorException {
+        String hora = (TiempoUtils.getFechaHoraServidor(null, base64).replace(":", "").replace(" ", "").replace(".", "").replace("-", "")).substring(0, 20);
         String nombre = crearNombre(documento);
         if (new File(nombre).exists()) {
-            nombre = crearNombreTemporal(new File(nombre + "_new"), extension);
+            nombre = crearNombreTemporal(new File(nombre + "_new"), extension, base64);
         }
         return nombre + hora + extension;
     }
@@ -112,8 +113,8 @@ public class FileUtils {
         return nombre;
     }
 
-    public static String crearNombreVerificado(File documento, String extension) throws IOException {
-        String hora = (TiempoUtils.getFechaHoraServidor(null).replace(":", "").replace(" ", "").replace(".", "").replace("-", "")).substring(0, 20);
+    public static String crearNombreVerificado(File documento, String extension, String base64) throws IOException, HoraServidorException {
+        String hora = (TiempoUtils.getFechaHoraServidor(null, base64).replace(":", "").replace(" ", "").replace(".", "").replace("-", "")).substring(0, 20);
         String nombre = crearNombre(documento);
         if (extension.isEmpty()) {
             extension = getExtension(nombre);

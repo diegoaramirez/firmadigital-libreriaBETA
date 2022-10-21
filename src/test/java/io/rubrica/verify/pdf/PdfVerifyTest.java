@@ -20,6 +20,7 @@ package io.rubrica.verify.pdf;
 import io.rubrica.certificate.to.Documento;
 import io.rubrica.exceptions.InvalidFormatException;
 import io.rubrica.exceptions.SignatureVerificationException;
+import io.rubrica.utils.PropertiesUtils;
 
 import java.io.File;
 import io.rubrica.utils.Utils;
@@ -1047,7 +1048,7 @@ public class PdfVerifyTest {
 
     private Documento verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
         File document = new File(file);
-        Documento documento = Utils.verificarDocumento(document);
+        Documento documento = Utils.verificarDocumento(document, PropertiesUtils.versionBase64());
         System.out.println("Documento: " + documento);
         if (documento.getCertificados() != null) {
             documento.getCertificados().forEach((certificado) -> {

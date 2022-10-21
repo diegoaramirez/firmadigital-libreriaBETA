@@ -17,6 +17,7 @@
  */
 package io.rubrica.webServices;
 
+import io.rubrica.utils.PropertiesUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,25 +45,25 @@ import javax.ws.rs.core.Response;
  */
 public class Main {
 
-    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";
-//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8181/api";
-//    private static final String URLAPI = "http://localhost:8080/api";
-    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";
-//    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
-//    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";
-//    private static final String URLWS = "http://localhost:8080/servicio";
+//    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";//produccion
+    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";//servidor
+//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8181/api";//local
+//    private static final String URLAPI = "http://localhost:8181/api";//local
+//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";//produccion
+    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";//servidor
+//    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";//local
+//    private static final String URLWS = "http://localhost:8080/servicio";//local
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIRMAS-signed-signed-signed-signed.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+//    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIRMAS-signed-signed-signed-signed.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static String cedula = "1234567890";
 
     public static void main(String args[]) throws Exception {
-        appFirmarDocumento();
+//        appFirmarDocumento();
 //        appVerificarDocumento();
 //        appValidarCertificado();
-//        appFirmarDocumentoTransversal();
+        appFirmarDocumentoTransversal();
     }
 
     private static void appFirmarDocumento() throws IOException, KeyStoreException, Exception {
@@ -98,6 +99,7 @@ public class Main {
         form.param("password", PASSWORD);
         form.param("documento", fileBase64);
         form.param("json", gsonObject.toString());
+        form.param("base64", PropertiesUtils.versionBase64());
 
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
@@ -136,6 +138,7 @@ public class Main {
         Form form = new Form();
         form.param("pkcs12", pkcs12Base64);
         form.param("password", PASSWORD);
+        form.param("base64", PropertiesUtils.versionBase64());
 
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
@@ -173,6 +176,21 @@ public class Main {
             gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento.toPath())));
             gsonDocumentoArray.add(gsonDocumentoObject);
         }
+        
+        //documentos por separado
+//        gsonDocumentoObject = new com.google.gson.JsonObject();
+//        //Generando documento en base64 y agregando en JSON
+//        File documento1 = new File("/home/mfernandez/testfirmaec/MINTEL-DIPSE-2021-0072-E.pdf");
+//        gsonDocumentoObject.addProperty("nombre", documento1.getName());
+//        gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento1.toPath())));
+//        gsonDocumentoArray.add(gsonDocumentoObject);
+//        
+//        gsonDocumentoObject = new com.google.gson.JsonObject();
+//        File documento2 = new File("/home/mfernandez/testfirmaec/MINTEL-DIPSE-2021-0150-O.pdf");
+//        gsonDocumentoObject.addProperty("nombre", documento2.getName());
+//        gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento2.toPath())));
+//        gsonDocumentoArray.add(gsonDocumentoObject);
+        
         gsonObject.add("documentos", new com.google.gson.JsonParser()
                 .parse(new com.google.gson.Gson().toJson(gsonDocumentoArray)).getAsJsonArray());
         gsonArray.add(gsonObject);
@@ -224,14 +242,14 @@ public class Main {
 
         //Variantes
         int certificado = 2;//1 token 2 archivo
-        
+
         int numeroCopias = 3;
         File documento = new File(FILE);
 
         //creacion del JSON
         com.google.gson.JsonObject gsonObject = null;
         gsonObject = new com.google.gson.JsonObject();
-        
+
         String jwt = null;
         //PRUEBAS GENERANDO JWT
         if (documento.exists() == true) {
@@ -240,12 +258,11 @@ public class Main {
             System.out.println("No se encontró el documento: " + documento.getPath());
         }
         //PRUEBAS GENERANDO JWT
-        
+
         //PRUEBAS CON JWT GENERADO
 //        sistema = "quipuxPruebas";
 //        jwt = "";
         //PRUEBAS CON JWT GENERADO
-        
         if (jwt != null) {
             //FIRMAR TRANSVERSAL
             String urlws = URLAPI + "/appfirmardocumentotransversal";
@@ -266,8 +283,8 @@ public class Main {
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
             gsonObject.addProperty("pagina", pagina);
-            gsonObject.addProperty("pre", true);
-//            gsonObject.addProperty("des", true);
+            gsonObject.addProperty("pre", true);//servidor
+//            gsonObject.addProperty("des", true);//local
 //            gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
 
@@ -275,6 +292,7 @@ public class Main {
             form.param("pkcs12", pkcs12Base64);
             form.param("password", PASSWORD);
             form.param("json", gsonObject.toString());
+            form.param("base64", PropertiesUtils.versionBase64());
 
             Invocation invocation = builder.buildPost(Entity.form(form));
             Response response = invocation.invoke();

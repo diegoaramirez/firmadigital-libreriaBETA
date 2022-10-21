@@ -918,7 +918,7 @@ public class Utils {
         }
     }
 
-    public static Documento verificarDocumento(File file) throws IOException, KeyStoreException, OcspValidationException, SignatureException, RubricaException, ConexionInvalidaOCSPException, HoraServidorException, CertificadoInvalidoException, EntidadCertificadoraNoValidaException, ConexionValidarCRLException, SignatureVerificationException, DocumentoException, CRLValidationException, Exception {
+    public static Documento verificarDocumento(File file, String base64) throws IOException, KeyStoreException, OcspValidationException, SignatureException, RubricaException, ConexionInvalidaOCSPException, HoraServidorException, CertificadoInvalidoException, EntidadCertificadoraNoValidaException, ConexionValidarCRLException, SignatureVerificationException, DocumentoException, CRLValidationException, Exception {
         byte[] docByteArray = FileUtils.fileConvertToByteArray(file);
         // para P7m, ya que p7m no tiene signer
         Documento documento = null;
@@ -927,7 +927,7 @@ public class Utils {
         if (extDocumento.toLowerCase().contains(".p7s")) {
             VerificadorCMS verificador = new VerificadorCMS();
             byte[] archivoOriginal = verificador.verify(docByteArray);
-            String nombreArchivo = FileUtils.crearNombreVerificado(file, FileUtils.getExtension(archivoOriginal));
+            String nombreArchivo = FileUtils.crearNombreVerificado(file, FileUtils.getExtension(archivoOriginal), base64);
             FileUtils.saveByteArrayToDisc(archivoOriginal, nombreArchivo);
             FileUtils.abrirDocumento(nombreArchivo);
             documento = new Documento(true, false, null, null);
@@ -1071,4 +1071,6 @@ public class Utils {
         }
         return false;
     }
+    
+    
 }

@@ -39,6 +39,7 @@ import io.rubrica.certificate.to.Certificado;
 import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.certificate.to.Documento;
 import io.rubrica.core.Util;
+import io.rubrica.exceptions.HoraServidorException;
 import io.rubrica.exceptions.InvalidFormatException;
 import io.rubrica.exceptions.SignatureVerificationException;
 import io.rubrica.keystore.FileKeyStoreProvider;
@@ -55,6 +56,7 @@ import io.rubrica.sign.pdf.RectanguloUtil;
 import io.rubrica.sign.xades.XAdESSigner;
 import io.rubrica.utils.FileUtils;
 import io.rubrica.utils.Json;
+import io.rubrica.utils.PropertiesUtils;
 import io.rubrica.utils.TiempoUtils;
 import io.rubrica.utils.Utils;
 import io.rubrica.utils.UtilsCrlOcsp;
@@ -155,7 +157,7 @@ public class Main {
         properties.setProperty(PDFSignerItext.PATH, file);
         PDFSignerItext pDFSignerItext = new PDFSignerItext();
         pDFSignerItext.setProvider(keyStore.getProvider());//QA
-        signed = pDFSignerItext.sign(docByteArry, DigestAlgorithms.SHA512, key, certChain, properties);
+        signed = pDFSignerItext.sign(docByteArry, DigestAlgorithms.SHA512, key, certChain, properties, PropertiesUtils.versionBase64());
         System.out.println("final firma\n-------");
         ////// Permite guardar el archivo en el equipo y luego lo abre
         String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
@@ -196,10 +198,10 @@ public class Main {
 
         X509CertificateUtils x509CertificateUtils = new X509CertificateUtils();
 
-        if (x509CertificateUtils.validarX509Certificate((X509Certificate) keyStore.getCertificate(alias), null)) {//validación de firmaEC
+        if (x509CertificateUtils.validarX509Certificate((X509Certificate) keyStore.getCertificate(alias), null, PropertiesUtils.versionBase64())) {//validación de firmaEC
             Certificate[] certChain = keyStore.getCertificateChain(alias);
             XAdESSigner signer = new XAdESSigner();
-            signed = signer.sign(docByteArry, SignConstants.SIGN_ALGORITHM_SHA512WITHRSA, key, certChain, null);
+            signed = signer.sign(docByteArry, SignConstants.SIGN_ALGORITHM_SHA512WITHRSA, key, certChain, null, PropertiesUtils.versionBase64());
             System.out.println("final firma\n-------");
             ////// Permite guardar el archivo en el equipo y luego lo abre
             String nombreDocumento = FileUtils.crearNombreFirmado(new File(file), FileUtils.getExtension(signed));
@@ -286,7 +288,7 @@ public class Main {
 //    }
     private static void verificarDocumento(String file) throws IOException, SignatureVerificationException, Exception {
         File document = new File(file);
-        Documento documento = Utils.verificarDocumento(document);
+        Documento documento = Utils.verificarDocumento(document, PropertiesUtils.versionBase64());
         System.out.println("JSON:");
         System.out.println(Json.generarJsonDocumento(documento));
         System.out.println("Documento: " + documento);
@@ -300,7 +302,7 @@ public class Main {
         }
     }
 
-    private static Properties parametros() throws IOException {
+    private static Properties parametros() throws IOException, HoraServidorException {
         //PageSize.A4.getWidth();//595.0
         //PageSize.A4.getHeight();//842.0
         //QR
@@ -341,7 +343,7 @@ public class Main {
         Properties params = new Properties();
         params.setProperty(PDFSignerItext.SIGNING_LOCATION, "Teletrabajo");
         params.setProperty(PDFSignerItext.SIGNING_REASON, "Firmado digitalmente con RUBRICA");
-        params.setProperty(PDFSignerItext.SIGN_TIME, TiempoUtils.getFechaHoraServidor(null));
+        params.setProperty(PDFSignerItext.SIGN_TIME, TiempoUtils.getFechaHoraServidor(null, PropertiesUtils.versionBase64()));
         params.setProperty(PDFSignerItext.LAST_PAGE, "1");
         params.setProperty(PDFSignerItext.TYPE_SIG, "QR");
         params.setProperty(PDFSignerItext.INFO_QR, "Firmado digitalmente con RUBRICA\nhttps://minka.gob.ec/rubrica/rubrica");
@@ -366,9 +368,9 @@ public class Main {
         }
     }
 
-    private static Date fechaHoraISO() throws IOException {
+    private static Date fechaHoraISO() throws IOException, HoraServidorException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        TemporalAccessor accessor = dateTimeFormatter.parse(TiempoUtils.getFechaHoraServidor(null));
+        TemporalAccessor accessor = dateTimeFormatter.parse(TiempoUtils.getFechaHoraServidor(null, PropertiesUtils.versionBase64()));
         return Date.from(Instant.from(accessor));
     }
 
@@ -377,8 +379,8 @@ public class Main {
         tiempo(segundos);//espera en segundos
         do {
             try {
-                System.out.println("getFechaHora() " + TiempoUtils.getFechaHora(null));
-                System.out.println("getFechaHoraServidor() " + TiempoUtils.getFechaHoraServidor(null));
+                System.out.println("getFechaHora() " + TiempoUtils.getFechaHora(null, PropertiesUtils.versionBase64()));
+                System.out.println("getFechaHoraServidor() " + TiempoUtils.getFechaHoraServidor(null, PropertiesUtils.versionBase64()));
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }

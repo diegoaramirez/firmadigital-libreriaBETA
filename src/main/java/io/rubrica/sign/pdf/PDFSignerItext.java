@@ -64,6 +64,7 @@ import com.itextpdf.signatures.SignatureUtil;
 
 import io.rubrica.certificate.CertEcUtils;
 import io.rubrica.certificate.to.DatosUsuario;
+import io.rubrica.exceptions.HoraServidorException;
 import io.rubrica.exceptions.InvalidFormatException;
 import io.rubrica.exceptions.RubricaException;
 import io.rubrica.model.Document;
@@ -73,6 +74,7 @@ import io.rubrica.sign.Signer;
 import io.rubrica.utils.BouncyCastleUtils;
 import io.rubrica.utils.FileUtils;
 import io.rubrica.utils.Utils;
+import java.util.logging.Level;
 
 @Deprecated
 public class PDFSignerItext implements Signer {
@@ -106,30 +108,36 @@ public class PDFSignerItext implements Signer {
      * @param key
      * @param certChain
      * @param xParams
+     * @param base64
      * @return
      * @throws java.io.IOException
      * @throws io.rubrica.exceptions.RubricaException
      */
-    public byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties xParams)
+    @Override
+    public byte[] sign(byte[] data, String algorithm, PrivateKey key, Certificate[] certChain, Properties xParams, String base64)
             throws IOException, RubricaException {
         byte[] documentoFirmado = null;
-        File file = new File(xParams.getProperty(PATH));
-        file.mkdirs();
-
-        String rutaDocumentoTemporal = FileUtils.crearNombreTemporal(file, ".tmp");
-        String rutaDocumentoFirmado = FileUtils.crearNombreFirmado(file, ".pdf");
-
         try {
-            String fieldName = emptySignature(file.getPath(), rutaDocumentoTemporal, certChain, xParams);
-            documentoFirmado = createSignature(rutaDocumentoTemporal, rutaDocumentoFirmado, fieldName, key, certChain,
-                    algorithm);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            new File(rutaDocumentoTemporal).delete();
-            new File(rutaDocumentoFirmado).delete();
-            // eliminar temporales
-            FileUtils.eliminarPorConstante(System.getProperty("java.io.tmpdir"), "firmaec.rubrica.firmadigital.temp");
+            File file = new File(xParams.getProperty(PATH));
+            file.mkdirs();
+            
+            String rutaDocumentoTemporal = FileUtils.crearNombreTemporal(file, ".tmp", base64);
+            String rutaDocumentoFirmado = FileUtils.crearNombreFirmado(file, ".pdf");
+            
+            try {
+                String fieldName = emptySignature(file.getPath(), rutaDocumentoTemporal, certChain, xParams);
+                documentoFirmado = createSignature(rutaDocumentoTemporal, rutaDocumentoFirmado, fieldName, key, certChain,
+                        algorithm);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                new File(rutaDocumentoTemporal).delete();
+                new File(rutaDocumentoFirmado).delete();
+                // eliminar temporales
+                FileUtils.eliminarPorConstante(System.getProperty("java.io.tmpdir"), "firmaec.rubrica.firmadigital.temp");
+            }    
+        } catch (HoraServidorException ex) {
+            Logger.getLogger(PDFSignerItext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return documentoFirmado;
     }

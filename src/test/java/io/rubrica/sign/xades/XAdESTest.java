@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import io.rubrica.sign.SignInfo;
 import io.rubrica.sign.TestHelper;
+import io.rubrica.utils.PropertiesUtils;
 
 public class XAdESTest {
 
@@ -45,7 +46,7 @@ public class XAdESTest {
 
         try (FileOutputStream fos = new FileOutputStream(tempFile);) {
             XAdESSigner signer = new XAdESSigner();
-            byte[] result = signer.sign(xml, "SHA1withRSA", kp.getPrivate(), chain, null);
+            byte[] result = signer.sign(xml, "SHA1withRSA", kp.getPrivate(), chain, null, PropertiesUtils.versionBase64());
 
             assertNotNull(result);
             fos.write(result);

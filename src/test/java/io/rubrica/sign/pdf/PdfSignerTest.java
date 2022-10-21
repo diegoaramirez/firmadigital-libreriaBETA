@@ -32,6 +32,7 @@ import io.rubrica.sign.SignConstants;
 import io.rubrica.sign.SignInfo;
 import io.rubrica.sign.Signer;
 import io.rubrica.sign.TestHelper;
+import io.rubrica.utils.PropertiesUtils;
 
 public class PdfSignerTest {
 
@@ -55,7 +56,7 @@ public class PdfSignerTest {
 
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             Signer signer = new PDFSignerItext();
-            result = signer.sign(pdf, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain, params);
+            result = signer.sign(pdf, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain, params, PropertiesUtils.versionBase64());
 
             assertNotNull(result);
             fos.write(result);
@@ -69,7 +70,7 @@ public class PdfSignerTest {
         try (FileOutputStream fos = new FileOutputStream(tempFile2)) {
             Signer signer = new PDFSignerItext();
             byte[] result2 = signer.sign(result, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain,
-                    params);
+                    params, PropertiesUtils.versionBase64());
 
             assertNotNull(result2);
             fos.write(result2);

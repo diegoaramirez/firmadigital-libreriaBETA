@@ -35,6 +35,7 @@ import io.rubrica.sign.SignConstants;
 import io.rubrica.sign.SignInfo;
 import io.rubrica.sign.Signer;
 import io.rubrica.sign.TestHelper;
+import io.rubrica.utils.PropertiesUtils;
 
 public class PdfVisibleSignatureTest {
 
@@ -63,7 +64,7 @@ public class PdfVisibleSignatureTest {
 
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             Signer signer = new PDFSignerItext();
-            result = signer.sign(pdf, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain, params);
+            result = signer.sign(pdf, SignConstants.SIGN_ALGORITHM_SHA1WITHRSA, kp.getPrivate(), chain, params, PropertiesUtils.versionBase64());
 
             assertNotNull(result);
             fos.write(result);
