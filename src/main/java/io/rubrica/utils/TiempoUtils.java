@@ -18,18 +18,21 @@
 package io.rubrica.utils;
 
 import io.rubrica.exceptions.HoraServidorException;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.logging.Logger;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Utilidades para manejar tiempos
@@ -70,51 +73,19 @@ public class TiempoUtils {
             return null;
 //            throw new RuntimeException(PropertiesUtils.getMessages().getProperty("mensaje.error.fecha_hora_url"));
         } else {
-            String parametro = "base64=" + base64;
-            URL url = new URL(fecha_hora_url);
-            HttpURLConnection conn = null;
-            DataOutputStream dataOutputStream = null;
-            InputStream inputStream = null;
-            try {
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setUseCaches(false);
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setConnectTimeout(TIME_OUT);
-                conn.setReadTimeout(TIME_OUT);
-                conn.setRequestMethod("POST");
-                conn.setInstanceFollowRedirects(false);
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestProperty("charset", "utf-8");
-                conn.setRequestProperty("Content-Length", Integer.toString(parametro.getBytes().length));
-
-                dataOutputStream = new DataOutputStream(conn.getOutputStream());
-                dataOutputStream.writeBytes(parametro);
-                dataOutputStream.flush();
-
-                int responseCode = conn.getResponseCode();
-                LOGGER.fine("POST Response Code: " + responseCode);
-                System.out.println("POST Response Code: " + responseCode);
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = conn.getInputStream();
-                    Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-                    String response = s.hasNext() ? s.next() : null;
-                    System.out.println("response: " + response);
-                    return response;
-                } else {
-                    throw new HoraServidorException(PropertiesUtils.getMessages().getProperty("mensaje.error.problema_red"));
-                }
-            } finally {
-                if (dataOutputStream != null) {
-                    dataOutputStream.close();
-                }
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (conn != null) {
-                    conn.disconnect();
-                }
+            Client client = ClientBuilder.newClient();
+            WebTarget target = client.target(fecha_hora_url);
+            Invocation.Builder builder = target.request(MediaType.TEXT_PLAIN);
+            Form form = new Form();
+            form.param("base64", base64);
+            Invocation invocation = builder.buildPost(Entity.form(form));
+            // Leer la respuesta
+            int statusCode = invocation.invoke().getStatus();
+            String body = invocation.invoke().readEntity(String.class);
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                return body;
+            } else {
+                throw new HoraServidorException(PropertiesUtils.getMessages().getProperty("mensaje.error.problema_red"));
             }
         }
     }
