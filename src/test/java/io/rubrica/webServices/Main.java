@@ -46,24 +46,24 @@ import javax.ws.rs.core.Response;
 public class Main {
 
 //    private static final String URLAPI = "https://api.firmadigital.gob.ec/api";//produccion
-    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";//servidor
-//    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8181/api";//local
+//    private static final String URLAPI = "https://impapi.firmadigital.gob.ec/api";//servidor
+    private static final String URLAPI = "http://impapi.firmadigital.gob.ec:8181/api";//local
 //    private static final String URLAPI = "http://localhost:8181/api";//local
 //    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";//produccion
-    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";//servidor
-//    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";//local
+//    private static final String URLWS = "https://impws.firmadigital.gob.ec/servicio";//servidor
+    private static final String URLWS = "http://impws.firmadigital.gob.ec:8080/servicio";//local
 //    private static final String URLWS = "http://localhost:8080/servicio";//local
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-//    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIRMAS-signed-signed-signed-signed.pdf";
+//    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIMAS-signed-signed-signed-signed.pdf";
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static String cedula = "1234567890";
 
     public static void main(String args[]) throws Exception {
 //        appFirmarDocumento();
 //        appVerificarDocumento();
-//        appValidarCertificado();
-        appFirmarDocumentoTransversal();
+        appValidarCertificado();
+//        appFirmarDocumentoTransversal();
     }
 
     private static void appFirmarDocumento() throws IOException, KeyStoreException, Exception {
@@ -117,6 +117,7 @@ public class Main {
 
         Form form = new Form();
         form.param("documento", fileBase64);
+        form.param("base64", PropertiesUtils.versionBase64());
 
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
@@ -143,8 +144,7 @@ public class Main {
         Invocation invocation = builder.buildPost(Entity.form(form));
         Response response = invocation.invoke();
         int status = response.getStatus();
-        String result = response.readEntity(String.class
-        );
+        String result = response.readEntity(String.class);
         System.out.println("Status: " + status + "\nResult: " + result);
     }
 
@@ -176,7 +176,7 @@ public class Main {
             gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento.toPath())));
             gsonDocumentoArray.add(gsonDocumentoObject);
         }
-        
+
         //documentos por separado
 //        gsonDocumentoObject = new com.google.gson.JsonObject();
 //        //Generando documento en base64 y agregando en JSON
@@ -190,7 +190,6 @@ public class Main {
 //        gsonDocumentoObject.addProperty("nombre", documento2.getName());
 //        gsonDocumentoObject.addProperty("documento", java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(documento2.toPath())));
 //        gsonDocumentoArray.add(gsonDocumentoObject);
-        
         gsonObject.add("documentos", new com.google.gson.JsonParser()
                 .parse(new com.google.gson.Gson().toJson(gsonDocumentoArray)).getAsJsonArray());
         gsonArray.add(gsonObject);
@@ -283,8 +282,8 @@ public class Main {
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
             gsonObject.addProperty("pagina", pagina);
-            gsonObject.addProperty("pre", true);//servidor
-//            gsonObject.addProperty("des", true);//local
+//            gsonObject.addProperty("pre", true);//servidor
+            gsonObject.addProperty("des", true);//local
 //            gsonObject.addProperty("url", URLAPI);
             System.out.println("gsonObject: " + gsonObject.toString());
 
