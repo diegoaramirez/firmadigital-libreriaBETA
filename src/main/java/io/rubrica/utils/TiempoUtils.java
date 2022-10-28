@@ -33,6 +33,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Utilidades para manejar tiempos
@@ -80,10 +81,11 @@ public class TiempoUtils {
             form.param("base64", base64);
             Invocation invocation = builder.buildPost(Entity.form(form));
             // Leer la respuesta
-            int statusCode = invocation.invoke().getStatus();
-            String body = invocation.invoke().readEntity(String.class);
+            Response response = invocation.invoke();
+            int statusCode = response.getStatus();
+            String respuesta = response.readEntity(String.class);
             if (statusCode == HttpURLConnection.HTTP_OK) {
-                return body;
+                return respuesta;
             } else {
                 throw new HoraServidorException(PropertiesUtils.getMessages().getProperty("mensaje.error.problema_red"));
             }
