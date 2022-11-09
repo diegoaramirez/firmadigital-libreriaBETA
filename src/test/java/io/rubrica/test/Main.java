@@ -72,8 +72,10 @@ import java.io.InputStream;
 public class Main {
 
     // ARCHIVO
-    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
-    private static final String PASSWORD = "123456";
+    private static final String PKCS12 = "/home/mfernandez/Firmas/Lazatte/pnatural.p12";
+    private static final String PASSWORD = "1234";
+//    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
+//    private static final String PASSWORD = "123456";
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static String hashAlgorithm = "SHA512";
 

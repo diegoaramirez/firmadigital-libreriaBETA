@@ -78,6 +78,10 @@ import io.rubrica.certificate.ec.datil.CertificadoRepresentanteLegalDatil;
 import io.rubrica.certificate.ec.datil.CertificadoDatil;
 import io.rubrica.certificate.ec.datil.CertificadoDatilDataFactory;
 import io.rubrica.certificate.ec.datil.DatilSubCaCert20212031;
+import io.rubrica.certificate.ec.lazzate.CertificadoLazzate;
+import io.rubrica.certificate.ec.lazzate.CertificadoLazzateDataFactory;
+import io.rubrica.certificate.ec.lazzate.CertificadoPersonaNaturalLazzate;
+import io.rubrica.certificate.ec.lazzate.LazzateSubCaCert;
 
 import io.rubrica.certificate.to.DatosUsuario;
 import io.rubrica.exceptions.EntidadCertificadoraNoValidaException;
@@ -94,6 +98,7 @@ public class CertEcUtils {
     public static final String ECLIPSOFT_NAME = "ECLIPSOFT S.A.";
     public static final String DATIL_NAME = "DATILMEDIA S.A.";
     public static final String AGOSDATA_NAME = "ARGOSDATA CA";
+    public static final String LAZZATE_NAME = "LAZZATE CIA. LTDA";
 
     public static X509Certificate getRootCertificate(X509Certificate certificado) throws EntidadCertificadoraNoValidaException {
         String entidadCertStr = getNombreCA(certificado);
@@ -172,6 +177,9 @@ public class CertEcUtils {
             case AGOSDATA_NAME: {
                 return new ArgosDataSubCaCert();
             }
+            case LAZZATE_NAME: {
+                return new LazzateSubCaCert();
+            }
 
             default:
                 throw new EntidadCertificadoraNoValidaException("Entidad Certificadora no reconocida");
@@ -203,6 +211,9 @@ public class CertEcUtils {
         }
         if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(AGOSDATA_NAME)) {
             return AGOSDATA_NAME;
+        }
+        if (certificado.getIssuerX500Principal().getName().toUpperCase().contains(LAZZATE_NAME)) {
+            return LAZZATE_NAME;
         }
 
         return "Entidad no reconocida " + certificado.getIssuerX500Principal().getName();
@@ -599,6 +610,71 @@ public class CertEcUtils {
                 datosUsuario.setSerial(certificado.getSerialNumber().toString());
             }
             datosUsuario.setEntidadCertificadora(AGOSDATA_NAME);
+            datosUsuario.setCertificadoDigitalValido(true);
+            return datosUsuario;
+        }
+        
+        if (CertificadoLazzateDataFactory.esCertificadoLazzate(certificado)) {
+            CertificadoLazzate certificadoLazzate = CertificadoLazzateDataFactory.construir(certificado);
+//            if (certificadoLazzate instanceof CertificadoDepartamentoEmpresaLazzate) {
+//                CertificadoDepartamentoEmpresaConsejoJudicatura certificadoDepartamentoEmpresaConsejoJudicatura;
+//                certificadoDepartamentoEmpresaConsejoJudicatura = (CertificadoDepartamentoEmpresaConsejoJudicatura) certificadoLazzate;
+//
+//                datosUsuario.setCedula(certificadoDepartamentoEmpresaConsejoJudicatura.getCedulaPasaporte());
+//                datosUsuario.setNombre(certificadoDepartamentoEmpresaConsejoJudicatura.getNombres());
+//                datosUsuario.setApellido(certificadoDepartamentoEmpresaConsejoJudicatura.getPrimerApellido() + " "
+//                        + certificadoDepartamentoEmpresaConsejoJudicatura.getSegundoApellido());
+//                datosUsuario.setCargo(certificadoDepartamentoEmpresaConsejoJudicatura.getCargo());
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+//            if (certificadoLazzate instanceof CertificadoEmpresaConsejoJudicatura) {
+//                CertificadoEmpresaConsejoJudicatura certificadoEmpresaConsejoJudicatura = (CertificadoEmpresaConsejoJudicatura) certificadoLazzate;
+//                datosUsuario.setCedula(certificadoEmpresaConsejoJudicatura.getCedulaPasaporte());
+//                datosUsuario.setNombre(certificadoEmpresaConsejoJudicatura.getNombres());
+//                datosUsuario.setApellido(certificadoEmpresaConsejoJudicatura.getPrimerApellido() + " "
+//                        + certificadoEmpresaConsejoJudicatura.getSegundoApellido());
+//                datosUsuario.setCargo(certificadoEmpresaConsejoJudicatura.getCargo());
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+//            if (certificadoLazzate instanceof CertificadoMiembroEmpresaConsejoJudicatura) {
+//                CertificadoMiembroEmpresaConsejoJudicatura certificadoMiembroEmpresaConsejoJudicatura = (CertificadoMiembroEmpresaConsejoJudicatura) certificadoLazzate;
+//                datosUsuario.setCedula(certificadoMiembroEmpresaConsejoJudicatura.getCedulaPasaporte());
+//                datosUsuario.setNombre(certificadoMiembroEmpresaConsejoJudicatura.getNombres());
+//                datosUsuario.setApellido(certificadoMiembroEmpresaConsejoJudicatura.getPrimerApellido() + " "
+//                        + certificadoMiembroEmpresaConsejoJudicatura.getSegundoApellido());
+//                datosUsuario.setCargo(certificadoMiembroEmpresaConsejoJudicatura.getCargo());
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+//            if (certificadoLazzate instanceof CertificadoPersonaJuridicaPrivadaConsejoJudicatura) {
+//                CertificadoPersonaJuridicaPrivadaConsejoJudicatura certificadoPersonaJuridicaPrivadaConsejoJudicatura = (CertificadoPersonaJuridicaPrivadaConsejoJudicatura) certificadoLazzate;
+//                datosUsuario.setCedula(certificadoPersonaJuridicaPrivadaConsejoJudicatura.getCedulaPasaporte());
+//                datosUsuario.setNombre(certificadoPersonaJuridicaPrivadaConsejoJudicatura.getNombres());
+//                datosUsuario.setApellido(certificadoPersonaJuridicaPrivadaConsejoJudicatura.getPrimerApellido() + " "
+//                        + certificadoPersonaJuridicaPrivadaConsejoJudicatura.getSegundoApellido());
+//                datosUsuario.setCargo(datosUsuario.getCargo());
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+//            if (certificadoLazzate instanceof CertificadoPersonaJuridicaPublicaConsejoJudicatura) {
+//                CertificadoPersonaJuridicaPublicaConsejoJudicatura certificadoPersonaJuridicaPublicaConsejoJudicatura = (CertificadoPersonaJuridicaPublicaConsejoJudicatura) certificadoLazzate;
+//                datosUsuario.setCedula(certificadoPersonaJuridicaPublicaConsejoJudicatura.getCedulaPasaporte());
+//                datosUsuario.setNombre(certificadoPersonaJuridicaPublicaConsejoJudicatura.getNombres());
+//                datosUsuario.setApellido(certificadoPersonaJuridicaPublicaConsejoJudicatura.getPrimerApellido() + " "
+//                        + certificadoPersonaJuridicaPublicaConsejoJudicatura.getSegundoApellido());
+//                datosUsuario.setCargo(certificadoPersonaJuridicaPublicaConsejoJudicatura.getCargo());
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+            if (certificadoLazzate instanceof CertificadoPersonaNaturalLazzate) {
+                CertificadoPersonaNaturalLazzate certificadoPersonaNaturalConsejoJudicatura = (CertificadoPersonaNaturalLazzate) certificadoLazzate;
+                datosUsuario.setCedula(certificadoPersonaNaturalConsejoJudicatura.getCedulaPasaporte());
+                datosUsuario.setNombre(certificadoPersonaNaturalConsejoJudicatura.getNombres());
+                datosUsuario.setApellido(certificadoPersonaNaturalConsejoJudicatura.getPrimerApellido() + " "
+                        + certificadoPersonaNaturalConsejoJudicatura.getSegundoApellido());
+                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+            }
+//            if (certificadoLazzate instanceof CertificadoSelladoTiempo) {
+//                datosUsuario.setSerial(certificado.getSerialNumber().toString());
+//            }
+            datosUsuario.setEntidadCertificadora(LAZZATE_NAME);
             datosUsuario.setCertificadoDigitalValido(true);
             return datosUsuario;
         }
