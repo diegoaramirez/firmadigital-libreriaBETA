@@ -76,6 +76,7 @@ import io.rubrica.certificate.to.Documento;
 import io.rubrica.core.Util;
 import io.rubrica.exceptions.CRLValidationException;
 import io.rubrica.exceptions.CertificadoInvalidoException;
+import io.rubrica.exceptions.ConexionException;
 import io.rubrica.exceptions.ConexionInvalidaOCSPException;
 import io.rubrica.exceptions.ConexionValidarCRLException;
 import io.rubrica.exceptions.DocumentoException;
@@ -370,7 +371,7 @@ public class Utils {
         }
     }
 
-    public static List<Certificado> datosP7mToCertificado(List<X509Certificate> certificados, List<Date> fechasFirmados) throws RubricaException, HoraServidorException, IOException, CertificadoInvalidoException, EntidadCertificadoraNoValidaException, ConexionValidarCRLException, CRLValidationException, OcspValidationException {
+    public static List<Certificado> datosP7mToCertificado(List<X509Certificate> certificados, List<Date> fechasFirmados) throws RubricaException, HoraServidorException, IOException, CertificadoInvalidoException, EntidadCertificadoraNoValidaException, ConexionValidarCRLException, CRLValidationException, OcspValidationException, ConexionException {
         List<Certificado> tempCertificados = new ArrayList<>();
         for (int i = 0; i < certificados.size(); i++) {
             X509Certificate temp = certificados.get(i);
@@ -804,7 +805,7 @@ public class Utils {
         return keyUsages;
     }
 
-    public static Documento signInfosToCertificados(List<SignInfo> signInfos) throws DocumentoException, CertificadoInvalidoException, IOException {
+    public static Documento signInfosToCertificados(List<SignInfo> signInfos) throws DocumentoException, CertificadoInvalidoException, IOException, ConexionException {
         Documento documento = null;
         List<Certificado> certificados = new ArrayList<>();
         if (signInfos == null || signInfos.isEmpty()) {
@@ -855,7 +856,7 @@ public class Utils {
         return datosUsuario;
     }
 
-    public static Certificado signInfoToCertificado(SignInfo signInfo) throws CertificadoInvalidoException, IOException {
+    public static Certificado signInfoToCertificado(SignInfo signInfo) throws CertificadoInvalidoException, IOException, ConexionException {
         signInfo.getCerts();
         Certificado certificado = null;
         DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(signInfo.getCerts()[0]);

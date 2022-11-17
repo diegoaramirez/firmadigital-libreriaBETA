@@ -72,19 +72,21 @@ import java.io.InputStream;
 public class Main {
 
     // ARCHIVO
-    private static final String PKCS12 = "/home/mfernandez/Firmas/Lazatte/pnatural.p12";
-    private static final String PASSWORD = "1234";
-//    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
-//    private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+//    private static final String PKCS12 = "/home/mfernandez/Firmas/Argos Data/revocado/keystore_14-11-2022T162203.p12";
+//    private static final String PASSWORD = "Sistemas01*";
+    private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
+    private static final String PASSWORD = "123456";
+    private static final String FILE = "/home/mfernandez/Descargas/Manual Usuario FirmaEC v3.pdf";
+//    private static final String FILE = "/home/mfernandez/Test/Verify/05.pdf";
+//    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf;"
     private static String hashAlgorithm = "SHA512";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        firmarDocumentoTrifasica(FILE);
 //        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
-        validarCertificado();
-//        verificarDocumento(FILE);
+//        validarCertificado();
+        verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
 
@@ -247,7 +249,8 @@ public class Main {
         Date fechaHoraISO = fechaHoraISO();
 
         //Validad certificado revocado
-        Date fechaRevocado = UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null);
+//        Date fechaRevocado = UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null);
+        Date fechaRevocado = UtilsCrlOcsp.validarOCSPDate(x509Certificate);
         if (fechaRevocado != null && fechaRevocado.compareTo(fechaHoraISO) <= 0) {
             System.out.println("Certificado revocado: " + fechaRevocado);
         }

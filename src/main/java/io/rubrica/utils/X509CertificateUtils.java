@@ -27,6 +27,7 @@ import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 
 import io.rubrica.certificate.to.DatosUsuario;
+import io.rubrica.exceptions.ConexionException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.util.Date;
@@ -72,7 +73,7 @@ public class X509CertificateUtils {
         }
     }
 
-    public boolean validarX509Certificate(X509Certificate x509Certificate, String apiUrl, String base64) throws RubricaException, KeyStoreException, EntidadCertificadoraNoValidaException, InvalidKeyException, CertificadoInvalidoException, IOException, HoraServidorException {
+    public boolean validarX509Certificate(X509Certificate x509Certificate, String apiUrl, String base64) throws RubricaException, KeyStoreException, EntidadCertificadoraNoValidaException, InvalidKeyException, CertificadoInvalidoException, IOException, HoraServidorException, ConexionException {
         boolean retorno = false;
         int diasAnticipacion = 30;
         if (x509Certificate != null) {
@@ -106,8 +107,6 @@ public class X509CertificateUtils {
             }
 
             if ((revocado != null) || caducado || desconocido) {
-                //problemas si se activa en sw
-//                javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
                 error = PropertiesUtils.getMessages().getProperty("mensaje.error.certificado_invalido");
                 retorno = false;
             } else {

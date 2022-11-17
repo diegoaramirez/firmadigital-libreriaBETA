@@ -34,6 +34,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientProperties;
 
 /**
  * Utilidades para manejar tiempos
@@ -75,6 +76,8 @@ public class TiempoUtils {
 //            throw new RuntimeException(PropertiesUtils.getMessages().getProperty("mensaje.error.fecha_hora_url"));
         } else {
             Client client = ClientBuilder.newClient();
+            client.property(ClientProperties.CONNECT_TIMEOUT, TIME_OUT);
+            client.property(ClientProperties.READ_TIMEOUT, TIME_OUT);
             WebTarget target = client.target(fecha_hora_url);
             Invocation.Builder builder = target.request(MediaType.TEXT_PLAIN);
             Form form = new Form();

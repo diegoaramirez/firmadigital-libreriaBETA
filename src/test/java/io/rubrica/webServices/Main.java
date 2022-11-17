@@ -37,6 +37,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientProperties;
 
 /**
  * Metodo de pruebas funcionales
@@ -58,6 +59,7 @@ public class Main {
 //    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIMAS-signed-signed-signed-signed.pdf";
     private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static String cedula = "1234567890";
+    private static final int TIME_OUT = 5000; //set timeout to 5 seconds
 
     public static void main(String args[]) throws Exception {
 //        appFirmarDocumento();
@@ -80,6 +82,8 @@ public class Main {
         String fileBase64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
         Client client = ClientBuilder.newClient();
+        client.property(ClientProperties.CONNECT_TIMEOUT, TIME_OUT);
+        client.property(ClientProperties.READ_TIMEOUT, TIME_OUT);
         WebTarget target = client.target(urlws);
         Invocation.Builder builder = target.request();
 
@@ -112,6 +116,8 @@ public class Main {
         String fileBase64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
         Client client = ClientBuilder.newClient();
+        client.property(ClientProperties.CONNECT_TIMEOUT, TIME_OUT);
+        client.property(ClientProperties.READ_TIMEOUT, TIME_OUT);
         WebTarget target = client.target(urlws);
         Invocation.Builder builder = target.request();
 
@@ -133,6 +139,8 @@ public class Main {
         String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
 
         Client client = ClientBuilder.newClient();
+        client.property(ClientProperties.CONNECT_TIMEOUT, TIME_OUT);
+        client.property(ClientProperties.READ_TIMEOUT, TIME_OUT);
         WebTarget target = client.target(urlws);
         Invocation.Builder builder = target.request();
 
@@ -268,6 +276,8 @@ public class Main {
             File pkcs12 = new File(PKCS12);
             String pkcs12Base64 = java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(pkcs12.toPath()));
             Client client = ClientBuilder.newClient();
+            client.property(ClientProperties.CONNECT_TIMEOUT, TIME_OUT);
+            client.property(ClientProperties.READ_TIMEOUT, TIME_OUT);
             WebTarget target = client.target(urlws);
             Invocation.Builder builder = target.request();
 
