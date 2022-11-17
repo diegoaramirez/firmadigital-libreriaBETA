@@ -76,17 +76,17 @@ public class Main {
 //    private static final String PASSWORD = "Sistemas01*";
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
-    private static final String FILE = "/home/mfernandez/Descargas/Manual Usuario FirmaEC v3.pdf";
-//    private static final String FILE = "/home/mfernandez/Test/Verify/05.pdf";
+//    private static final String FILE = "/home/mfernandez/Descargas/Manual Usuario FirmaEC v3.pdf";
+    private static final String FILE = "/home/mfernandez/Test/Verify/09.pdf";
 //    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf;"
     private static String hashAlgorithm = "SHA512";
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        firmarDocumentoTrifasica(FILE);
-//        firmarDocumentoPDF(FILE);
+        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
 //        validarCertificado();
-        verificarDocumento(FILE);
+//        verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
 

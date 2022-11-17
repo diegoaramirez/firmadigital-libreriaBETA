@@ -79,7 +79,13 @@ public abstract class BasePdfSigner implements PdfSigner {
     @Override
     public byte[] sign(InputStream is, RubricaSigner signer, Certificate[] certChain, Properties params)
             throws IOException {
-        try (PdfReader pdfReader = new PdfReader(is); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+        try (PdfReader pdfReader = new PdfReader(is) {
+            @Override
+            public boolean hasRebuiltXref() {
+                return false;
+            }
+        };
+                ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             StampingProperties stampingProperties = new StampingProperties();
             //TODO Edison Lomas Almeida: La línea siguiente genera error PdfException: Append mode requires a document without errors, even if recovery is possible.
             stampingProperties.useAppendMode();
@@ -158,7 +164,6 @@ public abstract class BasePdfSigner implements PdfSigner {
 //                logger.info("datosUsuario: " + datosUsuario);
 //                logger.info("Nombre firmante: " + nombreFirmante);
 //                logger.info("Informacion certificado: " + informacionCertificado);
-
                 PdfDocument pdfDocument = pdfSigner.getDocument();
 
                 CustomAppearance customAppearance;

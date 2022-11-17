@@ -120,10 +120,10 @@ public class PDFSignerItext implements Signer {
         try {
             File file = new File(xParams.getProperty(PATH));
             file.mkdirs();
-            
+
             String rutaDocumentoTemporal = FileUtils.crearNombreTemporal(file, ".tmp", base64);
             String rutaDocumentoFirmado = FileUtils.crearNombreFirmado(file, ".pdf");
-            
+
             try {
                 String fieldName = emptySignature(file.getPath(), rutaDocumentoTemporal, certChain, xParams);
                 documentoFirmado = createSignature(rutaDocumentoTemporal, rutaDocumentoFirmado, fieldName, key, certChain,
@@ -135,7 +135,7 @@ public class PDFSignerItext implements Signer {
                 new File(rutaDocumentoFirmado).delete();
                 // eliminar temporales
                 FileUtils.eliminarPorConstante(System.getProperty("java.io.tmpdir"), "firmaec.rubrica.firmadigital.temp");
-            }    
+            }
         } catch (HoraServidorException ex) {
             Logger.getLogger(PDFSignerItext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -201,7 +201,12 @@ public class PDFSignerItext implements Signer {
         }
 
         // Leer el PDF
-        PdfReader pdfReader = new PdfReader(src);
+        PdfReader pdfReader = new PdfReader(src) {
+            @Override
+            public boolean hasRebuiltXref() {
+                return false;
+            }
+        };
         // if (pdfReader.isEncrypted()) {
         // logger.severe("Documento encriptado");
         // throw new RubricaException("Documento encriptado");
