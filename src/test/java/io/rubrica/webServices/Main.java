@@ -57,14 +57,14 @@ public class Main {
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
 //    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIMAS-signed-signed-signed-signed.pdf";
-    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
     private static String cedula = "1234567890";
     private static final int TIME_OUT = 5000; //set timeout to 5 seconds
 
     public static void main(String args[]) throws Exception {
-//        appFirmarDocumento();
+        appFirmarDocumento();
 //        appVerificarDocumento();
-        appValidarCertificado();
+//        appValidarCertificado();
 //        appFirmarDocumentoTransversal();
     }
 
