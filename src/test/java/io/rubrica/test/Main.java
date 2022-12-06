@@ -83,9 +83,9 @@ public class Main {
 
     public static void main(String args[]) throws KeyStoreException, Exception {
 //        firmarDocumentoTrifasica(FILE);
-        firmarDocumentoPDF(FILE);
+//        firmarDocumentoPDF(FILE);
 //        firmarDocumentoXML(FILE);
-//        validarCertificado();
+        validarCertificado();
 //        verificarDocumento(FILE);
 //        fechaHora(240);//espera en segundos
     }
@@ -249,8 +249,9 @@ public class Main {
         Date fechaHoraISO = fechaHoraISO();
 
         //Validad certificado revocado
-//        Date fechaRevocado = UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null);
-        Date fechaRevocado = UtilsCrlOcsp.validarOCSPDate(x509Certificate);
+        Date fechaRevocado = UtilsCrlOcsp.validarFechaRevocado(x509Certificate, null);
+        //Desarrollo
+//        Date fechaRevocado = UtilsCrlOcsp.validarOCSPDate(x509Certificate);
         if (fechaRevocado != null && fechaRevocado.compareTo(fechaHoraISO) <= 0) {
             System.out.println("Certificado revocado: " + fechaRevocado);
         }
