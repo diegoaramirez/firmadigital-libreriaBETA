@@ -57,14 +57,14 @@ public class Main {
     private static final String PKCS12 = "/home/mfernandez/appFirmaEC/prueba.p12";
     private static final String PASSWORD = "123456";
 //    private static final String FILE = "/home/mfernandez/appFirmaEC/Casos QA/ACTA DE 65 FIMAS-signed-signed-signed-signed.pdf";
-    private static final String FILE = "/home/mfernandez/Test/documento_blanco-signed.pdf";
+    private static final String FILE = "/home/mfernandez/Test/documento_blanco.pdf";
     private static String cedula = "1234567890";
     private static final int TIME_OUT = 5000; //set timeout to 5 seconds
 
     public static void main(String args[]) throws Exception {
-        appFirmarDocumento();
+//        appFirmarDocumento();
 //        appVerificarDocumento();
-//        appValidarCertificado();
+        appValidarCertificado();
 //        appFirmarDocumentoTransversal();
     }
 
@@ -90,7 +90,7 @@ public class Main {
         //creacion del JSON
         com.google.gson.JsonObject gsonObject = new com.google.gson.JsonObject();
         gsonObject = new com.google.gson.JsonObject();
-        gsonObject.addProperty("versionFirmaEC", "RUBRICA");
+        gsonObject.addProperty("versionFirmaEC", "RUBRICA android miska");
         gsonObject.addProperty("formatoDocumento", "PDF");
         gsonObject.addProperty("llx", llx);
         gsonObject.addProperty("lly", lly);
@@ -249,8 +249,8 @@ public class Main {
 
         //Variantes
         int certificado = 2;//1 token 2 archivo
-
-        int numeroCopias = 3;
+        int numeroCopias = 1;
+        
         File documento = new File(FILE);
 
         //creacion del JSON
@@ -285,7 +285,7 @@ public class Main {
             gsonObject = new com.google.gson.JsonObject();
             gsonObject.addProperty("sistema", sistema);
             gsonObject.addProperty("operacion", "firmar");
-            gsonObject.addProperty("versionFirmaEC", "RUBRICA");
+            gsonObject.addProperty("versionFirmaEC", "RUBRICA android miska");
             gsonObject.addProperty("formatoDocumento", "PDF");
             gsonObject.addProperty("tokenJwt", jwt);
             gsonObject.addProperty("llx", llx);
