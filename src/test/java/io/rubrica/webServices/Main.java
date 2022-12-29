@@ -90,7 +90,7 @@ public class Main {
         //creacion del JSON
         com.google.gson.JsonObject gsonObject = new com.google.gson.JsonObject();
         gsonObject = new com.google.gson.JsonObject();
-        gsonObject.addProperty("versionFirmaEC", "RUBRICA android miska");
+        gsonObject.addProperty("versionFirmaEC", "RUBRICA");
         gsonObject.addProperty("formatoDocumento", "PDF");
         gsonObject.addProperty("llx", llx);
         gsonObject.addProperty("lly", lly);
