@@ -64,8 +64,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 //        appFirmarDocumento();
 //        appVerificarDocumento();
-        appValidarCertificado();
-//        appFirmarDocumentoTransversal();
+//        appValidarCertificado();
+        appFirmarDocumentoTransversal();
     }
 
     private static void appFirmarDocumento() throws IOException, KeyStoreException, Exception {
@@ -285,12 +285,13 @@ public class Main {
             gsonObject = new com.google.gson.JsonObject();
             gsonObject.addProperty("sistema", sistema);
             gsonObject.addProperty("operacion", "firmar");
-            gsonObject.addProperty("versionFirmaEC", "RUBRICA android miska");
+            gsonObject.addProperty("versionFirmaEC", "RUBRICA");
             gsonObject.addProperty("formatoDocumento", "PDF");
             gsonObject.addProperty("tokenJwt", jwt);
             gsonObject.addProperty("llx", llx);
             gsonObject.addProperty("lly", lly);
             gsonObject.addProperty("tipoEstampado", tipoEstampado);
+            gsonObject.addProperty("razon", "miska muska");
             gsonObject.addProperty("pagina", pagina);
             gsonObject.addProperty("pre", true);//servidor
 //            gsonObject.addProperty("des", true);//local
