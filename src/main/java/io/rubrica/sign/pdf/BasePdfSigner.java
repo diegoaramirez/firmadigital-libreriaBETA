@@ -121,11 +121,7 @@ public abstract class BasePdfSigner implements PdfSigner {
             }
 
             // Tipo de firma (Información, QR)
-            String typeSig = extraParams.getProperty(TYPE_SIG, "information1");
-
-            if (typeSig.equals("QR") && extraParams.getProperty(FONT_SIZE) == null) {
-                fontSize = 4.5f;
-            }
+            String typeSig = extraParams.getProperty(TYPE_SIG);
 
             // Información QR
             String infoQR = extraParams.getProperty(INFO_QR, "").trim();
@@ -153,55 +149,61 @@ public abstract class BasePdfSigner implements PdfSigner {
             StampingProperties properties = new StampingProperties();
             properties.useAppendMode();
 
-            PdfSignatureAppearance signatureAppearance = pdfSigner.getSignatureAppearance();
-            signatureAppearance.setPageRect(signaturePositionOnPage).setPageNumber(page);
+            if (typeSig != null) {
+                if (typeSig.equals("QR") && extraParams.getProperty(FONT_SIZE) == null) {
+                    fontSize = 4.5f;
+                }
 
-            if (signaturePositionOnPage != null) {
-                DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(x509Certificate);
-                String nombreFirmante = (datosUsuario.getNombre() + " " + datosUsuario.getApellido()).toUpperCase();
-                String informacionCertificado = x509Certificate.getSubjectDN().getName();
+                PdfSignatureAppearance signatureAppearance = pdfSigner.getSignatureAppearance();
+                signatureAppearance.setPageRect(signaturePositionOnPage).setPageNumber(page);
+
+                if (signaturePositionOnPage != null) {
+                    DatosUsuario datosUsuario = CertEcUtils.getDatosUsuarios(x509Certificate);
+                    String nombreFirmante = (datosUsuario.getNombre() + " " + datosUsuario.getApellido()).toUpperCase();
+                    String informacionCertificado = x509Certificate.getSubjectDN().getName();
 
 //                logger.info("datosUsuario: " + datosUsuario);
 //                logger.info("Nombre firmante: " + nombreFirmante);
 //                logger.info("Informacion certificado: " + informacionCertificado);
-                PdfDocument pdfDocument = pdfSigner.getDocument();
+                    PdfDocument pdfDocument = pdfSigner.getDocument();
 
-                CustomAppearance customAppearance;
+                    CustomAppearance customAppearance;
 
-                switch (typeSig) {
-                    case "QR": {
-                        customAppearance = new QrAppereance(nombreFirmante, reason, location, signTime, infoQR);
-                        break;
+                    switch (typeSig) {
+                        case "QR": {
+                            customAppearance = new QrAppereance(nombreFirmante, reason, location, signTime, infoQR);
+                            break;
+                        }
+                        case "information1": {
+                            customAppearance = new Information1Appearance(nombreFirmante, informacionCertificado, reason,
+                                    location, signTime);
+                            break;
+                        }
+                        case "information2": {
+                            customAppearance = new Information2Appearance(nombreFirmante, reason, location, signTime);
+                            break;
+                        }
+                        default: {
+                            throw new RuntimeException("typeSign unknown");
+                        }
                     }
-                    case "information1": {
-                        customAppearance = new Information1Appearance(nombreFirmante, informacionCertificado, reason,
-                                location, signTime);
-                        break;
-                    }
-                    case "information2": {
-                        customAppearance = new Information2Appearance(nombreFirmante, reason, location, signTime);
-                        break;
-                    }
-                    default: {
-                        throw new RuntimeException("typeSign unknown");
-                    }
+
+                    customAppearance.createCustomAppearance(signatureAppearance, page, pdfDocument,
+                            signaturePositionOnPage);
                 }
 
-                customAppearance.createCustomAppearance(signatureAppearance, page, pdfDocument,
-                        signaturePositionOnPage);
-            }
+                // Razon de firma
+                if (reason != null) {
+                    signatureAppearance.setReason(reason);
+                }
 
-            // Razon de firma
-            if (reason != null) {
-                signatureAppearance.setReason(reason);
-            }
+                // Localización en donde se produce la firma
+                if (location != null) {
+                    signatureAppearance.setLocation(location);
+                }
 
-            // Localización en donde se produce la firma
-            if (location != null) {
-                signatureAppearance.setLocation(location);
+                signatureAppearance.setSignatureCreator("Rubrica 3.0");
             }
-
-            signatureAppearance.setSignatureCreator("Rubrica 3.0");
 
             // Fecha y hora de la firma
             if (signTime != null) {
