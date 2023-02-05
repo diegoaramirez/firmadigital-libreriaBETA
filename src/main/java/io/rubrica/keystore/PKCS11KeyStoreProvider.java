@@ -20,8 +20,8 @@ package io.rubrica.keystore;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AuthProvider;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -55,6 +55,8 @@ public abstract class PKCS11KeyStoreProvider implements KeyStoreProvider {
      * @return
      */
     public abstract String getConfig();
+    public abstract boolean existeDriver();
+    public abstract String getCfg();
 
     @Override
     public KeyStore getKeystore() throws KeyStoreException {
@@ -68,7 +70,7 @@ public abstract class PKCS11KeyStoreProvider implements KeyStoreProvider {
         try {
             // Crear una instancia de sun.security.pkcs11.SunPKCS11
             configStream = new ByteArrayInputStream(getConfig().getBytes());
-            Provider sunPKCS11Provider = this.createSunPKCS11Provider(configStream);
+            Provider sunPKCS11Provider = this.createSunPKCS11Provider();
             Security.addProvider(sunPKCS11Provider);
 
             KeyStore keyStore = KeyStore.getInstance("PKCS11");
@@ -93,19 +95,22 @@ public abstract class PKCS11KeyStoreProvider implements KeyStoreProvider {
      *
      * @return una instancia de <code>sun.security.pkcs11.SunPKCS11</code>
      */
+    private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
+    private static final String SUN_PKCS11_PROVIDER_NAME = "SunPKCS11";
+
     @SuppressWarnings("unchecked")
-    private Provider createSunPKCS11Provider(InputStream configStream) throws KeyStoreException {
+    private Provider createSunPKCS11Provider() throws KeyStoreException {
         try {
-            Class sunPkcs11Class = Class.forName("sun.security.pkcs11.SunPKCS11");
-            Constructor pkcs11Constr = sunPkcs11Class.getConstructor(InputStream.class);
-            return (Provider) pkcs11Constr.newInstance(configStream);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException
-                | InstantiationException e) {
+            Provider prototype = Security.getProvider(SUN_PKCS11_PROVIDER_NAME);
+            Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);
+            Method configureMethod = sunPkcs11ProviderClass.getMethod("configure", String.class);
+            return (Provider) configureMethod.invoke(prototype, getCfg());
+        } catch (ClassNotFoundException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
             throw new KeyStoreException(e);
         }
     }
-
-    public abstract boolean existeDriver();
 
     public void logout() throws KeyStoreException {
         InputStream configStream = null;
@@ -113,7 +118,7 @@ public abstract class PKCS11KeyStoreProvider implements KeyStoreProvider {
         try {
             // Crear una instancia de sun.security.pkcs11.SunPKCS11
             configStream = new ByteArrayInputStream(getConfig().getBytes());
-            Provider sunPKCS11Provider = this.createSunPKCS11Provider(configStream);
+            Provider sunPKCS11Provider = this.createSunPKCS11Provider();
             AuthProvider auth = (AuthProvider) sunPKCS11Provider;
 
             try {

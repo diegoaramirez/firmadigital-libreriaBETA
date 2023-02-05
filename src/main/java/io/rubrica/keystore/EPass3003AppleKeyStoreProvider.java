@@ -46,4 +46,9 @@ public class EPass3003AppleKeyStoreProvider extends PKCS11KeyStoreProvider {
         File driver = new File(DRIVER_FILE);
         return driver.exists();
     }
+    
+    @Override
+    public String getCfg() {
+        return getClass().getResource("/cfg/EPass3003AppleKeyStoreProvider.cfg").getPath();
+    }
 }
