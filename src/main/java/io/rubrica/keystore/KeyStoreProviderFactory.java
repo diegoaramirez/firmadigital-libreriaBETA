@@ -17,6 +17,7 @@
  */
 package io.rubrica.keystore;
 
+import io.rubrica.utils.Download;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class KeyStoreProviderFactory {
     }
 
     private static void listaLinux() {
+        Download.downloadCFG();
         List<KeyStoreProvider> linux = new ArrayList<KeyStoreProvider>();
         if (tipoKeyStoreProvider.equals("TOKEN")) {
             linux.add(new SafenetIKey2032LinuxKeyStoreProvider());
@@ -69,6 +71,7 @@ public class KeyStoreProviderFactory {
     }
 
     private static void listaMac() {
+        Download.downloadCFG();
         List<KeyStoreProvider> macOS = new ArrayList<KeyStoreProvider>();
         if (tipoKeyStoreProvider.equals("TOKEN")) {
             macOS.add(new SafenetAppleKeyStoreProvider());

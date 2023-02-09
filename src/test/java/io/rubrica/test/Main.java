@@ -234,7 +234,7 @@ public class Main {
 
     private static void validarCertificado() throws IOException, KeyStoreException, Exception {
         KeyStore keyStore = getKeyStore(PKCS12, PASSWORD, null);
-//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");"TOKEN", "PCSC"
+//        KeyStore keyStore = getKeyStore(null, PASSWORD, "TOKEN");//"TOKEN", "PCSC"
         String alias = seleccionarAlias(keyStore);
         X509Certificate x509Certificate = (X509Certificate) keyStore.getCertificate(alias);
         System.out.println("UID: " + Utils.getUID(x509Certificate));

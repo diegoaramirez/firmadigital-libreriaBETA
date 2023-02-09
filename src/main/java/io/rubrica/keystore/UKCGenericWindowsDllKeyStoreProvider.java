@@ -46,9 +46,10 @@ public class UKCGenericWindowsDllKeyStoreProvider extends PKCS11KeyStoreProvider
         File driver = new File(DRIVER_FILE);
         return driver.exists();
     }
-    
+
     @Override
     public String getCfg() {
-        return getClass().getResource("/cfg/UKCGenericWindowsDllKeyStoreProvider.cfg").getPath();
+//        return getClass().getResource("/cfg/UKCGenericWindowsDllKeyStoreProvider.cfg").getPath();
+        return System.getProperty("user.home") + "/cfg/UKCGenericWindowsDllKeyStoreProvider.cfg";
     }
 }

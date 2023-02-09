@@ -47,9 +47,10 @@ public class LinuxPcscKeyStoreProvider extends PKCS11KeyStoreProvider {
         File driver = is64bit() ? new File(DRIVER_FILE_64_BITS) : new File(DRIVER_FILE_32_BITS);
         return driver.exists();
     }
-    
+
     @Override
     public String getCfg() {
-        return is64bit() ? getClass().getResource("/cfg/LinuxPcscKeyStoreProvider64Bits.cfg").getPath() : getClass().getResource("/cfg/LinuxPcscKeyStoreProvider32Bits.cfg").getPath();
+//        return is64bit() ? getClass().getResource("/cfg/LinuxPcscKeyStoreProvider64Bits.cfg").getPath() : getClass().getResource("/cfg/LinuxPcscKeyStoreProvider32Bits.cfg").getPath();
+        return is64bit() ? System.getProperty("user.home") + "/cfg/LinuxPcscKeyStoreProvider64Bits.cfg" : System.getProperty("user.home") + "/cfg/LinuxPcscKeyStoreProvider32Bits.cfg";
     }
 }

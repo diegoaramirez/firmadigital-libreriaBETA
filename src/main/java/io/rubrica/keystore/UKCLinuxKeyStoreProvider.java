@@ -49,6 +49,7 @@ public class UKCLinuxKeyStoreProvider extends PKCS11KeyStoreProvider {
 
     @Override
     public String getCfg() {
-        return getClass().getResource("/cfg/UKCLinuxKeyStoreProvider.cfg").getPath();
+//        return getClass().getResource("/cfg/UKCLinuxKeyStoreProvider.cfg").getPath();
+        return System.getProperty("user.home") + "/cfg/UKCLinuxKeyStoreProvider.cfg";
     }
 }

@@ -46,9 +46,10 @@ public class Bit4IdAppleKeyStoreProvider extends PKCS11KeyStoreProvider {
         File driver = new File(DRIVER_FILE);
         return driver.exists();
     }
-    
+
     @Override
     public String getCfg() {
-        return getClass().getResource("/cfg/Bit4IdAppleKeyStoreProvider.cfg").getPath();
+//        return getClass().getResource("/cfg/Bit4IdAppleKeyStoreProvider.cfg").getPath();
+        return System.getProperty("user.home") + "/cfg/Bit4IdAppleKeyStoreProvider.cfg";
     }
 }

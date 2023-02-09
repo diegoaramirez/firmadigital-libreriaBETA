@@ -55,7 +55,9 @@ public abstract class PKCS11KeyStoreProvider implements KeyStoreProvider {
      * @return
      */
     public abstract String getConfig();
+
     public abstract boolean existeDriver();
+
     public abstract String getCfg();
 
     @Override

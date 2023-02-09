@@ -51,6 +51,7 @@ public class SafenetLinuxKeyStoreProvider extends PKCS11KeyStoreProvider {
 
     @Override
     public String getCfg() {
-        return is64bit() ? getClass().getResource("/cfg/SafenetLinuxKeyStoreProvider64Bits.cfg").getPath() : getClass().getResource("/cfg/SafenetLinuxKeyStoreProvider32Bits.cfg").getPath();
+//        return is64bit() ? getClass().getResource("/cfg/SafenetLinuxKeyStoreProvider64Bits.cfg").getPath() : getClass().getResource("/cfg/SafenetLinuxKeyStoreProvider32Bits.cfg").getPath();
+        return is64bit() ? System.getProperty("user.home") + "/cfg/SafenetLinuxKeyStoreProvider64Bits.cfg" : System.getProperty("user.home") + "/cfg/SafenetLinuxKeyStoreProvider32Bits.cfg";
     }
 }
