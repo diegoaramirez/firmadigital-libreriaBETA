@@ -480,7 +480,8 @@ public class Utils {
                                 certificado.setDocTimeStamp(tsInfo.getGenTime());
                             }
                             for (X509Certificate certificate : signInfo.getCerts()) {
-                                if (pdfPKCS7.getSigningCertificate().equals(certificate)) {
+                                if (pdfPKCS7.getSigningCertificate().equals(certificate)
+                                        && certificado.getGenerated().getTime().equals(pdfPKCS7.getSignDate().getTime())) {
                                     certificado.setDocReason(pdfPKCS7.getReason());
                                     certificado.setDocLocation(pdfPKCS7.getLocation());
                                     certificado.setSignVerify(pdfPKCS7.verifySignatureIntegrityAndAuthenticity());
@@ -925,36 +926,43 @@ public class Utils {
         Documento documento = null;
 
         String extDocumento = FileUtils.getExtension(docByteArray);
-        if (extDocumento.toLowerCase().contains(".p7s")) {
-            VerificadorCMS verificador = new VerificadorCMS();
-            byte[] archivoOriginal = verificador.verify(docByteArray);
-            String nombreArchivo = FileUtils.crearNombreVerificado(file, FileUtils.getExtension(archivoOriginal), base64);
-            FileUtils.saveByteArrayToDisc(archivoOriginal, nombreArchivo);
-            FileUtils.abrirDocumento(nombreArchivo);
-            documento = new Documento(true, false, null, null);
-            documento.setCertificados(Utils.datosP7mToCertificado(verificador.certificados, verificador.fechasFirmados));
-            documento.setSignValidate(validarCertificados(documento.getCertificados(), false));
-            return documento;
-        } else {
-            if (extDocumento.toLowerCase().equals(".pdf")) {
+
+        switch (extDocumento.toLowerCase()) {
+            case ".p7s": {
+                VerificadorCMS verificador = new VerificadorCMS();
+                byte[] archivoOriginal = verificador.verify(docByteArray);
+                String nombreArchivo = FileUtils.crearNombreVerificado(file, FileUtils.getExtension(archivoOriginal), base64);
+                FileUtils.saveByteArrayToDisc(archivoOriginal, nombreArchivo);
+                FileUtils.abrirDocumento(nombreArchivo);
+                documento = new Documento(true, false, null, null);
+                documento.setCertificados(Utils.datosP7mToCertificado(verificador.certificados, verificador.fechasFirmados));
+                documento.setSignValidate(validarCertificados(documento.getCertificados(), false));
+                return documento;
+            }
+            case ".pdf": {
                 return Utils.pdfToDocumento(file);
-            } else {
+            }
+            case ".xml": {
                 try {
                     Signer docSigner = Utils.documentSigner(file);
                     documento = Utils.signInfosToCertificados(docSigner.getSigners(docByteArray));
                     //SRI
-//                String xml = leerXmlSRI(documento);
-//                List<Certificado> certificadosSRI = Utils.signInfosToCertificados(docSigner.getSigners(xml.getBytes(StandardCharsets.UTF_8)));
-//                if (!certificadosSRI.isEmpty()) {
-//                    javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.documento_sri"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
-//                }
-//                certificados.addAll(certificadosSRI);
+                    //                String xml = leerXmlSRI(documento);
+                    //                List<Certificado> certificadosSRI = Utils.signInfosToCertificados(docSigner.getSigners(xml.getBytes(StandardCharsets.UTF_8)));
+                    //                if (!certificadosSRI.isEmpty()) {
+                    //                    javax.swing.JOptionPane.showMessageDialog(null, PropertiesUtils.getMessages().getProperty("mensaje.error.documento_sri"), "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+                    //                }
+                    //                certificados.addAll(certificadosSRI);
                     //SRI
                 } catch (NullPointerException | InvalidFormatException exception) {
                     List<Certificado> certificados = new ArrayList<>();
                     return new Documento(false, false, certificados, "El archivo no es un XML");
                 }
-                return documento;
+            }
+            return documento;
+            default: {
+                List<Certificado> certificados = new ArrayList<>();
+                return new Documento(false, false, certificados, "El archivo no se puede validar, es extensión " + extDocumento);
             }
         }
     }
@@ -1072,6 +1080,5 @@ public class Utils {
         }
         return false;
     }
-    
-    
+
 }
