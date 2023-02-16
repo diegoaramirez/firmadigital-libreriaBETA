@@ -36,7 +36,7 @@ public class ServicioCRL {
     public static final String SD_CRL4 = "https://portal-operador2.securitydata.net.ec/ejbca/publicweb/webdist/certdist?cmd=crl&issuer=CN%3DAUTORIDAD+DE+CERTIFICACION+SUBCA-2+SECURITY+DATA%2COU%3DENTIDAD+DE+CERTIFICACION+DE+INFORMACION%2CO%3DSECURITY+DATA+S.A.+2%2CC%3DEC";
     public static final String SD_CRL5 = "https://portal-operador2.securitydata.net.ec/ejbca/publicweb/webdist/certdist?cmd=deltacrl&issuer=CN%3DAUTORIDAD+DE+CERTIFICACION+SUBCA-2+SECURITY+DATA%2COU%3DENTIDAD+DE+CERTIFICACION+DE+INFORMACION%2CO%3DSECURITY+DATA+S.A.+2%2CC%3DEC";
     public static final String CJ_CRL = "https://www.icert.fje.gob.ec/crl/icert.crl";
-    public static final String ANFAC_CRL = "http://www.anf.es/crl/ANF_Ecuador_CA1_SHA256.crl";
+    public static final String ANFAC_CRL = "http://crl.anf.es/crl/ANFHighAssuranceEcuadorIntermediateCA.crl";
     public static final String DIGERCIC_CRL = "https://firma.registrocivil.gob.ec/crl.crl";
     public static final String UANATACA_CRL1 = "http://crl1.uanataca.com/public/pki/crl/CA2subordinada.crl";
     public static final String UANATACA_CRL2 = "http://crl2.uanataca.com/public/pki/crl/CA2subordinada.crl";
