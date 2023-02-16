@@ -812,12 +812,14 @@ public class Utils {
         if (signInfos == null || signInfos.isEmpty()) {
             return new Documento(false, false, certificados, "Documento sin firmas");
         } else {
+            documento = new Documento(true, false, null, null);
             for (SignInfo signInfo : signInfos) {
                 certificados.add(signInfoToCertificado(signInfo));
             }
+            documento.setCertificados(certificados);
+            documento.setSignValidate(validarCertificados(documento.getCertificados(), false));
+            return documento;
         }
-        documento.setCertificados(certificados);
-        return documento;
     }
 
     private static final PdfName PDFNAME_ETSI_RFC3161 = new PdfName("ETSI.RFC3161");
