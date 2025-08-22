@@ -41,6 +41,43 @@ public class LetmiCaCert20252055 extends X509Certificate {
 
         StringBuilder cer = new StringBuilder();
         cer.append("-----BEGIN CERTIFICATE-----\n");
+        cer.append("MIIGwjCCBKqgAwIBAgIKCznjDQseGzbJyDANBgkqhkiG9w0BAQsFADCBozEaMBgG\n");
+        cer.append("A1UEAxMRTEVUTUkgUlNBIFJPT1QgQzExLTArBgNVBAsTJENBIFJTQSBST09UIChD\n");
+        cer.append("ZXJ0aWZpY2F0aW9uIFNlcnZpY2VzKTEcMBoGA1UEYRMTVkFURUMtMTc5MzIyMTEw\n");
+        cer.append("MTAwMTEbMBkGA1UEChMSTEVUTUkgRUNVQURPUiBTLkEuMQ4wDAYDVQQHEwVRVUlU\n");
+        cer.append("TzELMAkGA1UEBhMCRUMwIBcNMjUwMTIwMTcyNzU1WhgPMjA1NTAxMTMxNzI3NTRa\n");
+        cer.append("MIGjMRowGAYDVQQDExFMRVRNSSBSU0EgUk9PVCBDMTEtMCsGA1UECxMkQ0EgUlNB\n");
+        cer.append("IFJPT1QgKENlcnRpZmljYXRpb24gU2VydmljZXMpMRwwGgYDVQRhExNWQVRFQy0x\n");
+        cer.append("NzkzMjIxMTAxMDAxMRswGQYDVQQKExJMRVRNSSBFQ1VBRE9SIFMuQS4xDjAMBgNV\n");
+        cer.append("BAcTBVFVSVRPMQswCQYDVQQGEwJFQzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCC\n");
+        cer.append("AgoCggIBAM83JC93oesAe6gJuncYlFOQ46kjcFBO08q1ZzknhRAWqoZibCx2eMc9\n");
+        cer.append("HOm0bldrBRytLxqvjeM1ykIuyDC178hsT4CZDLmxnyF3NFc09rUPqgfoyVy1YnUd\n");
+        cer.append("hbm1MhLQDP/VbySroCvd2jbq0R455AyhnJYJIavGa84vXwICcozxvCdKCDVMRpLr\n");
+        cer.append("orpAoHzhg0r5qZjRFSihgQ8oXvIe8yy39xaWQLmFLY8oRIrqZdxgVIl3V5Mk7YHQ\n");
+        cer.append("4cfbIcznu7JPIPQ9kKJdHg+iXG0rX+hk7qRVXF+KsY1G+5arGV4XDrEuO7lhaTJV\n");
+        cer.append("luewhAEEb4ToTIuk7dAXk1CcUrrPzV6vBuXcDZew4hztGpp8JRC60RpWxRFbRmkD\n");
+        cer.append("krvUBJyloWWRNFvq32tdVgvtXE0HPP+Bo8koQbMwA5xAk5a+/YX6vhne1LR16Km/\n");
+        cer.append("d6C47e0roE0WX9vRBYZtkLjOPqb7hiE80tnjwHhAkR7+1Ig+JN9siLmF0beDZHrd\n");
+        cer.append("F/JhpUQW4cAC0ThQ/K/rKxphP+H2t81RwGH3wvrXw8vwDTRzEVHHXXcNv2UI4Jxn\n");
+        cer.append("A1hxWSn8shnLjH1Q0eW4XkhRd+Ejzd6aNGvoUCKIJAmphQG9dGi2JgzlmD/lKZ3N\n");
+        cer.append("tNgzXZEF+Oz0tU4b2K+XKYzP+6EqL0KtIeFcpSxpCutcEQ7RL60bAgMBAAGjgfMw\n");
+        cer.append("gfAwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBR5FM6lo2Rcu1yJwZCp1TWc\n");
+        cer.append("8caUYDAZBgNVHREEEjAQgQ5pbmZvQGxldG1pLmFwcDByBgNVHSAEazBpMGcGBFUd\n");
+        cer.append("IAAwXzA7BggrBgEFBQcCARYvaHR0cHM6Ly9sZXRtaS5hcHAvZG9jdW1lbnRvcy9N\n");
+        cer.append("YXJjb19yZWd1bGF0b3Jpby8wIAYIKwYBBQUHAgIwFAwSaHR0cHM6Ly9sZXRtaS5h\n");
+        cer.append("cHAvMB0GA1UdDgQWBBR5FM6lo2Rcu1yJwZCp1TWc8caUYDAOBgNVHQ8BAf8EBAMC\n");
+        cer.append("AQYwDQYJKoZIhvcNAQELBQADggIBAHJsCzJDJJOUMrMjnAo6YAjtXFoq6z5muvjL\n");
+        cer.append("OuXZBS4ujNtn2tCbHM7zw4dvUre4PDdlRLCLRQuTFAbtUAaxf35sRrscCoUquEBD\n");
+        cer.append("W4Tp+eQO0JjpUCWdESxNOVOhSO6z+WllAOCuTVzkWX4XXDWODVvNcRhU8srV+pAV\n");
+        cer.append("uXQAVdjle2mRwfgg+vgGF4nvVK4z3JbMTThZctisyk835pw/8XTKDKxgS7TQmOy4\n");
+        cer.append("H1GE9jlJkFctvOi0hiPA1PgBf/tWOB0TF2vZRR/2UGht+o4qs3AXfZbc4G2fxGFG\n");
+        cer.append("x/2paYeH4Fsge/DVy9juv5tbdpXHI9NADO8BWD/VJLp5+us5ViiM2Yk9IXdgqUUx\n");
+        cer.append("uGByYGs8q/9w/mNPv2DuDULpm1kk0yrP417LQSXFB2zoL+f3Gld1MSsMgipQTPKg\n");
+        cer.append("nspSgQhZFeU8a4rKzPXK9rAb/agrLc5k5jYqtCXpyKHHfncdBpiNCT0lnW3o4lQv\n");
+        cer.append("ZF8WsWAucs+2cbPEQmnFItX5h0rGBNetw69rMJ3e9zggTbHkQTj4mRnHUKj6Hbvr\n");
+        cer.append("vyWdugvlFrjXRXkbpDCLG0F2XeYis/dy5tQLmOb2rY3F6p3zZVA7ksseL40FML9p\n");
+        cer.append("24gBDc/Hdpi4Z+Ym8iKp1KGRWAP67qacmP/naypaCRA3FUGMgjE4/iPgspTI4zvC\n");
+        cer.append("K0U0dSaY\n");
         cer.append("-----END CERTIFICATE-----\n");
 
         try {
